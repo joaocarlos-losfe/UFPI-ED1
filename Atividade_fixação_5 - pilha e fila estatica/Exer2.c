@@ -1,3 +1,9 @@
+/*
+	Exercicio resolvido por: 
+        João Carlos de Sousa Fé.
+		Vitor José Ferreira dos Santos de Santana.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -26,7 +32,7 @@ typedef struct
 
 void inserirCarroNaFila(FilaCarros *fila_de_carros, Carro carro)
 {
-	if(fila_de_carros->fn == max - 1)
+	if(fila_de_carros->fn == max)
 	{
 		printf("\n fila cheia");
 	}
@@ -34,6 +40,8 @@ void inserirCarroNaFila(FilaCarros *fila_de_carros, Carro carro)
 	{
 		fila_de_carros->carros[fila_de_carros->fn] = carro;
 		fila_de_carros->fn += 1;
+		
+		printf("\n carro inserido...\n");
 	}
 
 }
@@ -109,7 +117,6 @@ void removerCarro(FilaCarros *fila_de_carros, int placa)
 	else
 		printf("\ncarro não encontrado\n");
 
-	imprimirCarros(fila_de_carros);
 }
 
 void separarParImpar(FilaCarros *filaPrincipal, FilaCarros *filaImp, FilaCarros *filaPar)
@@ -135,6 +142,8 @@ void separarParImpar(FilaCarros *filaPrincipal, FilaCarros *filaImp, FilaCarros 
 
 int main(int argc, char** argv)
 {
+	setlocale(LC_ALL, "Portuguese");
+	
 	FilaCarros fila_de_carros;
 
 	fila_de_carros.in = 0;
@@ -148,84 +157,49 @@ int main(int argc, char** argv)
 	filaPar.in = 0;
 	filaPar.fn = 0;
 
-	//Carro carro;
-
-	//dados de teste
-
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].chassi, "bbbb555");
-	fila_de_carros.carros[fila_de_carros.fn].placa = 111;
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].modelo, "tesla cyber truck");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].marca, "tesla motors");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].cor, "azul");
-	fila_de_carros.carros[fila_de_carros.fn].ano_fabricacao = 2017;
-
-	fila_de_carros.fn += 1;
-
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].chassi, "aaa2323");
-	fila_de_carros.carros[fila_de_carros.fn].placa = 222;
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].modelo, "honda cv 3");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].marca, "Honda");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].cor, "vermelho");
-	fila_de_carros.carros[fila_de_carros.fn].ano_fabricacao = 2012;
-
-	fila_de_carros.fn += 1;
-
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].chassi, "ddd333");
-	fila_de_carros.carros[fila_de_carros.fn].placa = 333;
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].modelo, "corola y");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].marca, "corola");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].cor, "preto");
-	fila_de_carros.carros[fila_de_carros.fn].ano_fabricacao = 2015;
-
-	fila_de_carros.fn += 1;
-
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].chassi, "eee777");
-	fila_de_carros.carros[fila_de_carros.fn].placa = 444;
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].modelo, "tesla model s");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].marca, "tesla");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].cor, "preto");
-	fila_de_carros.carros[fila_de_carros.fn].ano_fabricacao = 2015;
-
-	fila_de_carros.fn += 1;
-
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].chassi, "fff666");
-	fila_de_carros.carros[fila_de_carros.fn].placa = 555;
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].modelo, "yamarra y 10");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].marca, "yamarra");
-	strcpy(fila_de_carros.carros[fila_de_carros.fn].cor, "preto");
-	fila_de_carros.carros[fila_de_carros.fn].ano_fabricacao = 2015;
-
-	fila_de_carros.fn += 1;
-
-	imprimirCarros(&fila_de_carros);
-
-	removerCarro(&fila_de_carros, 555);
-
-	separarParImpar(&fila_de_carros, &filaImp, &filaPar);
-
-	printf("\n\nmostrando a fila par");
-
-	imprimirCarros(&filaPar);
-
-	printf("\n\nmostrando a fila impar");
-
-	imprimirCarros(&filaImp);
-
-	printf("\n\nprintando a fila original");
-
-	imprimirCarros(&fila_de_carros);
-
-
-	/*
-
+	Carro carro;
+	int placa;
+	
+	int op = 0;
+	
 	while(1)
 	{
-		printf("\n1 - inserir carro");
-		printf("\n2 - mostrar todos os carros da fila");
-		printf("\n3 - remover carro");
-		printf("\n4 - inserir carro");
+		printf("\n1 - inserir carro\n2 - imprimir fila de carros\n3 - remover carro\n4 - separar em 2 novas filas\n: ");
+		scanf("%d", &op);
+		
+		switch(op)
+		{
+		case 1:
+			setbuf(stdin, NULL);
+			printf("\n(str) chasi do carro: "); scanf(" %[^\n]s", carro.chassi);
+			printf("\n(int) placa do carro: "); scanf("%d", &carro.placa);
+			setbuf(stdin, NULL);
+			printf("\n(str) modelo: "); scanf(" %[^\n]s", carro.modelo);
+			printf("\n(str) marca: "); scanf(" %[^\n]s", carro.marca);
+			printf("\n(str) cor: "); scanf(" %[^\n]s", carro.cor);
+			setbuf(stdin, NULL);
+			printf("\n(int) ano de fabricação: "); scanf("%d", &carro.ano_fabricacao);
+			inserirCarroNaFila(&fila_de_carros, carro);
+			setbuf(stdin, NULL);
+			break;
+		case 2:
+			imprimirCarros(&fila_de_carros);
+			break;
+		case 3:
+			printf("\nentre com a placa do carro: "); scanf("%d", &placa);
+			removerCarro(&fila_de_carros, placa);
+			break;
+		case 4:
+			separarParImpar(&fila_de_carros, &filaImp, &filaPar);
+			printf("\nCarros pares: \n");
+			imprimirCarros(&filaPar);
+			printf("\nCarros impares: \n");
+			imprimirCarros(&filaImp);
+			break;
+		default:
+			printf("opção invalida");
+			break;
+		}	
 	}
-	*/
-
 	return 0;
 }
