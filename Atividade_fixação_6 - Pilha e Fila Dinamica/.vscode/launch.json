@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "c:\\Users\\joaoc\\OneDrive\\Documentos\\UFPI\\ED 1\\Atividades\\Atividade_fixação_6 - Pilha e Fila Dinamica",
+      "environment": [],
+      "program": "c:\\Users\\joaoc\\OneDrive\\Documentos\\UFPI\\ED 1\\Atividades\\Atividade_fixação_6 - Pilha e Fila Dinamica\\build\\Debug\\outDebug",
+      "internalConsoleOptions": "openOnSessionStart",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:\\Program Files (x86)\\Falcon\\MinGW\\bin\\gdb.exe",
+      "externalConsole": true
+    }
+  ]
+}
