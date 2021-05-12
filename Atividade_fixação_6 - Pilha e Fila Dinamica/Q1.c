@@ -24,6 +24,7 @@ typedef struct aux
 typedef struct
 {
     Pont topo_pilha;
+    
 }Pilha;
 
 int tamanhoPilha(Pilha* pilha_de_cds)
@@ -52,6 +53,12 @@ void exibirPilhaCds(Pilha* pilha_de_cds)
 {
     int count = 1;
     Pont end = pilha_de_cds->topo_pilha; 
+
+    if(pilhaVazia(pilha_de_cds))
+    {
+        printf("Pilha vazia...");
+        return;
+    }
 
     while (end!=NULL)
     {
@@ -96,16 +103,13 @@ void separarDesempilharEmpilhar(Pilha *pilha_de_cds, Pilha *segunda_pilha, char 
 
     while (pilha_de_cds->topo_pilha !=NULL)
     {
-
         if(strcmp(pilha_de_cds->topo_pilha->artista.estilo_musical, estilo) == 0)
         {
             empilharNovoCd(segunda_pilha, pilha_de_cds->topo_pilha->artista);
-            printf("\neh pop\n");
         }
         else
         {
             empilharNovoCd(&auxliar, pilha_de_cds->topo_pilha->artista);
-            printf("\nnao eh pop\n");
         }
 
         Pont apagar = pilha_de_cds->topo_pilha;
@@ -113,7 +117,6 @@ void separarDesempilharEmpilhar(Pilha *pilha_de_cds, Pilha *segunda_pilha, char 
         pilha_de_cds->topo_pilha = pilha_de_cds->topo_pilha->proximo_abaixo;
 
         free(apagar);
-
     }
 
     while (auxliar.topo_pilha != NULL) // empilhar de volta os removidos na original exeto o disptribuido pra segunda pilha
@@ -122,7 +125,6 @@ void separarDesempilharEmpilhar(Pilha *pilha_de_cds, Pilha *segunda_pilha, char 
 
         auxliar.topo_pilha = auxliar.topo_pilha->proximo_abaixo;
     }
-
 }
 
 void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilha *sertanejo, Pilha *forro, Pilha *axe)
@@ -130,14 +132,19 @@ void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilh
     switch (estilo)
     {
     case 1: //pop
+        separarDesempilharEmpilhar(pilha_de_cds, pop, "Pop");
         break;
     case 2: // rock
+        separarDesempilharEmpilhar(pilha_de_cds, rock, "Rock");
         break;
     case 3: // sertanejo
+        separarDesempilharEmpilhar(pilha_de_cds, sertanejo, "Sertanejo");
         break;
     case 4: // forro
+        separarDesempilharEmpilhar(pilha_de_cds, forro, "Forro");
         break;
     case 5: // axe
+        separarDesempilharEmpilhar(pilha_de_cds, axe, "Axe");
         break;
     default:
         break;
@@ -153,50 +160,91 @@ int main()
 
     pop.topo_pilha = rock.topo_pilha = sertanejo.topo_pilha = forro.topo_pilha = axe.topo_pilha = NULL; 
 
-    int tamanho = tamanhoPilha(&pilha_de_cds);
-    printf("%d", tamanho);
+    int op = 0;
+    int estilo = 0;
 
     Artista cd;
-    cd.codigo = 111;
-    strcpy(cd.artista, "Zedd");
-    strcpy(cd.titulo, "Roses");
-    cd.ano = 2015;
-    strcpy(cd.estilo_musical, "Pop");
 
+    while (true)
+    {
+        printf("\n1 - Empilhar cd");
+        printf("\n2 - Ver todos os cd da pilha principal");
+        printf("\n3 - criar pilhas para os seus CDs");
+        printf("\n4 - Imprima todos os elementos de uma da pilha escolhida");
+        printf("\n5 - montar um outra pilha baseada no ano de lancamento\n: ");
 
-    empilharNovoCd(&pilha_de_cds, cd);
+        scanf("%d", &op);
 
-    cd.codigo = 222;
-    strcpy(cd.artista, "Avicci");
-    strcpy(cd.titulo, "Life");
-    cd.ano = 2014;
-    strcpy(cd.estilo_musical, "Rock");
-    empilharNovoCd(&pilha_de_cds, cd);
+        switch (op)
+        {
+        case 1:
+            printf("\n\n(int) Codigo: "); scanf("%d", &cd.codigo);
+            printf("\n(str) Titulo: "); scanf(" %[^\n]s", cd.titulo);
+            printf("\n(str) Artista: "); scanf(" %[^\n]s", cd.artista);
+            printf("\n(int) Ano: "); scanf("%d", &cd.ano);
+            printf("\n(int) Estilo: 1 - Pop, 2 - Rock, 3 - Sertanejo, 4 - Forro, 5 - Axe\n: ");
+            scanf("%d", &estilo);
 
-    cd.codigo = 333;
-    strcpy(cd.artista, "Martin garrix");
-    strcpy(cd.titulo, "friend");
-    cd.ano = 2017;
-    strcpy(cd.estilo_musical, "sertanejo");
-    empilharNovoCd(&pilha_de_cds, cd);
+            switch (estilo)
+            {
+            case 1:
+                strcpy(cd.estilo_musical, "Pop");
+                break;
+            case 2:
+                strcpy(cd.estilo_musical, "Rock");
+                break;
+            case 3:
+                strcpy(cd.estilo_musical, "Sertanejo");
+                break;
+            case 4:
+                strcpy(cd.estilo_musical, "Forro");
+                break;
+            case 5:
+                strcpy(cd.estilo_musical, "Axe");
+                break;
+            }
+            empilharNovoCd(&pilha_de_cds, cd);
+            break;
+        
+        case 2:
+            exibirPilhaCds(&pilha_de_cds);
+            break;
+        case 3:
+            printf("\n(int) Estilo que deseja separar: \n1 - Pop, 2 - Rock, 3 - Sertanejo, 4 - Forro, 5 - Axe: ");
+            scanf("%d", &estilo);
+            distibuirCds(&pilha_de_cds, estilo, &pop, &rock, &sertanejo, &forro, &axe);
+            break;
+        case 4:
+            printf("\n(int) Estilo que deseja imprimir: 1 - Pop, 2 - Rock, 3 - Sertanejo, 4 - Forro, 5 - Axe\n: ");
+            scanf("%d", &estilo);
+
+            switch (estilo)
+            {
+            case 1:
+                exibirPilhaCds(&pop);
+                break;
+            case 2:
+                exibirPilhaCds(&rock);
+                break;
+            case 3:
+                exibirPilhaCds(&sertanejo);
+                break;
+            case 4:
+                exibirPilhaCds(&forro);
+                break;
+            case 5:
+                exibirPilhaCds(&axe);
+                break;
+            
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+
+    }
     
-    //exibirPilhaCds(&pilha_de_cds);
-
-    /*
-    printf("\nremover cd topo...\n");
-    removerCd(&pilha_de_cds);
-    */
-
-    //exibirPilhaCds(&pilha_de_cds);
-
-    printf("\nseparando...\n");
-    char estilo[10];
-    strcpy(estilo, "Pop");
-    separarDesempilharEmpilhar(&pilha_de_cds, &pop, estilo);
-
-    exibirPilhaCds(&pop);
-    printf("\n\n");
-    exibirPilhaCds(&pilha_de_cds);
-
     return 0;
 }
