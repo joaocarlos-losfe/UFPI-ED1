@@ -96,7 +96,7 @@ void removerCd(Pilha* pilha_de_cds)
     
 }
 
-void separarDesempilharEmpilhar(Pilha *pilha_de_cds, Pilha *segunda_pilha, char estilo[10])
+void separarPorEstilo(Pilha *pilha_de_cds, Pilha *segunda_pilha, char estilo[10])
 {
     Pilha auxliar;
     auxliar.topo_pilha = NULL;
@@ -127,24 +127,58 @@ void separarDesempilharEmpilhar(Pilha *pilha_de_cds, Pilha *segunda_pilha, char 
     }
 }
 
+void separarPorAnoDeLancamento(Pilha *pilha_de_cds, Pilha *pilha_lancamentos, int ano_lancamento)
+{
+    Pilha auxliar;
+    auxliar.topo_pilha = NULL;
+    bool ano_lancamento_disponivel = false;
+
+    while (pilha_de_cds->topo_pilha !=NULL)
+    {
+        if(pilha_de_cds->topo_pilha->artista.ano == ano_lancamento)
+        {
+            empilharNovoCd(pilha_lancamentos, pilha_de_cds->topo_pilha->artista);
+            ano_lancamento_disponivel = true;
+        }
+        else
+        {
+            empilharNovoCd(&auxliar, pilha_de_cds->topo_pilha->artista);
+        }
+
+        Pont apagar = pilha_de_cds->topo_pilha;
+        
+        pilha_de_cds->topo_pilha = pilha_de_cds->topo_pilha->proximo_abaixo;
+
+        free(apagar);
+    }
+
+    while (auxliar.topo_pilha != NULL) // empilhar de volta os removidos na original exeto o disptribuido pra segunda pilha
+    {
+        empilharNovoCd(pilha_de_cds, auxliar.topo_pilha->artista);
+
+        auxliar.topo_pilha = auxliar.topo_pilha->proximo_abaixo;
+    }
+
+}
+
 void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilha *sertanejo, Pilha *forro, Pilha *axe)
 {
     switch (estilo)
     {
     case 1: //pop
-        separarDesempilharEmpilhar(pilha_de_cds, pop, "Pop");
+        separarPorEstilo(pilha_de_cds, pop, "Pop");
         break;
     case 2: // rock
-        separarDesempilharEmpilhar(pilha_de_cds, rock, "Rock");
+        separarPorEstilo(pilha_de_cds, rock, "Rock");
         break;
     case 3: // sertanejo
-        separarDesempilharEmpilhar(pilha_de_cds, sertanejo, "Sertanejo");
+        separarPorEstilo(pilha_de_cds, sertanejo, "Sertanejo");
         break;
     case 4: // forro
-        separarDesempilharEmpilhar(pilha_de_cds, forro, "Forro");
+        separarPorEstilo(pilha_de_cds, forro, "Forro");
         break;
     case 5: // axe
-        separarDesempilharEmpilhar(pilha_de_cds, axe, "Axe");
+        separarPorEstilo(pilha_de_cds, axe, "Axe");
         break;
     default:
         break;
@@ -159,6 +193,10 @@ int main()
     Pilha pop, rock, sertanejo, forro, axe;
 
     pop.topo_pilha = rock.topo_pilha = sertanejo.topo_pilha = forro.topo_pilha = axe.topo_pilha = NULL; 
+
+    Pilha pilha_ano_lancamento;
+    pilha_ano_lancamento.topo_pilha = NULL;
+    unsigned int ano;
 
     int op = 0;
     int estilo = 0;
@@ -240,6 +278,20 @@ int main()
                 break;
             }
             break;
+        case 5:
+
+            printf("\nano de lançamento que deseja empilhar: ");
+            scanf("%d", &ano);
+            separarPorAnoDeLancamento(&pop, &pilha_ano_lancamento, ano);
+            separarPorAnoDeLancamento(&rock, &pilha_ano_lancamento, ano);
+            separarPorAnoDeLancamento(&sertanejo, &pilha_ano_lancamento, ano);
+            separarPorAnoDeLancamento(&forro, &pilha_ano_lancamento, ano);
+            separarPorAnoDeLancamento(&axe, &pilha_ano_lancamento, ano);
+            separarPorAnoDeLancamento(&pilha_de_cds, &pilha_ano_lancamento, ano);
+
+            printf("\nMostrando a nova pilha baseado no ano: \n");
+            exibirPilhaCds(&pilha_ano_lancamento);
+
         default:
             break;
         }
