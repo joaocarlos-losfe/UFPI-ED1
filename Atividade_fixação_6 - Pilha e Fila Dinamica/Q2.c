@@ -134,7 +134,7 @@ void sairDaFila(FilaPrincipal *fila, int matricula)
     
     end = tempFila.inicio;
 
-    while (end != NULL) // copia de volta os alunos removidos...
+    while (end != NULL) // copia de volta sem os alunos removidos...
     {
         inserirAluno(fila, end->aluno);
 

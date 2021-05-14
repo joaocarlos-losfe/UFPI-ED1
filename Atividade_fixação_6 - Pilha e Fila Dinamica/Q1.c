@@ -4,7 +4,19 @@
 #include <stdbool.h>
 #include <string.h>
 
-typedef struct 
+#define MSGERRO "\nERRO! - Entrada inválida!\nSelecione a opção correta!\n"
+
+void menu()
+{
+  printf("\n0 - Sair");
+  printf("\n1 - Empilhar cd");
+  printf("\n2 - Ver todos os cd da pilha principal");
+  printf("\n3 - criar pilhas para os seus CDs");
+  printf("\n4 - Imprima todos os elementos de uma da pilha escolhida");
+  printf("\n5 - montar um outra pilha baseada no ano de lancamento\n: ");
+}
+
+typedef struct
 {
     int codigo;
     char titulo[20];
@@ -24,14 +36,14 @@ typedef struct aux
 typedef struct
 {
     Pont topo_pilha;
-    
+
 }Pilha;
 
 int tamanhoPilha(Pilha* pilha_de_cds)
 {
     int cont = 0;
 
-    Pont end = pilha_de_cds->topo_pilha; 
+    Pont end = pilha_de_cds->topo_pilha;
 
     while (end!=NULL)
     {
@@ -52,7 +64,7 @@ bool pilhaVazia(Pilha* pilha_de_cds)
 void exibirPilhaCds(Pilha* pilha_de_cds)
 {
     int count = 1;
-    Pont end = pilha_de_cds->topo_pilha; 
+    Pont end = pilha_de_cds->topo_pilha;
 
     if(pilhaVazia(pilha_de_cds))
     {
@@ -68,7 +80,7 @@ void exibirPilhaCds(Pilha* pilha_de_cds)
         printf("\nArtista: %s", end->artista.artista);
         printf("\nAno: %d", end->artista.ano);
         printf("\nEstilo musical: %s\n", end->artista.estilo_musical);
-        
+
         count++;
         end = end->proximo_abaixo;
     }
@@ -93,7 +105,7 @@ void removerCd(Pilha* pilha_de_cds)
         pilha_de_cds->topo_pilha = pilha_de_cds->topo_pilha->proximo_abaixo;
         free(apagar);
     }
-    
+
 }
 
 void separarPorEstilo(Pilha *pilha_de_cds, Pilha *segunda_pilha, char estilo[10])
@@ -113,7 +125,7 @@ void separarPorEstilo(Pilha *pilha_de_cds, Pilha *segunda_pilha, char estilo[10]
         }
 
         Pont apagar = pilha_de_cds->topo_pilha;
-        
+
         pilha_de_cds->topo_pilha = pilha_de_cds->topo_pilha->proximo_abaixo;
 
         free(apagar);
@@ -127,18 +139,18 @@ void separarPorEstilo(Pilha *pilha_de_cds, Pilha *segunda_pilha, char estilo[10]
     }
 }
 
-void separarPorAnoDeLancamento(Pilha *pilha_de_cds, Pilha *pilha_lancamentos, int ano_lancamento)
+void separarPorAnoDeLancamento(Pilha *pilha_de_cds, Pilha *pilha_lancamentos, int ano_lancamento, bool *ano_l_d)
 {
     Pilha auxliar;
     auxliar.topo_pilha = NULL;
-    bool ano_lancamento_disponivel = false;
+    //bool ano_lancamento_disponivel = false;
 
     while (pilha_de_cds->topo_pilha !=NULL)
     {
         if(pilha_de_cds->topo_pilha->artista.ano == ano_lancamento)
         {
             empilharNovoCd(pilha_lancamentos, pilha_de_cds->topo_pilha->artista);
-            ano_lancamento_disponivel = true;
+            *ano_l_d = true;
         }
         else
         {
@@ -146,7 +158,7 @@ void separarPorAnoDeLancamento(Pilha *pilha_de_cds, Pilha *pilha_lancamentos, in
         }
 
         Pont apagar = pilha_de_cds->topo_pilha;
-        
+
         pilha_de_cds->topo_pilha = pilha_de_cds->topo_pilha->proximo_abaixo;
 
         free(apagar);
@@ -186,13 +198,13 @@ void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilh
 }
 
 int main()
-{    
+{
     Pilha pilha_de_cds;
     pilha_de_cds.topo_pilha = NULL;
 
     Pilha pop, rock, sertanejo, forro, axe;
 
-    pop.topo_pilha = rock.topo_pilha = sertanejo.topo_pilha = forro.topo_pilha = axe.topo_pilha = NULL; 
+    pop.topo_pilha = rock.topo_pilha = sertanejo.topo_pilha = forro.topo_pilha = axe.topo_pilha = NULL;
 
     Pilha pilha_ano_lancamento;
     pilha_ano_lancamento.topo_pilha = NULL;
@@ -201,20 +213,20 @@ int main()
     int op = 0;
     int estilo = 0;
 
+    bool ano_lancamento_disponivel = false;
+
     Artista cd;
 
-    while (true)
+    do
     {
-        printf("\n1 - Empilhar cd");
-        printf("\n2 - Ver todos os cd da pilha principal");
-        printf("\n3 - criar pilhas para os seus CDs");
-        printf("\n4 - Imprima todos os elementos de uma da pilha escolhida");
-        printf("\n5 - montar um outra pilha baseada no ano de lancamento\n: ");
+        menu();
 
         scanf("%d", &op);
 
         switch (op)
         {
+        case 0:
+            break;
         case 1:
             printf("\n\n(int) Codigo: "); scanf("%d", &cd.codigo);
             printf("\n(str) Titulo: "); scanf(" %[^\n]s", cd.titulo);
@@ -243,7 +255,7 @@ int main()
             }
             empilharNovoCd(&pilha_de_cds, cd);
             break;
-        
+
         case 2:
             exibirPilhaCds(&pilha_de_cds);
             break;
@@ -273,30 +285,36 @@ int main()
             case 5:
                 exibirPilhaCds(&axe);
                 break;
-            
+
             default:
                 break;
             }
             break;
         case 5:
 
-            printf("\nano de lançamento que deseja empilhar: ");
+            printf("\nAno de lançamento que deseja empilhar: ");
             scanf("%d", &ano);
-            separarPorAnoDeLancamento(&pop, &pilha_ano_lancamento, ano);
-            separarPorAnoDeLancamento(&rock, &pilha_ano_lancamento, ano);
-            separarPorAnoDeLancamento(&sertanejo, &pilha_ano_lancamento, ano);
-            separarPorAnoDeLancamento(&forro, &pilha_ano_lancamento, ano);
-            separarPorAnoDeLancamento(&axe, &pilha_ano_lancamento, ano);
-            separarPorAnoDeLancamento(&pilha_de_cds, &pilha_ano_lancamento, ano);
-
-            printf("\nMostrando a nova pilha baseado no ano: \n");
-            exibirPilhaCds(&pilha_ano_lancamento);
+            separarPorAnoDeLancamento(&pop, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            separarPorAnoDeLancamento(&rock, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            separarPorAnoDeLancamento(&sertanejo, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            separarPorAnoDeLancamento(&forro, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            separarPorAnoDeLancamento(&axe, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            separarPorAnoDeLancamento(&pilha_de_cds, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
+            if(ano_lancamento_disponivel == true)
+            {
+              printf("\nMostrando a nova pilha baseado no ano: \n");
+              exibirPilhaCds(&pilha_ano_lancamento);
+            }
+            else{
+              printf("\nErro[404]\nNão houve CDs lançados nesse período\n");
+            }
 
         default:
+            printf("%s\n",MSGERRO);
             break;
         }
 
-    }
-    
+    }while(op != 0);
+
     return 0;
 }
