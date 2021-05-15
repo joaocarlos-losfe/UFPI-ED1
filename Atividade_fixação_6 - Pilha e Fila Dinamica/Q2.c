@@ -8,6 +8,7 @@
 #include <malloc.h>
 #include <stdbool.h>
 #include <string.h>
+#include <locale.h>
 
 #define MSGERRO "\nERRO! - Entrada invÃ¡lida!\nSelecione a opÃ§Ã£o correta!\n"
 
@@ -220,6 +221,8 @@ void distribuirAlunos(FilaPrincipal *fila_principal, FilaPrincipal *fila1, FilaP
 
 int main()
 {
+	setlocale(LC_ALL, "Portuguese");
+
 	FilaPrincipal fila_alunos;
 	fila_alunos.inicio = fila_alunos.fim = NULL;
 

@@ -8,6 +8,7 @@
 #include <malloc.h>
 #include <stdbool.h>
 #include <string.h>
+#include <locale.h>
 
 #define MSGERRO "\nERRO! - Entrada inválida!\nSelecione a opção correta!\n"
 
@@ -204,7 +205,7 @@ void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilh
 
 void empilharNovamente(Pilha *pilha_ano_lancamento, Pilha *pop, Pilha *rock, Pilha *sertanejo, Pilha *forro, Pilha *axe, Pilha *pilha_de_cds)
 {
-    while (pilha_ano_lancamento!=NULL)
+    while (pilha_ano_lancamento->topo_pilha !=NULL)
     {
         if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Pop") == 0)
             empilharNovoCd(pop, pilha_ano_lancamento->topo_pilha->artista);
@@ -234,6 +235,8 @@ void empilharNovamente(Pilha *pilha_ano_lancamento, Pilha *pop, Pilha *rock, Pil
 
 int main()
 {
+    setlocale(LC_ALL, "Portuguese");
+
     Pilha pilha_de_cds;
     pilha_de_cds.topo_pilha = NULL;
 
@@ -339,12 +342,14 @@ int main()
             {
                 printf("\nMostrando a nova pilha baseado no ano: \n");
                 exibirPilhaCds(&pilha_ano_lancamento);
-
+                empilharNovamente(&pilha_ano_lancamento, &pop, &rock, &sertanejo, &forro, &axe, &pilha_de_cds);
             }
             else
             {
                 printf("\nErro[404]\nNão houve CDs lançados nesse período\n");
             }
+
+            break;
 
         default:
             printf("%s\n",MSGERRO);
