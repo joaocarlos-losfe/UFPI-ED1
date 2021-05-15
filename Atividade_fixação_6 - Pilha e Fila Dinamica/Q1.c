@@ -197,6 +197,36 @@ void distibuirCds(Pilha *pilha_de_cds, int estilo, Pilha *pop, Pilha *rock, Pilh
     }
 }
 
+void empilharNovamente(Pilha *pilha_ano_lancamento, Pilha *pop, Pilha *rock, Pilha *sertanejo, Pilha *forro, Pilha *axe, Pilha *pilha_de_cds)
+{
+    while (pilha_ano_lancamento!=NULL)
+    {
+        if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Pop") == 0)
+            empilharNovoCd(pop, pilha_ano_lancamento->topo_pilha->artista);
+
+        else if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Rock") == 0)
+            empilharNovoCd(rock, pilha_ano_lancamento->topo_pilha->artista);
+        
+        else if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Sertanejo") == 0)
+            empilharNovoCd(sertanejo, pilha_ano_lancamento->topo_pilha->artista);
+        
+        else if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Forro") == 0)
+            empilharNovoCd(forro, pilha_ano_lancamento->topo_pilha->artista);
+        
+        else if(strcmp(pilha_ano_lancamento->topo_pilha->artista.estilo_musical, "Axe") == 0)
+            empilharNovoCd(axe, pilha_ano_lancamento->topo_pilha->artista);
+        else
+            empilharNovoCd(pilha_de_cds, pilha_ano_lancamento->topo_pilha->artista);
+
+        Pont apagar = pilha_ano_lancamento->topo_pilha;
+
+        pilha_ano_lancamento->topo_pilha = pilha_ano_lancamento->topo_pilha->proximo_abaixo;
+
+        free(apagar);
+    }
+    
+}
+
 int main()
 {
     Pilha pilha_de_cds;
@@ -302,11 +332,13 @@ int main()
             separarPorAnoDeLancamento(&pilha_de_cds, &pilha_ano_lancamento, ano, &ano_lancamento_disponivel);
             if(ano_lancamento_disponivel == true)
             {
-              printf("\nMostrando a nova pilha baseado no ano: \n");
-              exibirPilhaCds(&pilha_ano_lancamento);
+                printf("\nMostrando a nova pilha baseado no ano: \n");
+                exibirPilhaCds(&pilha_ano_lancamento);
+
             }
-            else{
-              printf("\nErro[404]\nNão houve CDs lançados nesse período\n");
+            else
+            {
+                printf("\nErro[404]\nNão houve CDs lançados nesse período\n");
             }
 
         default:

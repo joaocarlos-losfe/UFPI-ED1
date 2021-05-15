@@ -4,14 +4,25 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define MSGERRO "\nERRO! - Entrada invÃ¡lida!\nSelecione a opÃ§Ã£o correta!\n"
+
+void menu()
+{
+	printf("0 - Sair do Programa\n");
+	printf("1 - Matricular alunos\n");
+	printf("2 - Exibir alunos\n");
+	printf("3 - Sair da fila de acordo com a matricula\n");
+	printf("4 - Distribuir alunos\n: ");
+}
+
 typedef struct
 {
-    int matricula;
-    char nome[10];
-    int idade;
-    int ano_escolar;
+	int matricula;
+	char nome[10];
+	int idade;
+	int ano_escolar;
 
-}Aluno;
+} Aluno;
 
 typedef struct aux
 {
@@ -25,41 +36,41 @@ typedef struct
 	DadosPont inicio;
 	DadosPont fim;
 
-}FilaPrincipal;
+} FilaPrincipal;
 
 int contarElementosFila(FilaPrincipal *fila)
 {
-    
-    if(fila->inicio == NULL)
-        return 0;
 
-    unsigned int count = 0;
-    DadosPont end = fila->inicio;
+	if(fila->inicio == NULL)
+		return 0;
 
-    while (end != NULL )
-    {
-        count++;
-        end = end->proximo;
-    }
-    
-    free(end);
+	unsigned int count = 0;
+	DadosPont end = fila->inicio;
 
-    return count;
+	while (end != NULL )
+	{
+		count++;
+		end = end->proximo;
+	}
+
+	free(end);
+
+	return count;
 }
 
 void inserirAluno(FilaPrincipal *fila, Aluno aluno)
 {
-    DadosPont novo_aluno = (DadosPont) malloc(sizeof(Elemento));
+	DadosPont novo_aluno = (DadosPont) malloc(sizeof(Elemento));
 
-    novo_aluno->aluno = aluno;
-    novo_aluno->proximo = NULL;
+	novo_aluno->aluno = aluno;
+	novo_aluno->proximo = NULL;
 
-    if(fila->inicio == NULL) 
-        fila -> inicio = novo_aluno;
-    else 
-        fila->fim->proximo = novo_aluno;
+	if(fila->inicio == NULL)
+		fila -> inicio = novo_aluno;
+	else
+		fila->fim->proximo = novo_aluno;
 
-    fila->fim = novo_aluno;
+	fila->fim = novo_aluno;
 }
 
 void removerAlunoDaFila(FilaPrincipal *fila)
@@ -71,7 +82,7 @@ void removerAlunoDaFila(FilaPrincipal *fila)
 	else
 	{
 		DadosPont apagar = fila->inicio;
-		
+
 		fila -> inicio = fila->inicio->proximo;
 
 		free(apagar);
@@ -86,197 +97,182 @@ void removerAlunoDaFila(FilaPrincipal *fila)
 
 void exibirAlunos(FilaPrincipal *fila)
 {
-    
-    if(fila->inicio == NULL || fila->fim == NULL)
-        printf("\nNenhum aluno inserido na fila...\n");
-    else
-    {
-        DadosPont temp_aluno = fila->inicio;
 
-        while (temp_aluno != NULL )
-        {
-            printf("\nMatricula do aluno: %d", temp_aluno->aluno.matricula);
-            printf("\nNome: %s", temp_aluno->aluno.nome);
-            printf("\nIdade: %d", temp_aluno->aluno.idade);
-            printf("\nAno escolar: %d\n", temp_aluno->aluno.ano_escolar);
-            temp_aluno = temp_aluno->proximo;
-        }
-    }
+	if(fila->inicio == NULL || fila->fim == NULL)
+		printf("\nNenhum aluno inserido na fila...\n");
+	else
+	{
+		DadosPont temp_aluno = fila->inicio;
+
+		while (temp_aluno != NULL )
+		{
+			printf("\nMatricula do aluno: %d", temp_aluno->aluno.matricula);
+			printf("\nNome: %s", temp_aluno->aluno.nome);
+			printf("\nIdade: %d", temp_aluno->aluno.idade);
+			printf("\nAno escolar: %d\n", temp_aluno->aluno.ano_escolar);
+			temp_aluno = temp_aluno->proximo;
+		}
+	}
+}
+
+void matricularAlunos(FilaPrincipal *fila, Aluno *aluno)
+{
+	printf("Matricula: ");
+	scanf("%d", &aluno->matricula);
+	printf("Nome: ");
+	scanf(" %[^\n]s", aluno->nome);
+	printf("Idade: ");
+	scanf("%d", &aluno->idade);
+	printf("Ano Escolar: ");
+	scanf("%d", &aluno->ano_escolar);
 }
 
 void sairDaFila(FilaPrincipal *fila, int matricula)
 {
-    FilaPrincipal tempFila;
-    tempFila.inicio = NULL;
-    tempFila.fim = NULL;
+	FilaPrincipal tempFila;
+	tempFila.inicio = NULL;
+	tempFila.fim = NULL;
 
-    DadosPont end = fila->inicio;
+	DadosPont end = fila->inicio;
 
-    bool achou_aluno = false;
+	bool achou_aluno = false;
 
-    while (end != NULL) // inserir dados (execeto oque se quer remover) 
-    {
-       
-       if(end->aluno.matricula != matricula)
-       {
-           inserirAluno(&tempFila, end->aluno);
-       }
-       else
-       {
-           achou_aluno = true;
-       }
+	while (end != NULL) // inserir dados (execeto oque se quer remover)
+	{
 
-       removerAlunoDaFila(fila);
+		if(end->aluno.matricula != matricula)
+		{
+			inserirAluno(&tempFila, end->aluno);
+		}
+		else
+		{
+			achou_aluno = true;
+		}
 
-       end = end->proximo;
+		removerAlunoDaFila(fila);
 
-    }
-    
-    end = tempFila.inicio;
+		end = end->proximo;
 
-    while (end != NULL) // copia de volta sem os alunos removidos...
-    {
-        inserirAluno(fila, end->aluno);
+	}
 
-        removerAlunoDaFila(&tempFila);
+	end = tempFila.inicio;
 
-        end = end->proximo;
-    }
-    
-    if (achou_aluno)
-        printf("\naluno %d encontrado removido da fila\n", matricula);
-    else
-        printf("\nAluno nao encotrado....");
-    
+	while (end != NULL) // copia de volta os alunos removidos...
+	{
+		inserirAluno(fila, end->aluno);
+
+		removerAlunoDaFila(&tempFila);
+
+		end = end->proximo;
+	}
+
+	if (achou_aluno)
+		printf("\naluno %d encontrado removido da fila\n", matricula);
+	else
+		printf("\nAluno nao encotrado....");
+
 }
 
 void distribuirAlunos(FilaPrincipal *fila_principal, FilaPrincipal *fila1, FilaPrincipal *fila2, FilaPrincipal *fila3, FilaPrincipal *fila4, FilaPrincipal *fila5)
 {
-    DadosPont end = fila_principal->inicio;
+	DadosPont end = fila_principal->inicio;
 
-    if(fila_principal->inicio != NULL)
-    {
-        while (end !=NULL)
-        {
-            switch (end->aluno.ano_escolar)
-            {
-            case 5:
-                inserirAluno(fila1, end->aluno);
-                
-                break;
-            case 6:
-                inserirAluno(fila2, end->aluno);
+	if(fila_principal->inicio != NULL)
+	{
+		while (end != NULL)
+		{
+			switch (end->aluno.ano_escolar)
+			{
+			case 5:
+				inserirAluno(fila1, end->aluno);
 
-                break;
-            case 7:
-                inserirAluno(fila3, end->aluno);
- 
-                break;
-            case 8:
-                inserirAluno(fila4, end->aluno);
-                break;
-            case 9:
-                inserirAluno(fila5, end->aluno);
-                break;
-            default:
-                break;
-            }
+				break;
+			case 6:
+				inserirAluno(fila2, end->aluno);
 
-            removerAlunoDaFila(fila_principal);
-        
-            end = end->proximo;
-        }
-    }
-    
+				break;
+			case 7:
+				inserirAluno(fila3, end->aluno);
+
+				break;
+			case 8:
+				inserirAluno(fila4, end->aluno);
+				break;
+			case 9:
+				inserirAluno(fila5, end->aluno);
+				break;
+			default:
+				break;
+			}
+
+			removerAlunoDaFila(fila_principal);
+
+			end = end->proximo;
+		}
+	}
+
 }
 
 int main()
 {
-    FilaPrincipal fila_alunos;
-    fila_alunos.inicio = fila_alunos.fim = NULL;
+	FilaPrincipal fila_alunos;
+	fila_alunos.inicio = fila_alunos.fim = NULL;
 
-    FilaPrincipal fila1, fila2, fila3, fila4, fila5, fila6;
+	FilaPrincipal fila1, fila2, fila3, fila4, fila5, fila6;
 
-    fila1.inicio = fila2.inicio = fila3.inicio = fila4.inicio =  fila5.inicio =  NULL; 
-    
-    fila1.fim = fila2.fim = fila3.fim = fila4.fim =  fila5.fim =  NULL; 
+	fila1.inicio = fila2.inicio = fila3.inicio = fila4.inicio =  fila5.inicio =  NULL;
 
-    Aluno aluno;
-    
-    aluno.matricula = 111;
-    strcpy(aluno.nome, "joao");
-    aluno.idade = 15;
-    aluno.ano_escolar = 5;
+	fila1.fim = fila2.fim = fila3.fim = fila4.fim =  fila5.fim =  NULL;
 
-    inserirAluno(&fila_alunos, aluno);
+	Aluno aluno;
+	int op;
+	int matricula;
+	do
+	{
+		menu();
+		scanf("%d", &op);
 
-    aluno.matricula = 222;
-    strcpy(aluno.nome, "jose");
-    aluno.idade = 15;
-    aluno.ano_escolar = 6;
-    
-    inserirAluno(&fila_alunos, aluno);
+		switch (op)
+		{
+		case 0:
+			break;
+		case 1:
+			matricularAlunos(&fila_alunos, &aluno);
+			inserirAluno(&fila_alunos, aluno);
+			break;
+		case 2:
+			exibirAlunos(&fila_alunos);
+			break;
+		case 3:
+			printf("\nEntre com a matricula: ");
+			scanf("%d", &matricula);
+			sairDaFila(&fila_alunos, matricula);
+			break;
+		case 4:
+			distribuirAlunos(&fila_alunos, &fila1, &fila2, &fila3, &fila4, &fila5);
+			printf("\nMostrando a fila distribuida: \n");
 
-    aluno.matricula = 333;
-    strcpy(aluno.nome, "antonio");
-    aluno.idade = 15;
-    aluno.ano_escolar = 7;
-    
-    inserirAluno(&fila_alunos, aluno);
+			printf("\n5 ano: ");
+			exibirAlunos(&fila1);
 
-    aluno.matricula = 444;
-    strcpy(aluno.nome, "marcos");
-    aluno.idade = 15;
-    aluno.ano_escolar = 8;
-    
-    inserirAluno(&fila_alunos, aluno);
+			printf("\n6 ano: ");
+			exibirAlunos(&fila2);
 
-    aluno.matricula = 555;
-    strcpy(aluno.nome, "antonio");
-    aluno.idade = 15;
-    aluno.ano_escolar = 9;
-    
-    inserirAluno(&fila_alunos, aluno);
+			printf("\n7 ano: ");
+			exibirAlunos(&fila3);
 
-    int op;
-    while (1)
-    {
-        printf("\n1 - exibir alunos\n");
-        printf("\n2 - sair da fila de acordo com a matricula\n");
-        printf("\n3 - distribuir alunos\n: ");
-        scanf("%d", &op);
+			printf("\n8 ano: ");
+			exibirAlunos(&fila4);
 
-        switch (op)
-        {
-        case 1:
-            exibirAlunos(&fila_alunos);
-            break;
-        case 2:
-            int matricula;
-            printf("\nEntre com a matricula: ");
-            scanf("%d", &matricula);
-        case 3:
-            distribuirAlunos(&fila_alunos, &fila1, &fila2, &fila3, &fila4, &fila5);
-            printf("\nMostrando a fila distribuida: \n");
+			printf("\n9 ano: ");
+			exibirAlunos(&fila5);
+			break;
 
-            printf("\n5 ano: ");
-            exibirAlunos(&fila1);
-
-            printf("\n6 ano: ");
-            exibirAlunos(&fila2);
-
-            printf("\n7 ano: ");
-            exibirAlunos(&fila3);
-
-            printf("\n8 ano: ");
-            exibirAlunos(&fila4);
-
-            printf("\n9 ano: ");
-            exibirAlunos(&fila5);
-
-        default:
-            break;
-        }
-    }
-    return 0;
+		default:
+			printf("%s\n", MSGERRO);
+			break;
+		}
+	}
+	while(op != 0);
+	return 0;
 }
