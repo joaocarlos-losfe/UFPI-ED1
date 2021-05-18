@@ -181,11 +181,12 @@ int inserir( FilaCarro *fila, Carro carro)
 
 void imprimir(FilaCarro *fila){
 	/*Função para imprimir os dados do carro que estão na fila*/
+	/*Essa função está errada!*/
   int i;
-  printf("imprimindo\n");
+  printf("Imprimindo dados da fila\n\n");
   for(i = 0; i < fila->fim; i++){
     printf("%d ",fila->carros[i].placa_carro);
-		//printf("%s",fila->carros[i].status);
+		printf("%s",fila->carros[i].status);
   }
   printf("\n");
 }
