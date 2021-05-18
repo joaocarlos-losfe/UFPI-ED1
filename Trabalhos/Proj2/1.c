@@ -22,6 +22,18 @@ o primeiro da fila.
 
 */
 
+/*
+De acordo com o enunciado, é preciso, pra sair do estacionamento, verificar se
+o carro existe no estacionamento, depois, identificar o seu lugar na fila, depois,
+desenfileirar até chegar onde está o carro e colocar os elementos, que foram
+desenfileirados, em uma fila auxiliar, e depois, remover o carro solicitado.
+Assim, termino de enfileirar os elementos restantes da a fila auxiliar, para que 
+sejam, por sua vez, retornados a fila original.
+
+muito trabalho para coisa coisa, mas, vai ser preciso.
+*/
+
+
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -53,6 +65,7 @@ int cadastro(Carro *carro);
 void imprimir(FilaCarro *fila);
 int filaVazia(FilaCarro *fila);
 
+/*
 int remover(FilaCarro *fila, Carro carro){
 	int c,i;
 	if(filaVazia(fila) != 0){
@@ -63,7 +76,7 @@ int remover(FilaCarro *fila, Carro carro){
 		fila->fim--;
 	}
 	return c;
-}
+}*/
 
 int main(int argc, char *argv[])
 {
@@ -73,7 +86,7 @@ int main(int argc, char *argv[])
 	do{
 		menu();
 		scanf("%d",&op);
-		if(op == 0) exit(1);
+		if(op == 0) exit(1); /*Se op == 0 o programa encerra*/
 		else{
 			int r = cadastro(&carro);
 			if(r == 1)
@@ -106,26 +119,33 @@ int cadastro(Carro *carro)
 	printf("Entrar(e)	ou	Sair(s) :: ");
 	scanf("%s",carro->status);
 	printf("\n");
+	/*
+	Aqui é feito essa comparação para que eu saiba se o carro vai sair ou não.
+	Preciso saber disso pela forma que o enunciado foi feito, assim, na main é
+	importante saber se o carro vai sair(ret = 0) ou entrar(ret = 1)
+	*/
 	if(strcmp(carro->status,"e") == 0) ret = 1;
 	return ret;
 }
 
 int inserir( FilaCarro *fila, Carro carro)
 {
+
 	int s = 0;
 	if(fila->fim == NCARRO)
   {
-		s = -1;
+		s = -1; /*Se a fila estiver cheia*/
 	}
 	else
   {
-		fila->carros[fila->fim] = carro;
+		fila->carros[fila->fim] = carro; /*Passando os elementos para o vetor de carro na fila*/
 		fila->fim += 1;
 	}
-	return s;
+	return s; /*Se a fila não tiver cheia s = 0*/
 }
 
 void imprimir(FilaCarro *fila){
+	/*Função para imprimir os dados do carro que estão na fila*/
   int i;
   printf("imprimindo\n");
   for(i = 0; i < fila->fim; i++){
@@ -136,6 +156,7 @@ void imprimir(FilaCarro *fila){
 }
 
 int filaVazia(FilaCarro *fila){
+	/* retorna 1 se a fila não for vazia e 0 se for vazia*/
 	int vazio = 1;
 	if(fila->fim == 0) vazio = 0;
 	return vazio;
