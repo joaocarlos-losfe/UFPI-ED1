@@ -61,30 +61,32 @@ typedef struct
 }FilaCarro;
 
 int inserir(FilaCarro *fila, Carro carro);
-int cadastro(Carro *carro);
+int cadastro(Carro *carro,int placa, char status[]);
 void imprimir(FilaCarro *fila);
 int filaVazia(FilaCarro *fila);
 
-/*
-int remover(FilaCarro *fila, Carro carro){
+
+int removerPlaca(FilaCarro *fila,FilaCarro *aux, Carro carro, int placa){
 	int c,i;
 	if(filaVazia(fila) != 0){
-		c = fila->carros[0];
+		//c = fila->carros[0];
 		for(i = 0; i < fila->fim; i++){
-			fila->carros[i] = fila->carros[i+1];
+			if(placa == fila->carros[i].placa_carro){
+				fila->carros[i] = fila->carros[i+1];
+			}
 		}
+		inserir(aux,carro);
 		fila->fim--;
 	}
 	return c;
-}*/
+}
 
 int busca_carro(FilaCarro *fila,int placa){
-	/*
-	se a função retornar 0 é porque o carro existe na lista
-	*/
+	//se a função retornar 0 é porque o carro existe na lista
+
 	int busca;
 	for(int count = 0; count < fila->fim; count++){
-		if(placa == fila->carros[count].carro){
+		if(placa == fila->carros[count].placa_carro){
 			busca = 0;
 		}
 	}
@@ -96,13 +98,20 @@ int main(int argc, char *argv[])
 	FilaCarro fila;
 	Carro carro;
 	FilaCarro auxiliar; /*Fila auxiliar para a saida dos carros*/
-	int op;
+	int op,placa;
+	char status[1];
 	do{
 		menu();
 		scanf("%d",&op);
 		if(op == 0) exit(1); /*Se op == 0 o programa encerra*/
 		else{
-			int r = cadastro(&carro);
+			printf("Cadastro de carro!\n\n");
+			printf("Placa do carro :: ");
+			scanf("%d",&placa);
+			printf("Entrar(e)	ou	Sair(s) :: ");
+			scanf("%s",status);
+			printf("\n");
+			int r = cadastro(&carro,placa,status);
 			if(r == 1)
 			{
 				if(inserir(&fila,carro) == 0) printf("Há vagas - Carro adcionado!\n");
@@ -113,7 +122,14 @@ int main(int argc, char *argv[])
 				if(filaVazia(&fila) == 0) printf("Não há carros no estacionamento!\n");
 				else
 				{
-					//if(busca_carro(&fila,fila->)) /* essa linha ainda não foi terminada!*/
+					if(busca_carro(&fila,placa) == 0) /* essa linha ainda não foi terminada!*/
+					{
+						printf("carro encontrado!\n");
+						removerPlaca(&fila,&auxiliar,carro,placa);
+					}
+					else{
+						printf("Esse carro não foi encontrado aqui!\n");
+					}
 					/*
 					Acho que tenho que mudar a forma que leio os dados do carro.
 					Não posso passar o último elemento, pois, não qual carro que devo procurar
@@ -128,14 +144,15 @@ int main(int argc, char *argv[])
 }
 
 
-int cadastro(Carro *carro)
+int cadastro(Carro *carro,int placa, char status[])
 {
 	int ret = 0; /*Se ret = 0 é pq o carro vai sair!*/
-	printf("Cadastro de carro!\n\n");
-	printf("Placa do carro :: ");
-	scanf("%d",&carro->placa_carro);
-	printf("Entrar(e)	ou	Sair(s) :: ");
-	scanf("%s",carro->status);
+	//printf("Cadastro de carro!\n\n");
+	//printf("Placa do carro :: ");
+	carro->placa_carro = placa;
+	//printf("Entrar(e)	ou	Sair(s) :: ");
+	strcpy(carro->status,status);
+	//carro->status = status;
 	printf("\n");
 	/*
 	Aqui é feito essa comparação para que eu saiba se o carro vai sair ou não.
