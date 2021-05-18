@@ -5,132 +5,143 @@
 #include <malloc.h>
 #include <locale.h>
 
-typedef struct 
-{
-    char expressao[50][100];
-    int topo;
-
-}Expressao;
+#define max 100
 
 typedef struct 
 {
-    char operadores[50];
     int topo;
+    char expressoes[max][5];  // 100 dados com maximo de 5 caractres
 
-}Operadores;
+}PilhaExpressoes;
 
 typedef struct 
 {
-    int valores[50];
     int topo;
+    char operadores[max];
 
-}Valores;
+}PilhaOperadores;
+
+typedef struct 
+{
+    int topo;
+    int valores[max];
+
+}PilhaValores;
+
 
 void menu();
-void empilhar(char *str, Expressao *pilha);
+void extrairDadosExpressao(PilhaExpressoes *pilha_expressoes, char *strexpressao);
+bool empilharExpressoes(PilhaExpressoes *pilha_expressoes, char *strexpressao);
+void mostrarPilhaExpressoes(PilhaExpressoes *pilha_expressoes);
+
+void distribuirDados(PilhaExpressoes *pilha_expressoes, PilhaOperadores *pilha_operadores, PilhaValores *pilha_valores);
 
 int main()
 {
-    setlocale(LC_ALL,"");
+    PilhaExpressoes pilha_expressoes; pilha_expressoes.topo = 0;
+    PilhaOperadores pilha_operadores; pilha_operadores.topo = 0;
+    PilhaValores pilha_valores; pilha_valores.topo = 0;
 
-    Expressao expressao;
-    expressao.topo = 0;
+    char expressao[] = "50 + 5 * 10 / 3 + ( ( 4 + 1 ) * 2 ) + 40 - 3 * 10 + 5 * ( 4 + 1 )";
 
-    int op;
+    printf("\n%s\n", expressao);
 
-    char strexpressao[100];
+    extrairDadosExpressao(&pilha_expressoes, expressao);
+    //mostrarPilhaExpressoes(&pilha_expressoes);
 
-    do
-    {
-        menu();
-        scanf("%d", &op);
-        
-        switch (op)
-        {
-        case 1:
-            setbuf(stdin, NULL);
-            printf("\ndigite uma expressão: ");
-            scanf("%[^\n]s", strexpressao);
-            empilhar(strexpressao, &expressao);
-            break;
-        default:
-            break;
-        }
+    distribuirDados(&pilha_expressoes, &pilha_operadores, &pilha_valores);
 
-    } while (op!=0);
-    
     return 0;
 }
 
-void menu()
+void distribuirDados(PilhaExpressoes *pilha_expressoes, PilhaOperadores *pilha_operadores, PilhaValores *pilha_valores)
 {
-    printf("\n0 - sair");
-    printf("\n1 - digitar expressão");
-    printf("\n2 - mostrar expressão");
-    printf("\n3 - converter para pos fixa\n: ");
+    pilha_expressoes->topo -=1;
+
+    while (pilha_expressoes->topo >= 0)
+    {
+        switch (pilha_expressoes->expressoes[pilha_expressoes->topo][0]) // se o caractere da string ja inicia com olguma expressão
+        {
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '(':
+        case ')':
+            pilha_operadores->operadores[pilha_operadores->topo] = pilha_expressoes->expressoes[pilha_expressoes->topo][0];
+            pilha_operadores->topo+=1;
+            break;
+        
+        default:
+            pilha_valores->valores[pilha_valores->topo] = atoi(pilha_expressoes->expressoes[pilha_expressoes->topo]);
+            pilha_valores->topo+=1;
+            break;
+        }
+
+        pilha_expressoes->topo -=1;
+    }
+
+    int i=0, j = 0;
+
+    printf("\n");
+
+    char temp_str[10];
+
+    for(i= (pilha_valores->topo -1); i>=0; i--)
+    {
+        printf("%d ", pilha_valores->valores[i]);
+
+    }
+
+    printf("  ");
+    for(i= (pilha_operadores->topo -1); i>=0; i--)
+    {
+        printf("%c ", pilha_operadores->operadores[i]);
+        
+    }
 }
 
-void empilhar(char *str, Expressao *pilha)
+void extrairDadosExpressao(PilhaExpressoes *pilha_expressoes, char *strexpressao)
 {
-    char str_valor[5];
-    int i=0;
+    char temp_str[5];
+    int i, j = 0;
 
-    Operadores operadores;
-    operadores.topo = 0;
-
-    Valores valores;
-    valores.topo = 0;
-
-    while (*str!= '\0')
+    for (i=0; i<strlen(strexpressao); i++)
     {
-        if(*str != ' ')
+        if(strexpressao[i] != ' ')
         {
-            str_valor[i] = *str;
-            i++;
+            temp_str[j] = strexpressao[i];
+            j++;
         }
         else
         {
-            str_valor[i] = '\0';
-            i = 0;
-            
-            switch (str_valor[0])
-            {
-                case '+':
-                case '-':
-                case '*':
-                case '/':
-                case '(':
-                case ')': operadores.operadores[operadores.topo] = str_valor[0];
-                operadores.topo ++;
-                break;
-
-                default:
-                    valores.valores[valores.topo] = atoi(str_valor);
-                    valores.topo++;
-                break;
-            }
- 
+            temp_str[j] = '\0'; //fecha com o \0 para definir uma string
+            j = 0;
+            empilharExpressoes(pilha_expressoes, temp_str); // empilha a string temporaria
         }
-
-        ++str;
     }
-    
-    valores.valores[valores.topo] = atoi(str_valor);
-    valores.topo++;
 
-    printf("\nmostrando as expressoes...\n");
+    empilharExpressoes(pilha_expressoes, temp_str); 
+}
 
- 
-    for(i=operadores.topo -1; i>=0; i--)
+bool empilharExpressoes(PilhaExpressoes *pilha_expressoes, char *strexpressao)
+{
+    if(pilha_expressoes->topo != max)
     {
-        printf("\n%c", operadores.operadores[i]);
+        strcpy(pilha_expressoes->expressoes[pilha_expressoes->topo], strexpressao);
+        pilha_expressoes->topo++;
+        return true;
     }
 
-    printf("\nmostrando os valores...\n");
+    return false;
+}
 
-    for(i=valores.topo -1; i>=0; i--)
+void mostrarPilhaExpressoes(PilhaExpressoes *pilha_expressoes)
+{
+    int i;
+
+    for(i = (pilha_expressoes->topo - 1); i>=0; i--)
     {
-        printf("\n%d", valores.valores[i]);
+        printf("%s ", pilha_expressoes->expressoes[i]);
     }
-
 }
