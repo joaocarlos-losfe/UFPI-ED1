@@ -27,7 +27,7 @@ De acordo com o enunciado, é preciso, pra sair do estacionamento, verificar se
 o carro existe no estacionamento, depois, identificar o seu lugar na fila, depois,
 desenfileirar até chegar onde está o carro e colocar os elementos, que foram
 desenfileirados, em uma fila auxiliar, e depois, remover o carro solicitado.
-Assim, termino de enfileirar os elementos restantes da a fila auxiliar, para que 
+Assim, termino de enfileirar os elementos restantes da a fila auxiliar, para que
 sejam, por sua vez, retornados a fila original.
 
 muito trabalho para coisa coisa, mas, vai ser preciso.
@@ -78,10 +78,24 @@ int remover(FilaCarro *fila, Carro carro){
 	return c;
 }*/
 
+int busca_carro(FilaCarro *fila,int placa){
+	/*
+	se a função retornar 0 é porque o carro existe na lista
+	*/
+	int busca;
+	for(int count = 0; count < fila->fim; count++){
+		if(placa == fila->carros[count].carro){
+			busca = 0;
+		}
+	}
+	return busca;
+}
+
 int main(int argc, char *argv[])
 {
 	FilaCarro fila;
 	Carro carro;
+	FilaCarro auxiliar; /*Fila auxiliar para a saida dos carros*/
 	int op;
 	do{
 		menu();
@@ -99,7 +113,11 @@ int main(int argc, char *argv[])
 				if(filaVazia(&fila) == 0) printf("Não há carros no estacionamento!\n");
 				else
 				{
-					printf("Há carro!\n");
+					//if(busca_carro(&fila,fila->)) /* essa linha ainda não foi terminada!*/
+					/*
+					Acho que tenho que mudar a forma que leio os dados do carro.
+					Não posso passar o último elemento, pois, não qual carro que devo procurar
+					*/
 				}
 			}
 		}
