@@ -88,10 +88,10 @@ int menu()
     printf("\n 3 - Mostrar processo das filas");
     printf("\n 4 - Mostrar proximo processo que irá utilizar o processador");
     printf("\n 5 - Mostrar quantos processos tem em cada fila");
-    printf("\n 6 - mostrar quanto tempo falta para executar os processos de uma determinada fila ");
-    printf("\n 7 - mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
-    printf("\n 8 - mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
-    printf("\n 9 - mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
+    printf("\n 6 - Mostrar quanto tempo falta para executar os processos de uma determinada fila ");
+    printf("\n 7 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
+    printf("\n 8 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
+    printf("\n 9 - Mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
     printf("\n\n > ");
     scanf("%d", &op);
 
@@ -100,7 +100,6 @@ int menu()
 
 int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 {
-                //endereço do inicio
     DadosProcesso end = fila_processos->inicio;
     int contador = 0;
 
