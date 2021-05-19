@@ -53,7 +53,7 @@ int main()
 
             if(E_S == 'E' || E_S == 'e')
             {
-                if(buscar(&fila_de_carros, carro.placa) == -1) // se retorna -1, significa que n√£o encontrou
+                if(buscar(&fila_de_carros, carro.placa) == -1) // se retorna -1, significa que n„o encontrou
                 {
                     if(cadastro(&fila_de_carros, carro) == true) // retorna true se a fila ainda tem vaga
                         printf("\nCarro inserido na fila...");
@@ -102,7 +102,7 @@ bool cadastro(FilaCarro *fila_de_carros, Carro carro)
 
     if(fila_de_carros->fim == NCARRO) // verifica se a quantidade "fim" da fila √© igual ao numero de carros permitido
     {
-        return false; //n√£o √© possivel inserir mais carros
+        return false; //na„o È possivel inserir mais carros
     }
     else
     {
@@ -118,7 +118,7 @@ void imprimir(FilaCarro *fila_de_carros)
 
     for(i=0; i<fila_de_carros->fim; i++)
     {
-        printf("\n%d", fila_de_carros->carros[i].placa); // imprime os carros na posi√ß√£o da fila
+        printf("\n%d", fila_de_carros->carros[i].placa); // imprime os carros na posic„o da fila
     }
 }
 
@@ -131,12 +131,12 @@ int buscar(FilaCarro *fila_de_carros, int placa)
     {
         if(placa == fila_de_carros->carros[i].placa)
         {
-            busca = i; // guarda a posi√ß√£o do carro na fila
+            busca = i; // guarda a posiÁ„o do carro na fila
             break;
         }
     }
 
-    return busca; // se retorna -1, nenhum carro foi encontrado. se n√£o for encontrado, retorna a posi√ß√£o do carro na fila
+    return busca; // se retorna -1, nenhum carro foi encontrado. se n„o for encontrado, retorna a posi√ß√£o do carro na fila
 }
 
 void manobrar(FilaCarro *fila_de_carros, int placa, int *contador)
