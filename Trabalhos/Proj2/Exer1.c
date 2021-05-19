@@ -6,13 +6,13 @@
 
 #define NCARRO 10 //qunatidade maxima de carros permitidada na fila
 
-typedef struct 
+typedef struct
 {
     int placa;
 
 }Carro;
 
-typedef struct 
+typedef struct
 {
     int inicio, fim;
     Carro carros[NCARRO];
@@ -24,13 +24,13 @@ void menu();
 bool cadastro(FilaCarro *fila_de_carros, Carro carro);
 void imprimir(FilaCarro *fila_de_carros);
 int buscar(FilaCarro *fila_de_carros, int placa);
-void manobrar(FilaCarro *fila_de_carros, int placa);
+void manobrar(FilaCarro *fila_de_carros, int placa, int *contador);
 bool filaVazia(FilaCarro *fila_de_carros);
 bool filacheia(FilaCarro *fila_de_carros);
 
 int main()
 {
-    setlocale(LC_ALL, "Portuguese"); 
+    setlocale(LC_ALL, "Portuguese");
 
     FilaCarro fila_de_carros;
     fila_de_carros.inicio = 0;
@@ -38,6 +38,7 @@ int main()
     Carro carro;
     char E_S;
     int op;
+    int contador = 0; /* Faz a contagem dos carros para a fila auxiliar*/
     do
     {
         menu();
@@ -49,8 +50,8 @@ int main()
             scanf("%d", &carro.placa);
             printf("\nEstacionar ou Sair? E - Estacionar, S - Sair: ");
             scanf(" %c", &E_S); //Estacionar ou Sair
-            
-            if(E_S == 'E')
+
+            if(E_S == 'E' || E_S == 'e')
             {
                 if(buscar(&fila_de_carros, carro.placa) == -1) // se retorna -1, significa que não encontrou
                 {
@@ -62,14 +63,15 @@ int main()
                 else
                     printf("\nja existe um carro com essa placa na fila...");
             }
-            else if(E_S == 'S') // sair da fila
+            else if(E_S == 'S' || E_S == 's') // sair da fila
             {
                 int busca = buscar(&fila_de_carros, carro.placa);
 
                 if (busca != -1)
                 {
-                    manobrar(&fila_de_carros, carro.placa); //retira o carro da fina
+                    manobrar(&fila_de_carros, carro.placa,&contador); //retira o carro da fina
                     printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, busca+1);
+                    printf("\nPara o carro sair foi preciso manobrar %d carros\n",contador - 1);
                 }
                 else
                     printf("\ncarro não se encontra no estacionamento...");
@@ -81,9 +83,9 @@ int main()
         default:
             break;
         }
-        
+
     } while (op != 0);
-    
+
     return 0;
 }
 
@@ -97,7 +99,7 @@ void menu()
 
 bool cadastro(FilaCarro *fila_de_carros, Carro carro)
 {
-   
+
     if(fila_de_carros->fim == NCARRO) // verifica se a quantidade "fim" da fila é igual ao numero de carros permitido
     {
         return false; //não é possivel inserir mais carros
@@ -137,7 +139,7 @@ int buscar(FilaCarro *fila_de_carros, int placa)
     return busca; // se retorna -1, nenhum carro foi encontrado. se não for encontrado, retorna a posição do carro na fila
 }
 
-void manobrar(FilaCarro *fila_de_carros, int placa)
+void manobrar(FilaCarro *fila_de_carros, int placa, int *contador)
 {
     FilaCarro fila_de_carros_aux;
     fila_de_carros_aux.inicio = 0;
@@ -147,7 +149,7 @@ void manobrar(FilaCarro *fila_de_carros, int placa)
     {
         if(placa != fila_de_carros->carros[fila_de_carros->inicio].placa)
             cadastro(&fila_de_carros_aux, fila_de_carros->carros[fila_de_carros->inicio]); // move os carros temporariamente para outra fila caso a placa seja diferente
-
+            (*contador)++;
         fila_de_carros->inicio +=1; //retira o carro do inicio da fila
     }
 
@@ -159,5 +161,5 @@ void manobrar(FilaCarro *fila_de_carros, int placa)
         cadastro(fila_de_carros, fila_de_carros_aux.carros[fila_de_carros_aux.inicio]);
         fila_de_carros_aux.inicio +=1;
     }
-    
+
 }
