@@ -118,7 +118,7 @@ void imprimir(FilaCarro *fila_de_carros)
 
     for(i=0; i<fila_de_carros->fim; i++)
     {
-        printf("\n%d", fila_de_carros->carros[i]); // imprime os carros na posição da fila
+        printf("\n%d", fila_de_carros->carros[i].placa); // imprime os carros na posição da fila
     }
 }
 
