@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <malloc.h>
 
 #define alta 1
 #define media 2
@@ -34,7 +35,6 @@ void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_
 void removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
 
-
 int menu();
 
 int main()
@@ -44,7 +44,6 @@ int main()
     FilaProcessos processos_prioridade_1; processos_prioridade_1.inicio = processos_prioridade_1.fim = NULL; // alta
     FilaProcessos processos_prioridade_2; processos_prioridade_2.inicio = processos_prioridade_2.fim = NULL; // media
     FilaProcessos processos_prioridade_3; processos_prioridade_3.inicio = processos_prioridade_3.fim = NULL; // baixa
-
 
     int op;
     do
@@ -101,7 +100,18 @@ int menu()
 
 int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 {
+                //endereço do inicio
+    DadosProcesso end = fila_processos->inicio;
+    int contador = 0;
 
+    while (end != NULL)
+    {
+        contador+=1;
+
+        end = end->proximo_processo;
+    }
+    
+    return contador;
 }
 
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info)
