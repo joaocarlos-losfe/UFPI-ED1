@@ -36,7 +36,7 @@ void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_
 bool removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
 
-void debug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+void areaParaDebug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 int menu();
 
@@ -182,7 +182,7 @@ void exibirProcessos(FilaProcessos *fila_processos)
     
 }
 
-void debug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+void areaParaDebug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
     ProcessoInfo processo;
 
