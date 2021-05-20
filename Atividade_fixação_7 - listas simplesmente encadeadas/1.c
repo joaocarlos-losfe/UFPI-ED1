@@ -10,7 +10,7 @@ void menu(){
   printf("0 - Sair\n");
   printf("1 - Inserir no final\n");
   printf("2 - Imprimir Normal\n");
-  //printf("3 - Imprimir Invertido\n");
+  printf("3 - Imprimir Invertido\n");
   printf("4 - Soma dos elementos pares\n");
   printf("5 - Multiplos de 3 menores que 60\n");
   printf("6 - Remova um elemento\n");
@@ -33,11 +33,13 @@ void imprimir(Lista *lista);
 int somaDosParesIter(Lista *lista);
 int prodMulti3Iter(Lista *lista);
 int remover(Lista *lista, int numero);
+void imprimir_lista_inverso (No *aux);
 
 int main(int argc, char *argv[]){
 	Lista lista;
 	lista.inicio = NULL;
 	lista.tam = 0;
+  No *inicio = lista.inicio;
 	int op,valor;
 	do{
     menu();
@@ -52,6 +54,9 @@ int main(int argc, char *argv[]){
         break;
       case 2:
         imprimir(&lista);
+        break;
+      case 3:
+        imprimir_lista_inverso(lista.inicio);
         break;
       case 4:
         printf("Soma dos elementos pares (Iterativa)= %d\n",somaDosParesIter(&lista));
@@ -77,6 +82,8 @@ int main(int argc, char *argv[]){
 
 	return 0;
 }
+
+
 
 int remover(Lista *lista, int numero)
 {
@@ -171,14 +178,23 @@ void inserirFinal(Lista *lista, int valor){
 	}
 	lista->tam++;
 }
+
+void imprimir_lista_inverso (No *aux)
+{
+    if(aux == NULL)
+        return;
+    imprimir_lista_inverso(aux->proximo);
+    printf ("Dado = %d\n", aux->valor);
+}
+
 // imprimir elementos na lista
 void imprimir(Lista *lista){
 	No *inicio = lista->inicio;
+  imprimir_lista_inverso(inicio);
 	printf("Tamanho da lista: %d\n",lista->tam);
 	while(inicio != NULL){
 		printf("%d ", inicio->valor);
-		inicio = inicio->proximo;
+    inicio = inicio->proximo;
 	}
 	printf("\n\n");
-
 }
