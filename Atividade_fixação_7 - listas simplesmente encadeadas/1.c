@@ -1,8 +1,3 @@
-/*
-playlist boa sobre lista
-https://www.youtube.com/watch?v=biTMaMxWLRc&list=PLqJK4Oyr5WSgPpLg-lZJfJZN0DQ5bwrfP&index=1
-*/
-
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -14,7 +9,7 @@ void menu(){
   printf("4 - Soma dos elementos pares\n");
   printf("5 - Multiplos de 3 menores que 60\n");
   printf("6 - Remova um elemento\n");
-  //printf("7 - Alterar um número\n");
+  printf("7 - Alterar um número\n");
 }
 
 typedef struct No{
@@ -34,13 +29,14 @@ int somaDosParesIter(Lista *lista);
 int prodMulti3Iter(Lista *lista);
 int remover(Lista *lista, int numero);
 void imprimir_lista_inverso (No *aux);
+int alterar(Lista *lista, int numero,int n_alterar);
 
 int main(int argc, char *argv[]){
 	Lista lista;
 	lista.inicio = NULL;
 	lista.tam = 0;
   No *inicio = lista.inicio;
-	int op,valor;
+	int op,valor,numero_alterar,numero;
 	do{
     menu();
 		scanf("%d",&op);
@@ -66,13 +62,25 @@ int main(int argc, char *argv[]){
         break;
       case 6:
         printf("Digite um número para remover: ");
-        int numero;
+        //int numero;
         scanf("%d",&numero);
         if(remover(&lista,numero) == 0){
           printf("Elemento não encontrado!\n");
         }
         else{
           printf("%d foi removido!\n",numero);
+        }
+        break;
+      case 7:
+        printf("Numero para alterar: ");
+        scanf("%d",&numero);
+        printf("Numero para botar no lugar: ");
+        scanf("%d",&numero_alterar);
+        if(alterar(&lista,numero,numero_alterar)){
+          printf("Elemento não encontrado\n");
+        }
+        else{
+          printf("%d foi alterado por %d");
         }
         break;
       default:
@@ -83,7 +91,31 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-
+int alterar(Lista *lista, int numero,int n_alterar)
+{
+  No *inicio = lista->inicio;
+  No *ptr, *antes;
+  int status;
+  if(inicio == NULL){
+    status = 0;
+  }
+  else{
+    ptr = inicio;
+    antes = inicio;
+    while(ptr != NULL)
+    {
+      if(ptr->valor == numero) // achei o numero pra remover
+      {
+          ptr->valor = n_alterar;
+      }
+      else{
+        antes = ptr;
+        ptr = ptr->proximo;
+      }
+    }
+  }
+  return status; // retorna 0 se n achar
+}
 
 int remover(Lista *lista, int numero)
 {
