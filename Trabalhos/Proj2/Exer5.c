@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <malloc.h>
+#include <stdbool.h>
 
 #define alta 1
 #define media 2
@@ -32,7 +33,7 @@ typedef struct
 
 int numeroDeProcessoNaFila(FilaProcessos *fila_processos);
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info);
-void removerProcessoDaFila(FilaProcessos *fila_processos);
+bool removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
 
 int menu();
@@ -44,6 +45,16 @@ int main()
     FilaProcessos processos_prioridade_1; processos_prioridade_1.inicio = processos_prioridade_1.fim = NULL; // alta
     FilaProcessos processos_prioridade_2; processos_prioridade_2.inicio = processos_prioridade_2.fim = NULL; // media
     FilaProcessos processos_prioridade_3; processos_prioridade_3.inicio = processos_prioridade_3.fim = NULL; // baixa
+
+    ProcessoInfo processo;
+
+    processo.numero_processo = 111;
+    processo.tempo_processamento = 5;
+    processo.prioridade = alta;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(&processos_prioridade_1, processo);
+    /*
 
     int op;
     do
@@ -75,6 +86,8 @@ int main()
         }
     
     }while (op!=0);
+
+    */
     
     return 0;
 }
@@ -115,15 +128,58 @@ int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info)
 {
+    DadosProcesso novo_processo = (DadosProcesso) malloc(sizeof(Processo));
+    novo_processo->processo = processo_info;
+    novo_processo->proximo_processo = NULL;
 
+    if(fila_processos->inicio == NULL)
+        fila_processos->inicio = novo_processo;
+    else
+        fila_processos ->fim->proximo_processo = novo_processo;
+    
+    fila_processos ->fim = novo_processo;
 }
 
-void removerProcessoDaFila(FilaProcessos *fila_processos)
+bool removerProcessoDaFila(FilaProcessos *fila_processos)
 {
+    if(fila_processos->inicio == NULL)
+        return false; // fila vazia
+    DadosProcesso apagar_processo = fila_processos ->inicio;
 
+    fila_processos->inicio = fila_processos->inicio->proximo_processo;
+
+    free(apagar_processo);
+
+    if(fila_processos->inicio == NULL) 
+        fila_processos->fim = NULL;
+    
+    return true; // processo removido do inicio da fila com sucesso
 }
 
 void exibirProcessos(FilaProcessos *fila_processos)
-{
+{   
+                //edereço  do primeiro elemento da fila
+    DadosProcesso end = fila_processos->inicio;
 
+    int n_processo = 1;
+
+    while (end != NULL)
+    {
+        printf("\nprocesso %d: \n", n_processo);
+
+        printf("\nNumero: %d", end->processo.numero_processo);
+        printf("\nTempo: %d", end->processo.tempo_processamento);
+        printf("\nPrioridade: %d ", end->processo.prioridade);
+        if(end->processo.prioridade == alta)
+            printf("(alta)");
+        else if (end->processo.prioridade == media)
+            printf("(media)");
+        else if (end->processo.prioridade == baixa)
+            printf("(baixa)");
+
+        printf("\nquantidade de vezes que passou na fila: %d", end->processo.numero_processo);
+      
+        end = end->proximo_processo;
+    }
+    
 }
