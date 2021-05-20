@@ -36,6 +36,8 @@ void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_
 bool removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
 
+void debug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+
 int menu();
 
 int main()
@@ -46,88 +48,8 @@ int main()
     FilaProcessos processos_prioridade_2; processos_prioridade_2.inicio = processos_prioridade_2.fim = NULL; // media
     FilaProcessos processos_prioridade_3; processos_prioridade_3.inicio = processos_prioridade_3.fim = NULL; // baixa
 
-    ProcessoInfo processo;
 
-    //dados para debug 
-
-    // fila de processos 1
-    processo.numero_processo = 1;
-    processo.tempo_processamento = 5;
-    processo.prioridade = alta;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_1, processo);
-
-    processo.numero_processo = 2;
-    processo.tempo_processamento = 2;
-    processo.prioridade = alta;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_1, processo);
-
-    processo.numero_processo = 3;
-    processo.tempo_processamento = 3;
-    processo.prioridade = alta;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_1, processo);
-
-
-    // fila de processos 2
-    processo.numero_processo = 11;
-    processo.tempo_processamento = 4;
-    processo.prioridade = media;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_2, processo);
-
-    processo.numero_processo = 22;
-    processo.tempo_processamento = 1;
-    processo.prioridade = media;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_2, processo);
-
-    processo.numero_processo = 33;
-    processo.tempo_processamento = 2;
-    processo.prioridade = media;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_2, processo);
-
-    // fila de processos 3
-    processo.numero_processo = 1111;
-    processo.tempo_processamento = 5;
-    processo.prioridade = baixa;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_3, processo);
-
-    processo.numero_processo = 2222;
-    processo.tempo_processamento = 2;
-    processo.prioridade = baixa;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_3, processo);
-
-    processo.numero_processo = 3333;
-    processo.tempo_processamento = 3;
-    processo.prioridade = baixa;
-    processo.qtd_vezes_passou_na_fila = 0;
-
-    inserirProcessoNaFila(&processos_prioridade_3, processo);
-
-    //exibindos os processos
-
-    printf("\nFila processos 1 (alta)\n");
-    exibirProcessos(&processos_prioridade_1);
-
-    printf("\nFila processos 2 (media)\n");
-    exibirProcessos(&processos_prioridade_2);
-
-    printf("\nFila processos 3 (baixa)\n");
-    exibirProcessos(&processos_prioridade_3);
-
+    debug(&processos_prioridade_1, &processos_prioridade_2, &processos_prioridade_3);
     
     /*
 
@@ -258,4 +180,87 @@ void exibirProcessos(FilaProcessos *fila_processos)
         n_processo++;
     }
     
+}
+
+void debug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    ProcessoInfo processo;
+
+    processo.numero_processo = 1;
+    processo.tempo_processamento = 5;
+    processo.prioridade = alta;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_1, processo);
+
+    processo.numero_processo = 2;
+    processo.tempo_processamento = 2;
+    processo.prioridade = alta;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_1, processo);
+
+    processo.numero_processo = 3;
+    processo.tempo_processamento = 3;
+    processo.prioridade = alta;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_1, processo);
+
+
+    // fila de processos 2
+    processo.numero_processo = 11;
+    processo.tempo_processamento = 4;
+    processo.prioridade = media;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_2, processo);
+
+    processo.numero_processo = 22;
+    processo.tempo_processamento = 1;
+    processo.prioridade = media;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_2, processo);
+
+    processo.numero_processo = 33;
+    processo.tempo_processamento = 2;
+    processo.prioridade = media;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_2, processo);
+
+
+    // fila de processos 3
+    processo.numero_processo = 1111;
+    processo.tempo_processamento = 5;
+    processo.prioridade = baixa;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_3, processo);
+
+    processo.numero_processo = 2222;
+    processo.tempo_processamento = 2;
+    processo.prioridade = baixa;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_3, processo);
+
+    processo.numero_processo = 3333;
+    processo.tempo_processamento = 3;
+    processo.prioridade = baixa;
+    processo.qtd_vezes_passou_na_fila = 0;
+
+    inserirProcessoNaFila(processos_prioridade_3, processo);
+
+    //exibindos os processos
+
+    printf("\nFila processos 1 (alta)\n");
+    exibirProcessos(processos_prioridade_1);
+
+    printf("\nFila processos 2 (media)\n");
+    exibirProcessos(processos_prioridade_2);
+
+    printf("\nFila processos 3 (baixa)\n");
+    exibirProcessos(processos_prioridade_3);
 }
