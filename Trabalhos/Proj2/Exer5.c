@@ -8,7 +8,7 @@
 #define media 2
 #define baixa 3
 
-typedef struct
+typedef struct 
 {
     int numero_processo;
     int tempo_processamento;
@@ -35,6 +35,7 @@ int numeroDeProcessoNaFila(FilaProcessos *fila_processos);
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info);
 bool removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
+void executarProcesso(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 void areaParaDebug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
@@ -50,7 +51,7 @@ int main()
 
 
     areaParaDebug(&processos_prioridade_1, &processos_prioridade_2, &processos_prioridade_3);
-
+    
     /*
 
     int op;
@@ -77,15 +78,15 @@ int main()
         case 8:
             break;
         case 9:
-            break;
+            break;        
         default:
             break;
         }
-
+    
     }while (op!=0);
 
     */
-
+    
     return 0;
 }
 
@@ -94,9 +95,9 @@ int menu()
     int op;
     printf("\n 0 - Sair");
     printf("\n 1 - Inserir processo na fila");
-    printf("\n 2 - Escolher processo");
+    printf("\n 2 - Executar processo");
     printf("\n 3 - Mostrar processo das filas");
-    printf("\n 4 - Mostrar proximo processo que irï¿½ utilizar o processador");
+    printf("\n 4 - Mostrar proximo processo que irá utilizar o processador");
     printf("\n 5 - Mostrar quantos processos tem em cada fila");
     printf("\n 6 - Mostrar quanto tempo falta para executar os processos de uma determinada fila ");
     printf("\n 7 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
@@ -119,7 +120,7 @@ int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 
         end = end->proximo_processo;
     }
-
+    
     return contador;
 }
 
@@ -133,75 +134,124 @@ void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_
         fila_processos->inicio = novo_processo;
     else
         fila_processos ->fim->proximo_processo = novo_processo;
-
+    
     fila_processos ->fim = novo_processo;
 }
 
 bool removerProcessoDaFila(FilaProcessos *fila_processos)
 {
     if(fila_processos->inicio == NULL)
+    {
+        printf("Fila vazia...");
         return false; // fila vazia
+    }
+        
     DadosProcesso apagar_processo = fila_processos ->inicio;
 
     fila_processos->inicio = fila_processos->inicio->proximo_processo;
 
     free(apagar_processo);
 
-    if(fila_processos->inicio == NULL)
+    if(fila_processos->inicio == NULL) 
         fila_processos->fim = NULL;
-
+    
     return true; // processo removido do inicio da fila com sucesso
 }
 
 void exibirProcessos(FilaProcessos *fila_processos)
-{
-                //edereï¿½o  do primeiro elemento da fila
+{   
+                //edereço  do primeiro elemento da fila
     DadosProcesso end = fila_processos->inicio;
 
-    int n_processo = 1;
-
-    while (end != NULL)
+    if(end != NULL)
     {
-        printf("\nprocesso %d: \n", n_processo);
+        int n_processo = 1;
 
-        printf("\nNumero: %d", end->processo.numero_processo);
-        printf("\nTempo: %d", end->processo.tempo_processamento);
-        printf("\nPrioridade: %d ", end->processo.prioridade);
-        if(end->processo.prioridade == alta)
-            printf("(alta)");
-        else if (end->processo.prioridade == media)
-            printf("(media)");
-        else if (end->processo.prioridade == baixa)
-            printf("(baixa)");
+        while (end != NULL)
+        {
+            printf("\nprocesso %d: \n", n_processo);
 
-        printf("\nquantidade de vezes que passou na fila: %d\n", end->processo.qtd_vezes_passou_na_fila);
+            printf("\nNumero: %d", end->processo.numero_processo);
+            printf("\nTempo: %d", end->processo.tempo_processamento);
+            printf("\nPrioridade: %d ", end->processo.prioridade);
+            if(end->processo.prioridade == alta)
+                printf("(alta)");
+            else if (end->processo.prioridade == media)
+                printf("(media)");
+            else if (end->processo.prioridade == baixa)
+                printf("(baixa)");
 
-        end = end->proximo_processo;
-        n_processo++;
+            printf("\nquantidade de vezes que passou na fila: %d\n", end->processo.qtd_vezes_passou_na_fila);
+        
+            end = end->proximo_processo;
+            n_processo++;
+        }
+    }
+    else
+        printf("\nfila vazia...");
+    
+}
+
+void executarProcesso(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    if (numeroDeProcessoNaFila(processos_prioridade_1) != 0)
+    {
+        processos_prioridade_1->inicio->processo.qtd_vezes_passou_na_fila+=1;
+        processos_prioridade_1->inicio->processo.tempo_processamento -= 1;
+
+        if(processos_prioridade_1->inicio->processo.tempo_processamento == 0)
+        {
+            removerProcessoDaFila(processos_prioridade_1);
+            printf("\n executando e removendo processo pq o tempo ja acabou: 0s");
+        }
+        else
+        {
+            if(processos_prioridade_1->inicio->processo.qtd_vezes_passou_na_fila == 1)
+            {
+                printf("\n inserindo processo %d no final da mesma fila e removendo do inicio. tempo usado: %d, qtd de vezes que foi executado: %d", processos_prioridade_1->inicio->processo.numero_processo, processos_prioridade_1->inicio->processo.tempo_processamento, processos_prioridade_1->inicio->processo.qtd_vezes_passou_na_fila);
+                inserirProcessoNaFila(processos_prioridade_1, processos_prioridade_1->inicio->processo);
+                removerProcessoDaFila(processos_prioridade_1);
+            }
+            else
+            {
+                printf("\n inserindo processo %d na fila de prioridade 2 por ja ter executado 2 vezes na mesma fila e removendo do inicio. tempo usado: %d, qtd de vezes que foi executado: %d", processos_prioridade_1->inicio->processo.numero_processo, processos_prioridade_1->inicio->processo.tempo_processamento, processos_prioridade_1->inicio->processo.qtd_vezes_passou_na_fila);
+                processos_prioridade_1->inicio->processo.prioridade = media;
+                processos_prioridade_1->inicio->processo.qtd_vezes_passou_na_fila = 0;
+                
+                inserirProcessoNaFila(processos_prioridade_2, processos_prioridade_1->inicio->processo);
+                removerProcessoDaFila(processos_prioridade_1);
+            }
+        }
+        
+    }
+    else
+    {
+        printf("\nFila de prioridade alta vazia...\n");
     }
 
 }
+
 
 void areaParaDebug(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
     ProcessoInfo processo;
 
-    processo.numero_processo = 1;
-    processo.tempo_processamento = 5;
+    processo.numero_processo = 1; 
+    processo.tempo_processamento = 3; // 1, 
     processo.prioridade = alta;
-    processo.qtd_vezes_passou_na_fila = 0;
+    processo.qtd_vezes_passou_na_fila = 0; //1
 
     inserirProcessoNaFila(processos_prioridade_1, processo);
 
     processo.numero_processo = 2;
-    processo.tempo_processamento = 2;
+    processo.tempo_processamento = 1;
     processo.prioridade = alta;
     processo.qtd_vezes_passou_na_fila = 0;
 
     inserirProcessoNaFila(processos_prioridade_1, processo);
 
     processo.numero_processo = 3;
-    processo.tempo_processamento = 3;
+    processo.tempo_processamento = 1;
     processo.prioridade = alta;
     processo.qtd_vezes_passou_na_fila = 0;
 
@@ -255,12 +305,13 @@ void areaParaDebug(FilaProcessos *processos_prioridade_1, FilaProcessos *process
 
     //exibindos os processos
 
-    printf("\nFila processos 1 (alta)\n");
-    exibirProcessos(processos_prioridade_1);
+    printf("\nExecutando...");
+    
+    while (processos_prioridade_1->inicio != NULL)
+    {
+        executarProcesso(processos_prioridade_1, processos_prioridade_2, processos_prioridade_3);
+    }
 
-    printf("\nFila processos 2 (media)\n");
-    exibirProcessos(processos_prioridade_2);
-
-    printf("\nFila processos 3 (baixa)\n");
-    exibirProcessos(processos_prioridade_3);
+    exibirProcessos(processos_prioridade_1);    
+   
 }
