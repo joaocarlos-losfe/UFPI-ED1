@@ -31,6 +31,10 @@ int remover(Lista *lista, int numero);
 void imprimir_lista_inverso (No *aux);
 int alterar(Lista *lista, int numero,int n_alterar);
 
+int somaDosParesRec(Lista *lista){
+    if(lista != NULL) return somaDosParesRec(lista->proximo) + (lista->valor % 2 == 0? lista->valor : 0);
+}
+
 int main(int argc, char *argv[]){
 	Lista lista;
 	lista.inicio = NULL;
@@ -176,10 +180,6 @@ int prodMulti3Iter(Lista *lista){
     inicio = inicio->proximo;
   }
   return produto;
-}
-
-int somaDosParesRec(Lista *lista,int soma){
-  /*Ainda não feita!*/
 }
 
 //inserir elementos sempre no inicio da lista
