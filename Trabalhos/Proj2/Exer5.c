@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define alta 1
 #define media 2
@@ -22,12 +23,12 @@ typedef struct aux
 	ProcessoInfo processo;
 	struct aux* proximo_processo;
 
-}Processo,  *DadosProcesso;
+}Processo,  *PontProcesso; // mesma coisa que Processo*
 
 typedef struct
 {
-	DadosProcesso inicio;
-	DadosProcesso fim;
+	PontProcesso inicio;
+	PontProcesso fim;
 
 }FilaProcessos;
 
@@ -39,9 +40,10 @@ void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
 void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3);
 void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void proximoProcesso(FilaProcessos *fila_processos);
+void mostrarQuantosProcessosTemEmcadaFila(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 void areaParaDebug(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
-int rand();
+int randomizar();
 
 void menu();
 void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
@@ -80,6 +82,9 @@ int main()
         case 4:
             proximosProcessos(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
+        case 5:
+            mostrarQuantosProcessosTemEmcadaFila(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            break;
         default:
             break;
         }
@@ -88,6 +93,13 @@ int main()
     
     return 0;
     
+}
+
+void mostrarQuantosProcessosTemEmcadaFila(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    printf("\n Quantidade de processos com prioridade 1 (alta): %d", numeroDeProcessoNaFila(processos_prioridade_1));
+    printf("\n Quantidade de processos com prioridade 2 (media): %d", numeroDeProcessoNaFila(processos_prioridade_2));
+    printf("\n Quantidade de processos com prioridade 3 (baixa): %d\n", numeroDeProcessoNaFila(processos_prioridade_3));
 }
 
 void proximoProcesso(FilaProcessos *fila_processos)
@@ -197,7 +209,7 @@ void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
     ProcessoInfo processo;
 
     printf("\n Inserindo processo...\n");
-    processo.numero_processo = randomizar(100, 9999);
+    processo.numero_processo = randomizar();
     printf("\n Defina uma prioridade: 1 - alta, 2 - média, 3 - baixa: ");
     scanf("%d", &processo.prioridade);
     printf("\n Defina um tempo de processamento: ");
@@ -226,18 +238,16 @@ void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
 
 }
 
-int randomizar(int inicio_intervalo, int fim_intervalo)
+int randomizar()
 {
     int valor;
-    srand((unsigned) time(NULL));
-    valor = inicio_intervalo + (rand()) % fim_intervalo;
-
+    srand(time(NULL));
+    valor = rand() % 99999;
     return valor;
 }
 
 void menu()
 {
-    int op;
     printf("\n 0 - Sair");
     printf("\n 1 - Inserir processo na fila");
     printf("\n 2 - Executar processo");
@@ -254,7 +264,7 @@ void menu()
 
 int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 {
-    DadosProcesso end = fila_processos->inicio;
+    PontProcesso end = fila_processos->inicio;
     int contador = 0;
 
     while (end != NULL)
@@ -269,7 +279,7 @@ int numeroDeProcessoNaFila(FilaProcessos *fila_processos)
 
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info)
 {
-    DadosProcesso novo_processo = (DadosProcesso) malloc(sizeof(Processo));
+    PontProcesso novo_processo = (PontProcesso) malloc(sizeof(Processo));
     novo_processo->processo = processo_info;
     novo_processo->proximo_processo = NULL;
 
@@ -289,7 +299,7 @@ bool removerProcessoDaFila(FilaProcessos *fila_processos)
         return false; // fila vazia
     }
         
-    DadosProcesso apagar_processo = fila_processos ->inicio;
+    PontProcesso apagar_processo = fila_processos ->inicio;
 
     fila_processos->inicio = fila_processos->inicio->proximo_processo;
 
@@ -304,7 +314,7 @@ bool removerProcessoDaFila(FilaProcessos *fila_processos)
 void exibirProcessos(FilaProcessos *fila_processos)
 {   
                 //edereço  do primeiro elemento da fila
-    DadosProcesso end = fila_processos->inicio;
+    PontProcesso end = fila_processos->inicio;
 
     if(end != NULL)
     {
