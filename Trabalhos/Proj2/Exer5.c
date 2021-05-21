@@ -37,6 +37,8 @@ bool removerProcessoDaFila(FilaProcessos *fila_processos);
 void exibirProcessos(FilaProcessos *fila_processos);
 void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *fila_de_processos_nivel_abaixo);
 void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3);
+void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+void proximoProcesso(FilaProcessos *fila_processos);
 
 void areaParaDebug(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 int rand();
@@ -75,7 +77,9 @@ int main()
         case 3:
             exibirListadeprocessosDefinida(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
-
+        case 4:
+            proximosProcessos(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            break;
         default:
             break;
         }
@@ -84,6 +88,37 @@ int main()
     
     return 0;
     
+}
+
+void proximoProcesso(FilaProcessos *fila_processos)
+{
+    if (numeroDeProcessoNaFila(fila_processos) != 0)
+    {
+        printf("\n Numero: %d", fila_processos->inicio->processo.numero_processo);
+        printf("\n Tempo: %d", fila_processos->inicio->processo.tempo_processamento);
+        printf("\n Prioridade: %d ", fila_processos->inicio->processo.prioridade);
+        if(fila_processos->inicio->processo.prioridade == alta)
+            printf("(alta)");
+        else if (fila_processos->inicio->processo.prioridade == media)
+            printf("(media)");
+        else if (fila_processos->inicio->processo.prioridade == baixa)
+            printf("(baixa)");
+    }
+    else
+        printf("Lista de processos vazia...");
+    
+}
+
+void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    printf("\n Proximo processo esperado a ser executado da fila de prioridade alta: ");
+    proximoProcesso(processos_prioridade_1);
+
+    printf("\n\n Proximo processo esperado a ser executado da fila de prioridade media: ");
+    proximoProcesso(processos_prioridade_2);
+
+    printf("\n\n Proximo processo esperado a ser executado da fila de prioridade baixa: ");
+    proximoProcesso(processos_prioridade_3);
 }
 
 void filaProcessoParaExecutar(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
