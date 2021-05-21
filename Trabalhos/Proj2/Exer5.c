@@ -123,13 +123,13 @@ void proximoProcesso(FilaProcessos *fila_processos)
 
 void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
-    printf("\n Proximo processo esperado a ser executado da fila de prioridade alta: ");
+    printf("\n Proximo processo esperado a ser executado da fila de prioridade Alta: ");
     proximoProcesso(processos_prioridade_1);
 
-    printf("\n\n Proximo processo esperado a ser executado da fila de prioridade media: ");
+    printf("\n\n Media: ");
     proximoProcesso(processos_prioridade_2);
 
-    printf("\n\n Proximo processo esperado a ser executado da fila de prioridade baixa: ");
+    printf("\n\n Baixa: ");
     proximoProcesso(processos_prioridade_3);
 }
 
@@ -191,10 +191,10 @@ void exibirListadeprocessosDefinida(FilaProcessos *fila_de_processos_maior_prior
         printf("\n Processos com prioridade alta: ");
         exibirProcessos(fila_de_processos_maior_prioridade);
 
-        printf("\n Processos com prioridade baixa: ");
+        printf("\n Processos com prioridade media: ");
         exibirProcessos(processos_prioridade_2);
 
-        printf("\n Processos com prioridade media: ");
+        printf("\n Processos com prioridade baixa: ");
         exibirProcessos(processos_prioridade_3);
 
         break;
@@ -393,9 +393,7 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
 
     if (numeroDeProcessoNaFila(processos_prioridade_3) != 0)
     {
-        processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila+=1;
-        processos_prioridade_3->inicio->processo.tempo_processamento -= 1;
-
+        
         if(processos_prioridade_3->inicio->processo.tempo_processamento == 0)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
@@ -404,6 +402,12 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
             inserirProcessoNaFila(processos_prioridade_3, processo);
+        }
+
+        if (numeroDeProcessoNaFila(processos_prioridade_3) != 0)
+        {
+            processos_prioridade_3->inicio->processo.tempo_processamento -= 1;
+            processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila +=1;
         }
     }
     else
