@@ -41,6 +41,8 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3);
 void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void proximoProcesso(FilaProcessos *fila_processos);
 void mostrarQuantosProcessosTemEmcadaFila(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+int tempoRestanteParaFinalizarFila(FilaProcessos *fila_processos);
+void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 void areaParaDebug(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 int randomizar();
@@ -48,8 +50,9 @@ int randomizar();
 void menu();
 void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void exibirListadeprocessosDefinida(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
-void filaProcessoParaExecutar(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
-
+void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+int tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 int main()
 {
@@ -59,9 +62,8 @@ int main()
     FilaProcessos processos_prioridade_2; processos_prioridade_2.inicio = processos_prioridade_2.fim = NULL; // media
     FilaProcessos processos_prioridade_3; processos_prioridade_3.inicio = processos_prioridade_3.fim = NULL; // baixa
 
-    //areaParaDebug(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+    areaParaDebug(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
 
-    
     int op;
     do
     {
@@ -74,7 +76,7 @@ int main()
             cadastroProcesso(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         case 2:
-            filaProcessoParaExecutar(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            filaProcessoParaExecutarMenu(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         case 3:
             exibirListadeprocessosDefinida(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
@@ -85,6 +87,14 @@ int main()
         case 5:
             mostrarQuantosProcessosTemEmcadaFila(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
+        case 6:
+            tempoRestanteFilasMenu(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            break;
+        case 7:
+            break;
+        case 8:
+            processamentoRestanteTodasAsfilas(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            break;
         default:
             break;
         }
@@ -93,6 +103,64 @@ int main()
     
     return 0;
     
+}
+
+void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    printf("\n Tempo restante fila prioridade alta: %d segundos", tempoRestanteParaFinalizarFila(fila_de_processos_maior_prioridade));
+    printf("\n Tempo restante fila prioridade media: %d segundos", tempoRestanteParaFinalizarFila(processos_prioridade_2));
+    printf("\n Tempo restante fila prioridade baixa: %d segundos\n", tempoRestanteParaFinalizarFila(processos_prioridade_3));
+
+    int soma_tempo_todas_as_filas = tempoRestanteParaFinalizarFila(fila_de_processos_maior_prioridade) + 
+                                    tempoRestanteParaFinalizarFila(processos_prioridade_2) + 
+                                    tempoRestanteParaFinalizarFila(processos_prioridade_3);
+
+    printf(" Tempo de processamento ainda restam para terminar todas as filas: %d\n", soma_tempo_todas_as_filas);
+}
+
+int tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+{
+    int op;
+
+    printf("\n Selecione a fila para ver o tempo restante dos processos: \n");
+    printf("\n 1 - Fila de prioridade Alta");
+    printf("\n 2 - Fila de prioridade Media");
+    printf("\n 3 - Fila de prioridade Baixa\n\n > ");
+    scanf("%d", &op);
+
+    int tempo;
+
+    switch (op)
+    {
+    case 1:
+        tempo = tempoRestanteParaFinalizarFila(fila_de_processos_maior_prioridade);
+        break;
+    case 2:
+        tempo = tempoRestanteParaFinalizarFila(processos_prioridade_2);
+        break;
+    case 3:
+        tempo = tempoRestanteParaFinalizarFila(processos_prioridade_3);
+        break;
+    default:
+        break;
+    }
+
+    printf("\n Tempo restante: %d segundos\n", tempo);
+}
+
+
+int tempoRestanteParaFinalizarFila(FilaProcessos *fila_processos)
+{
+    PontProcesso end = fila_processos->inicio;
+    int tempo = 0;
+
+    while (end != NULL)
+    {
+        tempo = tempo + end->processo.tempo_processamento;
+
+        end = end->proximo_processo;
+    }
+    return tempo;
 }
 
 void mostrarQuantosProcessosTemEmcadaFila(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
@@ -123,17 +191,18 @@ void proximoProcesso(FilaProcessos *fila_processos)
 
 void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
-    printf("\n Proximo processo esperado a ser executado da fila de prioridade Alta: ");
+    printf("\n Proximo processo esperado a ser executado da fila de prioridade\n Alta: ");
     proximoProcesso(processos_prioridade_1);
 
-    printf("\n\n Media: ");
+    printf("\n\n Media: \n");
     proximoProcesso(processos_prioridade_2);
 
-    printf("\n\n Baixa: ");
+    printf("\n\n Baixa: \n");
     proximoProcesso(processos_prioridade_3);
+    printf("\n");
 }
 
-void filaProcessoParaExecutar(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
     int op;
 
@@ -256,8 +325,7 @@ void menu()
     printf("\n 5 - Mostrar quantos processos tem em cada fila");
     printf("\n 6 - Mostrar quanto tempo falta para executar os processos de uma determinada fila ");
     printf("\n 7 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
-    printf("\n 8 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
-    printf("\n 9 - Mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
+    printf("\n 8 - Mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
     printf("\n\n > ");
    
 }
@@ -489,18 +557,5 @@ void areaParaDebug(FilaProcessos *fila_de_processos_maior_prioridade, FilaProces
     inserirProcessoNaFila(processos_prioridade_3, processo);
 
     //exibindos os processos
-
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-    executarProcesso(fila_de_processos_maior_prioridade, processos_prioridade_2);
-
-    exibirProcessos(processos_prioridade_2);
-
-    
         
 }
