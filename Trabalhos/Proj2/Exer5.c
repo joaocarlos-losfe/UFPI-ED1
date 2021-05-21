@@ -34,7 +34,7 @@ typedef struct
 
 int numeroDeProcessoNaFila(FilaProcessos *fila_processos);
 void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_info);
-bool removerProcessoDaFila(FilaProcessos *fila_processos);
+bool removerProcessoDaFila(FilaProcessos *fila_processos, ProcessoInfo *processo);
 void exibirProcessos(FilaProcessos *fila_processos);
 void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *fila_de_processos_nivel_abaixo);
 void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3);
@@ -291,13 +291,15 @@ void inserirProcessoNaFila(FilaProcessos *fila_processos, ProcessoInfo processo_
     fila_processos ->fim = novo_processo;
 }
 
-bool removerProcessoDaFila(FilaProcessos *fila_processos)
+bool removerProcessoDaFila(FilaProcessos *fila_processos, ProcessoInfo *processo)
 {
     if(fila_processos->inicio == NULL)
     {
         printf("Fila vazia...");
         return false; // fila vazia
     }
+
+    *processo = fila_processos->inicio->processo; // salva o processo do inicio
         
     PontProcesso apagar_processo = fila_processos ->inicio;
 
@@ -347,50 +349,48 @@ void exibirProcessos(FilaProcessos *fila_processos)
 
 void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *fila_de_processos_nivel_abaixo)
 {
-    if (numeroDeProcessoNaFila(fila_de_processos_maior_prioridade) != 0)
+    ProcessoInfo processo;
+    
+    if( numeroDeProcessoNaFila(fila_de_processos_maior_prioridade) != 0)
     {
-        fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila+=1;
-        fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento -= 1;
-
         if(fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento == 0)
         {
-            removerProcessoDaFila(fila_de_processos_maior_prioridade);
+            removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
         }
-        else
+        else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 1)
         {
-            if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 1)
-            {
-                inserirProcessoNaFila(fila_de_processos_maior_prioridade, fila_de_processos_maior_prioridade->inicio->processo);
-                removerProcessoDaFila(fila_de_processos_maior_prioridade);
-            }
+           removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
+           inserirProcessoNaFila(fila_de_processos_maior_prioridade, processo);
+        }
+        else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 2)
+        {
+            if(fila_de_processos_maior_prioridade->inicio->processo.prioridade == alta) 
+                fila_de_processos_maior_prioridade->inicio->processo.prioridade = media;
             else
-            {
-                if(fila_de_processos_maior_prioridade->inicio->processo.prioridade = media)
-                {
-                    fila_de_processos_maior_prioridade->inicio->processo.prioridade = baixa;
-                }
-                else
-                {
-                    fila_de_processos_maior_prioridade->inicio->processo.prioridade = media;
-                }
+                fila_de_processos_maior_prioridade->inicio->processo.prioridade = baixa;
 
-                fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila = 0;
-                
-                inserirProcessoNaFila(fila_de_processos_nivel_abaixo, fila_de_processos_maior_prioridade->inicio->processo);
-                removerProcessoDaFila(fila_de_processos_maior_prioridade);
-            }
+            fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila = 0;
+            
+            removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
+            inserirProcessoNaFila(fila_de_processos_nivel_abaixo, processo);
+        }
+       
+        if (numeroDeProcessoNaFila(fila_de_processos_maior_prioridade) != 0)
+        {
+            fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento -= 1;
+            fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila +=1;
         }
         
     }
     else
-    {
         printf("\n Fila vazia\n");
-    }
-
+    
 }
 
 void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
 {
+    ProcessoInfo processo;
+
     if (numeroDeProcessoNaFila(processos_prioridade_3) != 0)
     {
         processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila+=1;
@@ -398,12 +398,12 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
 
         if(processos_prioridade_3->inicio->processo.tempo_processamento == 0)
         {
-            removerProcessoDaFila(processos_prioridade_3);
+            removerProcessoDaFila(processos_prioridade_3, &processo);
         }
         else if(processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila > 0)
         {
-            inserirProcessoNaFila(processos_prioridade_3, processos_prioridade_3->inicio->processo);
-            removerProcessoDaFila(processos_prioridade_3);
+            removerProcessoDaFila(processos_prioridade_3, &processo);
+            inserirProcessoNaFila(processos_prioridade_3, processo);
         }
     }
     else
