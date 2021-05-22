@@ -30,10 +30,7 @@ int prodMulti3Iter(Lista *lista);
 int remover(Lista *lista, int numero);
 void imprimir_lista_inverso (No *aux);
 int alterar(Lista *lista, int numero,int n_alterar);
-
-int somaDosParesRec(Lista *lista){
-    if(lista != NULL) return somaDosParesRec(lista->proximo) + (lista->valor % 2 == 0? lista->valor : 0);
-}
+int somaDosParesRec(No *inicio);
 
 int main(int argc, char *argv[]){
 	Lista lista;
@@ -60,6 +57,7 @@ int main(int argc, char *argv[]){
         break;
       case 4:
         printf("Soma dos elementos pares (Iterativa)= %d\n",somaDosParesIter(&lista));
+        printf("Soma dos elementos pares (Recursiva)= %d\n",somaDosParesRec(lista.inicio));
         break;
       case 5:
         printf("Produto dos Multiplos de 3 menores que 60 (Iterativa) = %d\n",prodMulti3Iter(&lista));
@@ -154,6 +152,17 @@ int remover(Lista *lista, int numero)
     }
   }
   return status; // retorna 0 se n achar
+}
+
+int somaDosParesRec(No *inicio){
+    if(inicio != NULL){
+      if(inicio->valor % 2 == 0){
+        return somaDosParesRec(inicio->proximo) + inicio->valor;
+      }
+      else{
+        somaDosParesRec(inicio->proximo);
+      }
+    }
 }
 
 int somaDosParesIter(Lista *lista){
