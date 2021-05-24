@@ -25,33 +25,21 @@ typedef struct{
 
 void inserir(Lista *lista,int valor);
 void imprimir(Lista *lista);
-int somaDosParesIter(Lista *lista);
-int prodMulti3Iter(Lista *lista);
-int remover(Lista *lista, int numero);
 void imprimir_lista_inverso (No *aux);
-int alterar(Lista *lista, int numero,int n_alterar);
+int somaDosParesIter(Lista *lista);
 int somaDosParesRec(No *inicio);
+int prodMulti3Iter(Lista *lista);
+void prodMulti3Rec(No *inicio, int *produto);
+int remover(Lista *lista, int numero);
+int alterar(Lista *lista, int numero,int n_alterar);
 void ordena(Lista *lista);
-
-int prodMulti3Rec(No *inicio, int produto){
-  if(inicio != NULL){
-    if(inicio->valor % 3 == 0 && inicio->valor < 60){
-      //produto *= inicio->valor;
-      return prodMulti3Rec(inicio->proximo,produto) *(produto * inicio->valor);
-    }
-    else{
-      prodMulti3Rec(inicio->proximo,produto);
-    }
-  }
-  //return produto;
-}
 
 int main(int argc, char *argv[]){
 	Lista lista;
 	lista.inicio = NULL;
 	lista.tam = 0;
   No *inicio = lista.inicio;
-	int op,valor,numero_alterar,numero;
+	int op,valor,numero_alterar,numero,produto = 1;
 	do{
     menu();
 		scanf("%d",&op);
@@ -75,7 +63,8 @@ int main(int argc, char *argv[]){
         break;
       case 5:
         printf("Produto dos Multiplos de 3 menores que 60 (Iterativa) = %d\n",prodMulti3Iter(&lista));
-        printf("Produto dos Multiplos de 3 menores que 60 (Recursiva) = %d\n",prodMulti3Rec(lista.inicio,1));
+        prodMulti3Rec(lista.inicio,&produto);
+        printf("Produto dos Multiplos de 3 menores que 60 (Recursiva) = %d\n",produto);
         break;
       case 6:
         printf("Digite um número para remover: ");
@@ -222,6 +211,15 @@ int prodMulti3Iter(Lista *lista){
     inicio = inicio->proximo;
   }
   return produto;
+}
+
+void prodMulti3Rec(No *inicio, int *produto){
+  if(inicio != NULL){
+    if(inicio->valor % 3 == 0 && inicio->valor < 60){
+      (*produto) *= inicio->valor;
+    }
+    prodMulti3Rec(inicio->proximo,produto);
+  }
 }
 
 void inserir(Lista *lista,int valor)
