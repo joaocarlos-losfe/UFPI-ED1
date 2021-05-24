@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<assert.h>
 
 void menu(){
   printf("0 - Sair\n");
@@ -22,7 +23,6 @@ typedef struct{
 	int tam;
 }Lista;
 
-void inserirInicio(Lista *lista, int valor);
 void inserirFinal(Lista *lista, int valor);
 void imprimir(Lista *lista);
 int somaDosParesIter(Lista *lista);
@@ -31,6 +31,21 @@ int remover(Lista *lista, int numero);
 void imprimir_lista_inverso (No *aux);
 int alterar(Lista *lista, int numero,int n_alterar);
 int somaDosParesRec(No *inicio);
+void ordena(Lista *lista);
+
+int prodMulti3Rec(No *inicio, int produto){
+  if(inicio != NULL){
+    if(inicio->valor % 3 == 0 && inicio->valor < 60){
+      //produto *= inicio->valor;
+      return prodMulti3Rec(inicio->proximo,produto) *(produto * inicio->valor);
+    }
+    else{
+      prodMulti3Rec(inicio->proximo,produto);
+    }
+  }
+  //return produto;
+}
+
 
 int main(int argc, char *argv[]){
 	Lista lista;
@@ -61,6 +76,7 @@ int main(int argc, char *argv[]){
         break;
       case 5:
         printf("Produto dos Multiplos de 3 menores que 60 (Iterativa) = %d\n",prodMulti3Iter(&lista));
+        printf("Produto dos Multiplos de 3 menores que 60 (Recursiva) = %d\n",prodMulti3Rec(lista.inicio,1));
         break;
       case 6:
         printf("Digite um número para remover: ");
@@ -82,7 +98,7 @@ int main(int argc, char *argv[]){
           printf("Elemento não encontrado\n");
         }
         else{
-          printf("%d foi alterado por %d");
+          printf("%d foi alterado por %d",numero,numero_alterar);
         }
         break;
       default:
@@ -115,8 +131,26 @@ int alterar(Lista *lista, int numero,int n_alterar)
         ptr = ptr->proximo;
       }
     }
+    ordena(lista);
   }
   return status; // retorna 0 se n achar
+}
+
+void ordena(Lista *lista){
+	assert(lista != NULL);
+	if(lista->inicio != NULL){
+		for(No *i = lista->inicio; i->proximo != NULL; i = i->proximo){
+			No *menor = i;
+			for(No *j = i->proximo; j != NULL; j = j->proximo){
+				if(j->valor < menor->valor){
+					menor = j;
+				}
+			}
+		int aux = i->valor;
+		i->valor = menor->valor;
+		menor->valor = aux;
+		}
+	}
 }
 
 int remover(Lista *lista, int numero)
@@ -191,15 +225,6 @@ int prodMulti3Iter(Lista *lista){
   return produto;
 }
 
-//inserir elementos sempre no inicio da lista
-void inserirInicio(Lista *lista, int valor){
-	No *novo = (No*)malloc(sizeof(No));
-	novo->valor = valor; // (*novo).valor = valor
-	novo->proximo = lista->inicio; //(*novo).proximo = NULL
-	lista->inicio = novo;
-	lista->tam++;
-
-}
 void inserirFinal(Lista *lista, int valor){
 	No *no,*novo = (No*)malloc(sizeof(No));
 	novo->valor = valor;
@@ -207,7 +232,6 @@ void inserirFinal(Lista *lista, int valor){
 
 	if(lista->inicio == NULL){
 		lista->inicio = novo;
-		//lista->tam++;
 	}
 	else{
 		no = lista->inicio;
@@ -215,9 +239,8 @@ void inserirFinal(Lista *lista, int valor){
 			no = no->proximo;
 		}
 		no->proximo = novo;
-		//lista->tam++;
-	}
 	lista->tam++;
+  }
 }
 
 void imprimir_lista_inverso (No *aux)
@@ -231,7 +254,6 @@ void imprimir_lista_inverso (No *aux)
 // imprimir elementos na lista
 void imprimir(Lista *lista){
 	No *inicio = lista->inicio;
-  imprimir_lista_inverso(inicio);
 	printf("Tamanho da lista: %d\n",lista->tam);
 	while(inicio != NULL){
 		printf("%d ", inicio->valor);
