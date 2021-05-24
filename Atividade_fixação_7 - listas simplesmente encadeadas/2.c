@@ -20,7 +20,7 @@ typedef struct{
 	No *inicio;
 	int tam;
 }Lista;
-
+void inserir(Lista *lista,char *string);
 void inserirFinal(Lista *lista,char *string);
 void imprimir(Lista *lista);
 int vogalIs(char c);
@@ -51,7 +51,8 @@ int main(int argc, char *argv[]){
       case 1:
         printf("String: ");
         scanf("%s",string);
-        inserirFinal(&lista,string);
+        //inserirFinal(&lista,string);
+        inserir(&lista,string);
         break;
       case 2:
         imprimir(&lista);
@@ -115,7 +116,6 @@ int stringVizinha(Lista *lista, char *str,char *str1,char *str2){
     antes = inicio;
     inicio = inicio->proximo;
 	}
-	printf("\n\n");
   return status;
 }
 
@@ -165,4 +165,37 @@ void inserirFinal(Lista *lista,char *string){
 		no->proximo = novo;
 	}
 	lista->tam++;
+}
+
+void inserir(Lista *lista,char *string)
+{
+	No *atual, *novo, *anterior;
+
+	novo = (No *) malloc(sizeof(No));
+
+	atual = lista->inicio;
+	anterior = NULL;
+
+	strcpy(novo->string,string);
+	novo->proximo = NULL;
+
+	if(atual == NULL){
+		novo->proximo = NULL;
+		lista->inicio = novo;
+	}
+	else{
+		while(atual != NULL && strlen(atual->string) < strlen(string)){
+			anterior = atual;
+			atual = atual->proximo;
+		}
+
+		novo->proximo = atual;
+
+		if(anterior == NULL){
+			lista->inicio = novo;
+		} else{
+			anterior->proximo = novo;
+		}
+	}
+  lista->tam++;
 }
