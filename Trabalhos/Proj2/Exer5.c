@@ -51,7 +51,7 @@ void menu();
 void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void exibirListadeprocessosDefinida(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
-int tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+void tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
 int main()
@@ -62,7 +62,7 @@ int main()
     FilaProcessos processos_prioridade_2; processos_prioridade_2.inicio = processos_prioridade_2.fim = NULL; // media
     FilaProcessos processos_prioridade_3; processos_prioridade_3.inicio = processos_prioridade_3.fim = NULL; // baixa
 
-    areaParaDebug(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+    //areaParaDebug(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
 
     int op;
     do
@@ -118,7 +118,7 @@ void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_pr
     printf(" Tempo de processamento ainda restam para terminar todas as filas: %d\n", soma_tempo_todas_as_filas);
 }
 
-int tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+void tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
     int op;
 
@@ -419,16 +419,24 @@ void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
 {
     ProcessoInfo processo;
     
-    if( numeroDeProcessoNaFila(fila_de_processos_maior_prioridade) != 0)
+    if( fila_de_processos_maior_prioridade->inicio != NULL)
     {
+        if (fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento > 0) // verica se ainda é maior que 0 para evitar valor negativo
+        {
+            fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento -= 1;
+            fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila +=1;
+        }
+        
         if(fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento == 0)
         {
             removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
+            printf("\nProcesso removido da mesma fila...\n");
         }
         else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 1)
         {
            removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
            inserirProcessoNaFila(fila_de_processos_maior_prioridade, processo);
+           printf("\nProcesso movido para o topo da mesma fila...\n");
         }
         else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 2)
         {
@@ -441,12 +449,8 @@ void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
             
             removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
             inserirProcessoNaFila(fila_de_processos_nivel_abaixo, processo);
-        }
-       
-        if (numeroDeProcessoNaFila(fila_de_processos_maior_prioridade) != 0)
-        {
-            fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento -= 1;
-            fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila +=1;
+
+            printf("\nProcesso movido para a fila de menor prioridade...\n");
         }
         
     }
@@ -459,24 +463,26 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
 {
     ProcessoInfo processo;
 
-    if (numeroDeProcessoNaFila(processos_prioridade_3) != 0)
+    if (processos_prioridade_3->inicio != NULL)
     {
+        if (processos_prioridade_3->inicio->processo.tempo_processamento > 0)
+        {
+            processos_prioridade_3->inicio->processo.tempo_processamento -= 1;
+            processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila +=1;
+        }
         
         if(processos_prioridade_3->inicio->processo.tempo_processamento == 0)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
+            printf("\nProcesso removido da mesma fila...\n");
         }
         else if(processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila > 0)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
             inserirProcessoNaFila(processos_prioridade_3, processo);
+            printf("\nProcesso movido para o topo da mesma fila...\n");
         }
 
-        if (numeroDeProcessoNaFila(processos_prioridade_3) != 0)
-        {
-            processos_prioridade_3->inicio->processo.tempo_processamento -= 1;
-            processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila +=1;
-        }
     }
     else
     {
