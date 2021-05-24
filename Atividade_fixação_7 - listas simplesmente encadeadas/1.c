@@ -4,7 +4,7 @@
 
 void menu(){
   printf("0 - Sair\n");
-  printf("1 - Inserir no final\n");
+  printf("1 - Inserir elemento\n");
   printf("2 - Imprimir Normal\n");
   printf("3 - Imprimir Invertido\n");
   printf("4 - Soma dos elementos pares\n");
@@ -23,7 +23,7 @@ typedef struct{
 	int tam;
 }Lista;
 
-void inserirFinal(Lista *lista, int valor);
+void inserir(Lista *lista,int valor);
 void imprimir(Lista *lista);
 int somaDosParesIter(Lista *lista);
 int prodMulti3Iter(Lista *lista);
@@ -46,7 +46,6 @@ int prodMulti3Rec(No *inicio, int produto){
   //return produto;
 }
 
-
 int main(int argc, char *argv[]){
 	Lista lista;
 	lista.inicio = NULL;
@@ -62,7 +61,7 @@ int main(int argc, char *argv[]){
 			case 1:
 				printf("Valor: ");
 				scanf("%d",&valor);
-				inserirFinal(&lista,valor);
+        inserir(&lista,valor);
         break;
       case 2:
         imprimir(&lista);
@@ -137,7 +136,7 @@ int alterar(Lista *lista, int numero,int n_alterar)
 }
 
 void ordena(Lista *lista){
-	assert(lista != NULL);
+	//assert(lista != NULL);
 	if(lista->inicio != NULL){
 		for(No *i = lista->inicio; i->proximo != NULL; i = i->proximo){
 			No *menor = i;
@@ -225,22 +224,37 @@ int prodMulti3Iter(Lista *lista){
   return produto;
 }
 
-void inserirFinal(Lista *lista, int valor){
-	No *no,*novo = (No*)malloc(sizeof(No));
+void inserir(Lista *lista,int valor)
+{
+	No *atual, *novo, *anterior;
+
+	novo = (No *) malloc(sizeof(No));
+
+	atual = lista->inicio;
+	anterior = NULL;
+
 	novo->valor = valor;
 	novo->proximo = NULL;
 
-	if(lista->inicio == NULL){
+	if(atual == NULL){
+		novo->proximo = NULL;
 		lista->inicio = novo;
 	}
 	else{
-		no = lista->inicio;
-		while(no->proximo != NULL){
-			no = no->proximo;
+		while(atual != NULL && atual->valor < valor){
+			anterior = atual;
+			atual = atual->proximo;
 		}
-		no->proximo = novo;
-	lista->tam++;
-  }
+
+		novo->proximo = atual;
+
+		if(anterior == NULL){
+			lista->inicio = novo;
+		} else{
+			anterior->proximo = novo;
+		}
+	}
+  lista->tam++;
 }
 
 void imprimir_lista_inverso (No *aux)
