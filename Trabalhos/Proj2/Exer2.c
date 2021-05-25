@@ -83,7 +83,7 @@ int menu(int *op, FilaCarros *fila_de_carros)
         }
         else if (E_S == 'S' || E_S == 's')
         {
-
+            removerCarroFila(fila_de_carros, &carro);
         }
         else
             printf("\nOperação cancelada...");
@@ -151,17 +151,26 @@ bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro)
     }
     else
     {
-        *carro = fila_carros->inicio->carro; // salvar o carro que se quer excluir para poder fazer algo posteriormente
+        FilaCarros fila_carros_aux;
+        fila_carros_aux.inicio = fila_carros_aux.fim = NULL;
 
-        PontCarro carro_remover = fila_carros->inicio; // guarda o endereço para quem inicio apontava para posterior exclusão
+        while (fila_carros->inicio != NULL)
+        {
+            if (fila_carros->inicio->carro.placa != carro->placa)
+            {
+                inserirCarroFila(&fila_carros_aux, fila_carros->inicio->carro);
+            }
 
-        fila_carros->inicio = fila_carros->inicio->proximo_carro; // inicio passa a apontar para o proximo carro
+            fila_carros->inicio = fila_carros->inicio->proximo_carro;
+        }
 
-        free(carro_remover); // libera mememoria do inicio salva anteriormente 
+        fila_carros->fim = NULL; // fim passa tambem a apontar para null
 
-        if (fila_carros->inicio == NULL) // se não tiver nenhum dado apontado por inicio
-            fila_carros->fim = NULL; // fim passa tambem a apontar para null
+        printf("\nmostrando se os carros foram movidos pra outra fila...");
+        exibirCarrosFila(&fila_carros_aux);
 
+        //copiar de volta pra fila original...
+        
         return true;
     }
 }
