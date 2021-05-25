@@ -7,7 +7,6 @@ void menu(){
   printf("1 - Inserir\n");
   printf("2 - Imprimir\n");
   printf("3 - Dividir em vogal e consoante\n");
-  //printf("4 - Soma dos elementos pares\n");
   printf("5 - Ver strings vizinhas\n");
 }
 
@@ -79,14 +78,19 @@ int main(int argc, char *argv[]){
         if(u == 1){
           printf("Anterior de %s: %s\n",string,str1);
         }
-        else{
+        else
+        if(u == 2){
           printf("Anterior de %s: %s\n",string,str1);
           printf("Sucessor de %s: %s\n",string,str2);
+        }
+        else{
+          printf("%s não está na lista\n",string);
         }
         break;
       default:
         break;
     }
+    printf("\n");
   }while (op!=0);
   return 0;
 }
@@ -110,7 +114,7 @@ int stringVizinha(Lista *lista, char *str,char *str1,char *str2){
         strcpy(str1, antes->string);
         inicio = inicio->proximo;
         strcpy(str2, inicio->string);
-        status = 3;
+        status = 2;
       }
     }
     antes = inicio;
