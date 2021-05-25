@@ -22,6 +22,8 @@ typedef struct
 {
 	PontCarro inicio;
 	PontCarro fim;
+    int maximo_de_carros;
+    int total_de_carros_estacionados;
 
 }FilaCarros;
 
@@ -33,15 +35,74 @@ bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro);
 void exibirCarrosFila(FilaCarros *fila_carros);
 
 void debug(FilaCarros *fila_carros);
+int menu(int *op, FilaCarros *fila_de_carros);
 
 int main()
 {
+    setlocale(LC_ALL, "");
     FilaCarros fila_de_carros;
     fila_de_carros.inicio = fila_de_carros.fim = NULL;
-
-    debug(&fila_de_carros);
-
+    fila_de_carros.maximo_de_carros = 10;
+    fila_de_carros.total_de_carros_estacionados = 0;
+    int op;
+    //debug(&fila_de_carros);
+    while(menu(&op, &fila_de_carros) != 0);
+    
     return 0;
+}
+
+int menu(int *op, FilaCarros *fila_de_carros)
+{
+    char E_S;
+    CarroInfo carro;
+
+    printf("\n0 - Sair do programa");
+	printf("\n1 - Estacionamento");
+    printf("\n2 - Mostrar fila de carros \n");
+	printf(": "); scanf("%d", op);
+
+    switch (*op)
+    {
+    case 1:
+        printf("\nPlaca do Carro: "); scanf("%d", &carro.placa);
+        printf("\nEntrar ou Sair do estacionamento: E - Entrar S - Sair: "); scanf(" %c", &E_S);
+
+        if(E_S == 'E' || E_S == 'e')
+        {
+            if (fila_de_carros->total_de_carros_estacionados == fila_de_carros->maximo_de_carros)
+                printf("\nFila de carros cheia...");
+            else
+            {
+                inserirCarroFila(fila_de_carros, carro);
+                
+                fila_de_carros->total_de_carros_estacionados +=1;
+
+                printf("\nCarro %d entrou na fila...", fila_de_carros->total_de_carros_estacionados);
+            }
+            
+        }
+        else if (E_S == 'S' || E_S == 's')
+        {
+
+        }
+        else
+            printf("\nOperação cancelada...");
+        
+        printf("\n");
+        break;
+    case 2:
+        if(fila_de_carros->inicio == NULL)
+            printf("\nFila vazia...");
+        else
+            exibirCarrosFila(fila_de_carros);
+
+        printf("\n");
+        break;
+    default:
+        break;
+    }
+
+    return *op;
 }
 
 int numeroDeCarrosFila(FilaCarros *fila_carros)
@@ -114,6 +175,7 @@ void exibirCarrosFila(FilaCarros *fila_carros)
     {
         printf("\nCarro %d: %d", i, end->carro.placa);   
         end = end->proximo_carro;
+        i++;
     }
 }
 
