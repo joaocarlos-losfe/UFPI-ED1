@@ -173,7 +173,12 @@ bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro)
         while (fila_carros_aux.inicio != NULL)
         {
             inserirCarroFila(fila_carros, fila_carros_aux.inicio->carro);
+
+            PontCarro apagar = fila_carros_aux.inicio;
+
             fila_carros_aux.inicio = fila_carros_aux.inicio->proximo_carro;
+
+            free (apagar);
         }
                 
         return true;
