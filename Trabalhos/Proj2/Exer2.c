@@ -161,16 +161,21 @@ bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro)
                 inserirCarroFila(&fila_carros_aux, fila_carros->inicio->carro);
             }
 
+            PontCarro apagar = fila_carros->inicio;
+
             fila_carros->inicio = fila_carros->inicio->proximo_carro;
+
+            free(apagar);
         }
 
         fila_carros->fim = NULL; // fim passa tambem a apontar para null
 
-        printf("\nmostrando se os carros foram movidos pra outra fila...");
-        exibirCarrosFila(&fila_carros_aux);
-
-        //copiar de volta pra fila original...
-        
+        while (fila_carros_aux.inicio != NULL)
+        {
+            inserirCarroFila(fila_carros, fila_carros_aux.inicio->carro);
+            fila_carros_aux.inicio = fila_carros_aux.inicio->proximo_carro;
+        }
+                
         return true;
     }
 }
