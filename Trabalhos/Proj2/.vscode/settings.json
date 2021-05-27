@@ -4,6 +4,7 @@
         "cstddef": "c",
         "cstdio": "c",
         "cstdlib": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "functional": "c"
     }
 }

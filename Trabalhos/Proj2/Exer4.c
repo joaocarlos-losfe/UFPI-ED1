@@ -1,61 +1,175 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
-typedef struct aux
+#define TRUE  1;
+#define FALSE 0;
+
+const int MAXCOLS = 80;
+
+typedef struct PILHA
 {
-    char operadores[4]; //ate 4 digitos
-    struct aux* proximo;
+	char   valor;
+	struct PILHA *next;
+	
+} pilha;
 
-}Operacao, *PontOperacao;
+pilha *topo;
 
-typedef struct
+void inicializa()
 {
-    PontOperacao topo_pilha;
+	topo = (struct PILHA *) malloc(sizeof(struct PILHA));
+	topo->next = NULL ;
+}
 
-}Pilha;
+void insira(char v)
+{
+	struct PILHA *novo = (struct PILHA *) malloc(sizeof(struct PILHA));
+	novo->valor = v;
+	novo->next = topo->next;
+	topo->next = novo;
+}
 
-void executarOperacao(char *strexpressao);
+int ehPilhaVazia()
+{
+	int saida = FALSE;
+	if (topo->next == NULL) saida = TRUE;
+	return saida;
+}
+
+char retire()
+{
+	if (topo->next == NULL)
+	{
+		return 27;
+	}
+	else
+	{
+		struct PILHA *novo = (struct PILHA *) malloc(sizeof(struct PILHA));
+		novo = topo->next;
+		topo = topo->next;
+		return novo->valor;
+	}
+}
+
+int ehOperador(char s)
+{
+	int saida = FALSE;
+	if (
+		(s == '+') || (s == '*') || (s == '/') || (s == '-') || (s == '$')
+		|| (s == ')') || (s == '(')
+	)
+		saida = TRUE;
+	return saida;
+}
+
+char quemEstahNoTopo()
+{
+	if (topo->next == NULL)
+	{
+		return 27;
+	}
+	else
+	{
+		struct PILHA *novo = (struct PILHA *) malloc(sizeof(struct PILHA));
+		novo = topo->next;
+		return novo->valor;
+	}
+}
+
+int precedencia(char op1, char op2)
+{
+	int saida = FALSE;
+	if  ( ((op1 == '*') || (op1 == '/') || (op1 == '$'))
+			&& (op2 != '$')) saida = TRUE;
+	if (op1 == op2) saida = TRUE;
+	if (op2 == 27) saida = TRUE;
+	if (op1 == '(') saida = TRUE;
+	return saida;
+}
+void inToPosFix(char infix[MAXCOLS], char postr[MAXCOLS])
+{
+	int pos = 0;
+	char v;
+	char _v = '\0';
+	int i = 0;
+	for (i = 0; i < strlen(infix); i++)
+	{
+		if  (ehOperador(infix[i]))
+		{
+			/***/
+			if (infix[i] != ')')
+			{
+				if (precedencia(infix[i], quemEstahNoTopo()))
+				{
+					insira(infix[i]);
+					if (!( postr[pos - 1] == ' ')) postr[pos++] = ' ';
+				}
+				else
+				{
+					v = retire();
+					if ( (v != ')') && (v != '(') )
+					{
+						if (!( postr[pos - 1] == ' ')) postr[pos++] = ' ';
+						postr[pos++] = v;
+					}
+					insira(infix[i]);
+				}
+			}
+			else
+			{
+				v = retire();
+				if ( (v != ')') && (v != '(') )
+				{
+					if (!( postr[pos - 1] == ' ')) postr[pos++] = ' ';
+					postr[pos++] = v;
+				}
+				v = retire();
+				if (v != '(') insira(v);
+			}
+		}/***/
+		else
+		{
+			if ((infix[i] == ' ') && ( postr[pos - 1] == ' ')) {}
+			else
+			{
+				if (!( postr[pos - 1] == ' ')) postr[pos++] = ' ';
+				postr[pos++] = infix[i];
+			}
+		}
+	}
+
+////////////////////////////////////////////////////////
+	while (!ehPilhaVazia())
+	{
+		v = retire();
+		if ( (v != ')') && (v != '(') && (v != 27))
+		{
+			if (!( postr[pos - 1] == ' ')) postr[pos++] = ' ';
+			postr[pos++] = v;
+		}
+	}
+	postr[pos] = '\0';
+}
 
 int main()
 {
-    Pilha pos_fixa_temp;
-    Pilha pos_fixa;
-    
-    pos_fixa.topo_pilha = NULL;
-    pos_fixa_temp.topo_pilha = NULL;
+	char infix[MAXCOLS];
+	char postr[MAXCOLS];
+	int pos = 0;
+	inicializa();
 
-    char expre[] = "40 + 40 * 2 + 5 * ( 1 + 1 )";
-
-    executarOperacao(expre);
-
-    return 0;
+	printf("\nDigite expressao INFIXA conversao POSFIXA:>");
+	while ((infix[pos++] = getchar()) != '\n');
+	infix[--pos] = '\0';
+	inToPosFix(infix, postr);
+	printf("\na expressao infixa original eh: %s", infix);
+	printf("\na expressao posfixa eh: %s", postr);
 }
 
-void executarOperacao(char *strexpressao)
-{
-    while (*strexpressao != '\0')
-    {
-        switch (*strexpressao)
-        {
-        case '(':
-        case ')':
-        break;
 
-        case '+':
-        case '-':
-        break;
-
-        case '*':
-        case '/':
-        break;
-
-        default:
-            break;
-        }
-
-        printf("\n%c", *strexpressao);
-
-        strexpressao++;
-    }
-    
-}
+//Sugestao de expressoes :
+//   ((1 - ( 2+3)) * 4)$(5 + 6)  => 1 2 3 + - 4 * 5 6 + $
+//   (1+2) * 3                   => 1 2 + 3 *
+//   1+(2*3 + 4
