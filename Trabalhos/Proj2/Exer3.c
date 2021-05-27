@@ -39,8 +39,7 @@ void distribuirDados(PilhaExpressoes *pilha_expressoes, PilhaOperadores *pilha_o
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
-    printf("João Carlos de Sousa Fé");
-
+  
     PilhaExpressoes pilha_expressoes; pilha_expressoes.topo = 0;
     PilhaOperadores pilha_operadores; pilha_operadores.topo = 0;
     PilhaValores pilha_valores; pilha_valores.topo = 0;

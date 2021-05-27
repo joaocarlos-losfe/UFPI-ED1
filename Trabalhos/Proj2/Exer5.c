@@ -204,28 +204,23 @@ void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *pro
 
 void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
-    int op;
-
-    printf("\n Executar processos de: \n");
-    printf("\n 1 - Fila de prioridade Alta");
-    printf("\n 2 - Fila de prioridade Media");
-    printf("\n 3 - Fila de prioridade Baixa\n\n > ");
-    scanf("%d", &op);
-
-    switch (op)
+    if (processos_prioridade_1->inicio != NULL)
     {
-    case 1:
         executarProcesso(processos_prioridade_1, processos_prioridade_2);
-        break;
-    case 2:
-        executarProcesso(processos_prioridade_2, processos_prioridade_3);
-        break;
-    case 3:
-        executarProcessoFilaPrioridadeBaixa(processos_prioridade_3);
-        break;
-    default:
-        break;
+        printf("\n Fila prioridade Alta executada !\n");
     }
+    else if(processos_prioridade_2->inicio != NULL)
+    {
+        executarProcesso(processos_prioridade_2, processos_prioridade_3);
+        printf("\n Fila prioridade Media executada !\n");
+    }
+    else if(processos_prioridade_3->inicio != NULL)
+    {
+        executarProcessoFilaPrioridadeBaixa(processos_prioridade_3);
+        printf("\n Fila prioridade Baixa executada !\n");
+    }
+    else
+        printf("\n Todas as filas de processos estão vazias...\n");
 }
 
 void exibirListadeprocessosDefinida(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
@@ -430,13 +425,13 @@ void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
         if(fila_de_processos_maior_prioridade->inicio->processo.tempo_processamento == 0)
         {
             removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
-            printf("\nProcesso removido da mesma fila...\n");
+            printf("\n Processo removido da mesma fila...\n");
         }
         else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 1)
         {
            removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
            inserirProcessoNaFila(fila_de_processos_maior_prioridade, processo);
-           printf("\nProcesso movido para o topo da mesma fila...\n");
+           printf("\n Processo movido para o topo da mesma fila...\n");
         }
         else if(fila_de_processos_maior_prioridade->inicio->processo.qtd_vezes_passou_na_fila == 2)
         {
@@ -450,7 +445,7 @@ void executarProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaPro
             removerProcessoDaFila(fila_de_processos_maior_prioridade, &processo);
             inserirProcessoNaFila(fila_de_processos_nivel_abaixo, processo);
 
-            printf("\nProcesso movido para a fila de menor prioridade...\n");
+            printf("\n Processo movido para a fila de menor prioridade...\n");
         }
         
     }
@@ -474,13 +469,13 @@ void executarProcessoFilaPrioridadeBaixa(FilaProcessos *processos_prioridade_3)
         if(processos_prioridade_3->inicio->processo.tempo_processamento == 0)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
-            printf("\nProcesso removido da mesma fila...\n");
+            printf("\n Processo removido da mesma fila...\n");
         }
         else if(processos_prioridade_3->inicio->processo.qtd_vezes_passou_na_fila > 0)
         {
             removerProcessoDaFila(processos_prioridade_3, &processo);
             inserirProcessoNaFila(processos_prioridade_3, processo);
-            printf("\nProcesso movido para o topo da mesma fila...\n");
+            printf("\n Processo movido para o topo da mesma fila...\n");
         }
 
     }
