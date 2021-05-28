@@ -1,7 +1,3 @@
-/*
-função desempilhar deve retornar o elemento desempilhado
-*/
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -20,16 +16,16 @@ typedef struct
 
 int tamanhoPilha(Pilha *pilha)
 {
-    int cont = 0;
+  int cont = 0;
 
-    PontPilha end = pilha->topo_pilha;
+  PontPilha end = pilha->topo_pilha;
 
-    while (end!=NULL)
-    {
-      cont++;
-      end = end->proximo;
-    }
-    return cont;
+  while(end!=NULL)
+  {
+    cont++;
+    end = end->proximo;
+  }
+  return cont;
 }
 
 void empilhar(Pilha *pilha, char *str){
@@ -42,10 +38,10 @@ void empilhar(Pilha *pilha, char *str){
 
 bool pilhaVazia(Pilha* pilha)
 {
-    if(pilha->topo_pilha == NULL)
-        return true;
-    else
-        return false;
+  if(pilha->topo_pilha == NULL)
+    return true;
+  else
+    return false;
 }
 
  char* desempilhar(Pilha *pilha){
