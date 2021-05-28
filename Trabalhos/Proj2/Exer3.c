@@ -2,35 +2,44 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <locale.h>
 
 typedef struct 
 {
-    int topo_dados;
+    int topo;
     char dados[100][5];
 
 }PilhaExpressoes;
 
 void empilhar(PilhaExpressoes *expressoes, char *str)
 {
-    strcpy(expressoes->dados[expressoes->topo_dados], str);
-    expressoes->topo_dados += 1;
+    strcpy(expressoes->dados[expressoes->topo], str);
+    expressoes->topo += 1;
 }
 
 char* desempilhar(PilhaExpressoes *expressoes)
 {
-    expressoes->topo_dados -=1;
+    expressoes->topo -=1;
 
-    return expressoes->dados[expressoes->topo_dados];
+    return expressoes->dados[expressoes->topo];
+}
+
+bool vazia(PilhaExpressoes *expressoes)
+{
+    if (expressoes->topo > 0)
+        return false;
+    else
+        return true;
 }
 
 void inverterPilha(PilhaExpressoes *expressoes)
 {
     PilhaExpressoes expressoes_temp;
-    expressoes_temp.topo_dados = 0;
+    expressoes_temp.topo = 0;
 
     int i=0;
 
-    for(i= expressoes->topo_dados-1; i>=0; i--)
+    for(i= expressoes->topo-1; i>=0; i--)
     {
         empilhar(&expressoes_temp, expressoes->dados[i]);
     }
@@ -43,7 +52,7 @@ void exibirpilha(PilhaExpressoes *expressoes)
 {
     int i=0;
 
-    for(i=expressoes->topo_dados -1; i>=0; i--)
+    for(i=expressoes->topo -1; i>=0; i--)
     {
         printf("%s ", expressoes->dados[i]);
     }
@@ -67,7 +76,7 @@ bool ehOperador(char *operandoOuoperador)
     }   
 }
 
-void fragmentarExpressaoStr(char *str_expressao, PilhaExpressoes *expressoes)
+void fragmentarStringEmPilha(char *str_expressao, PilhaExpressoes *expressoes)
 {
     int i;
 
@@ -107,6 +116,7 @@ int pesoOperadores(char *str)
         break;
 
     case '(':
+    case ')':
         peso = 1;
         break;
     }
@@ -114,76 +124,73 @@ int pesoOperadores(char *str)
     return peso;
 }
 
-void examinarExpressao(PilhaExpressoes *expressoes, PilhaExpressoes *operadores, PilhaExpressoes *saida)
+void converterPosfixa(PilhaExpressoes *expressoes, PilhaExpressoes *operadores, PilhaExpressoes *pilha_pos_fixa)
 {
     int i = 0;
 
-    for(i=expressoes->topo_dados-1; i>0; i--)
+    for(i=expressoes->topo-1; i>0; i--)
     {
         if(!ehOperador(expressoes->dados[i]))
         {
-            empilhar(saida, expressoes->dados[i]);
-            printf("\n dado[i] no ehoperador: %s", expressoes->dados[i]);
+            empilhar(pilha_pos_fixa, expressoes->dados[i]);
         }
         else if (expressoes->dados[i][0] == '(')
         {
             empilhar(operadores, expressoes->dados[i]);
-            printf("\n se a expressão for (: %s", expressoes->dados[i]);
         }
         else if (expressoes->dados[i][0] == ')')
         {
             char *operador = desempilhar(operadores); // retornando uma string
-            printf("\nse a expressão for ): operador:  %s", operador);
-
-            while (strcmp(operador, "(") != 0 && expressoes->topo_dados >0)
-            {
-                empilhar(saida, operador);
-                operador = desempilhar(operadores); //facila a comparação
-                printf("\nDado do operador desempilhado: %s", operador);
-            }
             
+            while (strcmp(operador, "(") != 0 && !vazia(expressoes))
+            {
+                empilhar(pilha_pos_fixa, operador);
+                operador = desempilhar(operadores); //facila a comparação
+            }
         }
         else
         {
-            while (operadores->topo_dados > 0 && 
-            pesoOperadores( operadores->dados[operadores->topo_dados-1]) >= 
+            while (!vazia(operadores) && 
+            pesoOperadores(operadores->dados[operadores->topo-1]) >= 
             pesoOperadores(expressoes->dados[i]))
             {
-                empilhar(saida, desempilhar(operadores));
+                empilhar(pilha_pos_fixa, desempilhar(operadores));
             }
 
             empilhar(operadores, expressoes->dados[i]);
         }
     }
 
-    
-    while (operadores->topo_dados > 0)
+    while (!vazia(operadores))
     {
-        empilhar(saida, desempilhar(operadores));
+        empilhar(pilha_pos_fixa, desempilhar(operadores));
     }
-    
+
 }
 
 int main()
 {
-    char expressao [] = "1 * 3 + 4 "; 
+    setlocale(LC_ALL, "");
+
     PilhaExpressoes pilha_expressao;
-    pilha_expressao.topo_dados = 0;
+    pilha_expressao.topo = 0;
 
-    PilhaExpressoes operadores; operadores.topo_dados = 0;
+    PilhaExpressoes operadores; operadores.topo = 0;
 
-    PilhaExpressoes saida; saida.topo_dados = 0;
+    PilhaExpressoes pilha_pos_fixa; pilha_pos_fixa.topo = 0;
 
-    fragmentarExpressaoStr(expressao, &pilha_expressao);
+    char expressao[100];
+    printf("\nDigite a expressão: "); scanf(" %[^\n]s", expressao);
+    strcat(expressao, " ");
+
+    fragmentarStringEmPilha(expressao, &pilha_expressao);
     inverterPilha(&pilha_expressao);
-    //exibirpilha(&pilha_expressao);
+   
+    converterPosfixa(&pilha_expressao, &operadores, &pilha_pos_fixa);
 
-    examinarExpressao(&pilha_expressao, &operadores, &saida);
-
-    printf("\n\n");
-    inverterPilha(&saida);
-    exibirpilha(&saida);
-
+    inverterPilha(&pilha_pos_fixa);
+    printf("\nExpressão posfixa: ");
+    exibirpilha(&pilha_pos_fixa);
 
     return 0;
 }
