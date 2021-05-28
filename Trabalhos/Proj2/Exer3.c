@@ -3,28 +3,29 @@
 #include <string.h>
 #include <stdbool.h>
 #include <locale.h>
+#include <ctype.h>
 
 typedef struct 
 {
     int topo;
     char dados[100][5];
 
-}PilhaExpressoes;
+}Pilha;
 
-void empilhar(PilhaExpressoes *expressoes, char *str)
+void empilhar(Pilha *expressoes, char *str)
 {
     strcpy(expressoes->dados[expressoes->topo], str);
     expressoes->topo += 1;
 }
 
-char* desempilhar(PilhaExpressoes *expressoes)
+char* desempilhar(Pilha *expressoes)
 {
     expressoes->topo -=1;
 
     return expressoes->dados[expressoes->topo];
 }
 
-bool vazia(PilhaExpressoes *expressoes)
+bool vazia(Pilha *expressoes)
 {
     if (expressoes->topo > 0)
         return false;
@@ -32,9 +33,9 @@ bool vazia(PilhaExpressoes *expressoes)
         return true;
 }
 
-void inverterPilha(PilhaExpressoes *expressoes)
+void inverterPilha(Pilha *expressoes)
 {
-    PilhaExpressoes expressoes_temp;
+    Pilha expressoes_temp;
     expressoes_temp.topo = 0;
 
     int i=0;
@@ -48,7 +49,7 @@ void inverterPilha(PilhaExpressoes *expressoes)
 
 }
 
-void exibirpilha(PilhaExpressoes *expressoes)
+void exibirpilha(Pilha *expressoes)
 {
     int i=0;
 
@@ -56,6 +57,11 @@ void exibirpilha(PilhaExpressoes *expressoes)
     {
         printf("%s ", expressoes->dados[i]);
     }
+}
+
+char * dadoTopo(Pilha *pilha)
+{
+    return pilha->dados[pilha->topo-1];
 }
 
 bool ehOperador(char *operandoOuoperador)
@@ -76,12 +82,33 @@ bool ehOperador(char *operandoOuoperador)
     }   
 }
 
-void fragmentarStringEmPilha(char *str_expressao, PilhaExpressoes *expressoes)
+bool expressaoValida(Pilha *pilha, char *str, int *QtdAbreparenteses, int *QtdFechaparenteses)
+{
+    bool valida = true;
+
+    if (!isalpha(*str) || !ehOperador(str) )
+    {
+        valida = false;
+    }
+    else if (str[0] == '(' || str[0] == ')')
+    {
+        if (str[0] == '(')
+            *QtdAbreparenteses +=1;
+        else if (str[0] == ')')
+            *QtdFechaparenteses +=1;
+    }
+}
+
+bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
 {
     int i;
 
     char string_composta[5];
     int k = 0;
+
+    int QtdAbreparenteses = 0, QtdFechaparenteses = 0;
+
+    bool expressao_valida = false;
 
     for(i=0; i<=strlen(str_expressao); i++)
     {
@@ -94,10 +121,21 @@ void fragmentarStringEmPilha(char *str_expressao, PilhaExpressoes *expressoes)
         {
             string_composta[k] = '\0';
             k = 0;
-            empilhar(expressoes, string_composta);
+            expressao_valida = expressaoValida(expressoes, string_composta, &QtdAbreparenteses, &QtdFechaparenteses);
+            if(expressao_valida)
+                empilhar(expressoes, string_composta);
+            else
+            {
+                break;
+            }
         }
     }
     empilhar(expressoes, string_composta);
+
+    if (QtdAbreparenteses != QtdFechaparenteses)
+        expressao_valida = false;
+
+    return expressao_valida;
 }
 
 int pesoOperadores(char *str)
@@ -124,7 +162,7 @@ int pesoOperadores(char *str)
     return peso;
 }
 
-void converterPosfixa(PilhaExpressoes *expressoes, PilhaExpressoes *operadores, PilhaExpressoes *pilha_pos_fixa)
+void converterPosfixa(Pilha *expressoes, Pilha *operadores, Pilha *pilha_pos_fixa)
 {
     int i = 0;
 
@@ -172,25 +210,30 @@ int main()
 {
     setlocale(LC_ALL, "");
 
-    PilhaExpressoes pilha_expressao;
+    Pilha pilha_expressao;
     pilha_expressao.topo = 0;
 
-    PilhaExpressoes operadores; operadores.topo = 0;
+    Pilha operadores; operadores.topo = 0;
 
-    PilhaExpressoes pilha_pos_fixa; pilha_pos_fixa.topo = 0;
+    Pilha pilha_pos_fixa; pilha_pos_fixa.topo = 0;
 
     char expressao[100];
     printf("\nDigite a expressão: "); scanf(" %[^\n]s", expressao);
     strcat(expressao, " ");
 
-    fragmentarStringEmPilha(expressao, &pilha_expressao);
-    inverterPilha(&pilha_expressao);
+    if(fragmentarStringEmPilha(expressao, &pilha_expressao) == true)
+    {
+        inverterPilha(&pilha_expressao);
+        converterPosfixa(&pilha_expressao, &operadores, &pilha_pos_fixa);
+        inverterPilha(&pilha_pos_fixa);
+        printf("\nExpressão posfixa: ");
+        exibirpilha(&pilha_pos_fixa);
+    }
+    else
+    {
+        printf("\nExpressão invalida !");
+    }
    
-    converterPosfixa(&pilha_expressao, &operadores, &pilha_pos_fixa);
-
-    inverterPilha(&pilha_pos_fixa);
-    printf("\nExpressão posfixa: ");
-    exibirpilha(&pilha_pos_fixa);
 
     return 0;
 }
