@@ -5,7 +5,7 @@
 
 typedef struct aux
 {
-  char dados[100][5];
+  char dados[5];
   struct PilhaExpressoes *proximo;
 
 }PilhaExpressoes, *PontPilha;
@@ -13,7 +13,6 @@ typedef struct aux
 typedef struct
 {
   PontPilha topo_pilha;
-
 }Pilha;
 
 int tamanhoPilha(Pilha *pilha)
@@ -46,17 +45,16 @@ bool pilhaVazia(Pilha* pilha)
     return false;
 }
 
- void desempilhar(Pilha *pilha, char *str){
+ char* desempilhar(Pilha *pilha){
   PontPilha apagar;
   if(pilhaVazia(pilha)) return;
   else
   {
-    str = pilha->topo_pilha->dados;
-
     apagar = pilha->topo_pilha;
     pilha->topo_pilha = pilha->topo_pilha->proximo;
     free(apagar);
   }
+  return apagar;
 }
 
 void imprimir(Pilha* pilha)
