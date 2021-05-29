@@ -5,7 +5,7 @@
 
 typedef struct aux
 {
-  char dados[5];
+  char dados[20];
   struct PilhaExpressoes *proximo;
 
 }PilhaExpressoes, *PontPilha;
@@ -29,14 +29,6 @@ int tamanhoPilha(Pilha *pilha)
   return cont;
 }
 
-void empilhar(Pilha *pilha, char *str){
-  PontPilha expressao = (PontPilha) malloc(sizeof(PilhaExpressoes));
-  int t = tamanhoPilha(pilha);
-  strcpy(expressao->dados[t],str);
-  expressao->proximo = pilha->topo_pilha;
-  pilha->topo_pilha = expressao->dados;
-}
-
 bool pilhaVazia(Pilha* pilha)
 {
   if(pilha->topo_pilha == NULL)
@@ -45,16 +37,22 @@ bool pilhaVazia(Pilha* pilha)
     return false;
 }
 
- char* desempilhar(Pilha *pilha){
-  PontPilha apagar;
+void empilhar(Pilha *pilha, char *str){
+  PontPilha expressao = (PontPilha) malloc(sizeof(PilhaExpressoes));
+  strcpy(expressao->dados,str);
+  expressao->proximo = pilha->topo_pilha;
+  pilha->topo_pilha = expressao;
+}
+
+void desempilhar(Pilha *pilha, char *str){
   if(pilhaVazia(pilha)) return;
   else
   {
-    apagar = pilha->topo_pilha;
+    PontPilha apagar = pilha->topo_pilha;
+    strcpy(str,apagar->dados);
     pilha->topo_pilha = pilha->topo_pilha->proximo;
     free(apagar);
   }
-  return apagar;
 }
 
 void imprimir(Pilha* pilha)
@@ -71,17 +69,19 @@ void imprimir(Pilha* pilha)
     int i;
     for(i = t; i >= 0; i--)
     {
-      printf("%s\n",end->dados[i]);
+      printf("%s\n",end->dados);
     }
 }
 
-bool ehOperador(char *oper){
+bool ehOperador(char *oper)
+{
   char c = oper[0];
   if(c == '+' || c == '-'|| c == '*'|| c == '/'|| c == '(' || c == ')') return true;
   else return false;
 }
 
-int pesoOperadores(char *str){
+int pesoOperadores(char *str)
+{
   int peso;
   char c = str[0];
   if(c == '*'|| c == '/') peso = 3;
@@ -108,41 +108,45 @@ void fragmentarStringEmPilha(Pilha *pilha, char *str_expressao)
   empilhar(pilha,str_composta);
 }
 
-void converterPosfixa(Pilha *pilha, Pilha *operadores, Pilha *pilha_pos_fixa){
+void converterPosfixa(Pilha *pilha, Pilha *operadores, Pilha *pilha_pos_fixa)
+{
   int i;
   PontPilha end = pilha->topo_pilha;
   int t = tamanhoPilha(pilha);
+  char *operador;
   for(i = t; i > 0; i--)
   {
-    if(!ehOperador(end->dados[i])){
-      empilhar(pilha_pos_fixa, end->dados[i]);
+    if(!ehOperador(end->dados)){
+      empilhar(pilha_pos_fixa, end->dados);
     }
-    else if(end->dados[i][0] == '('){
-      empilhar(operadores,end->dados[i]);
+    else if(end->dados == "("){
+      empilhar(operadores,end->dados);
     }
-    else if(end->dados[i][0] == ')')
+    else if(end->dados == ")")
     {
-      char *operador = desempilhar(operadores);
+      desempilhar(operadores,operador);
       while(strcmp(operador, "(") != 0 && !pilhaVazia(pilha))
       {
-          empilhar(pilha_pos_fixa,operador);
-          operador = desempilhar(operadores);
+        empilhar(pilha_pos_fixa,operador);
+        desempilhar(operadores,operador);
       }
     }
     else
     {
       int tamanho = tamanhoPilha(operadores);
       while (!pilhaVazia(operadores) &&
-      pesoOperadores(operadores->topo_pilha->dados[tamanho - 1]) >= pesoOperadores(end->dados[i]))
+      pesoOperadores(operadores->topo_pilha->dados) >= pesoOperadores(end->dados))
       {
-          empilhar(pilha_pos_fixa, desempilhar(operadores));
+        desempilhar(operadores,operador);
+        empilhar(pilha_pos_fixa, operador);
       }
-      empilhar(operadores, end->dados[i]);
+      empilhar(operadores, end->dados);
     }
   }
   while (!pilhaVazia(operadores))
   {
-      empilhar(pilha_pos_fixa, desempilhar(operadores));
+    desempilhar(operadores,operador);
+    empilhar(pilha_pos_fixa,operador);
   }
 }
 
@@ -158,11 +162,10 @@ void inverterPilha(Pilha *pilha)
 
     for(i = t; i <= 0; i--)
     {
-        empilhar(&temp,end->dados[i]);
+        empilhar(&temp,end->dados);
     }
 
     *pilha = temp;
-
 }
 
 int main(int argc, char *argv[]){
@@ -178,12 +181,16 @@ int main(int argc, char *argv[]){
 
   char str[] = "(3 + 1 * (3 * 1))";
   empilhar(&pilha,str);
-  fragmentarStringEmPilha(&pilha, str);
+  printf("tamanho = %d\n",tamanhoPilha(&pilha));
+  fragmentarStringEmPilha(&pilha,str);
+  printf("tamanho = %d\n",tamanhoPilha(&pilha));
   inverterPilha(&pilha);
+  printf("tamanho = %d\n",tamanhoPilha(&pilha));
   converterPosfixa(&pilha,&operadores,&pilha_pos_fixa);
-  //inverterPilha(&pilha_pos_fixa);
   imprimir(&pilha_pos_fixa);
-
+  printf("tamanho = %d\n",tamanhoPilha(&pilha));
+  inverterPilha(&pilha_pos_fixa);
+  printf("tamanho = %d\n",tamanhoPilha(&pilha));
 
   return 0;
 }
