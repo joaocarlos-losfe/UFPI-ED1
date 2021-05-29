@@ -82,22 +82,22 @@ bool ehOperador(char *operandoOuoperador)
     }   
 }
 
-bool expressaoValida(Pilha *pilha, char *str, int *QtdAbreparenteses, int *QtdFechaparenteses)
+bool expressaoValida(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto, int *qtdParentesefechado)
 {
-    bool valida = true;
+    bool valida  = true;
 
-    if (!isalpha(*str) || !ehOperador(str) )
-    {
+    if (str[0] == '(')
+        *qtdParenteseAberto +=1;
+    else if (str[0] == ')')
+        *qtdParentesefechado +=1;
+
+    if (ehOperador(str) && ehOperador(dadoTopo(pilha_expressao)) && str[0] != '(')
         valida = false;
-    }
-    else if (str[0] == '(' || str[0] == ')')
-    {
-        if (str[0] == '(')
-            *QtdAbreparenteses +=1;
-        else if (str[0] == ')')
-            *QtdFechaparenteses +=1;
-    }
+    
+
+    return valida;
 }
+
 
 bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
 {
@@ -106,9 +106,9 @@ bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
     char string_composta[5];
     int k = 0;
 
-    int QtdAbreparenteses = 0, QtdFechaparenteses = 0;
+    int qtdParenteseAberto = 0, qtdParentesefechado = 0;
 
-    bool expressao_valida = false;
+    bool expressao_valida = true;
 
     for(i=0; i<=strlen(str_expressao); i++)
     {
@@ -121,18 +121,16 @@ bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
         {
             string_composta[k] = '\0';
             k = 0;
-            expressao_valida = expressaoValida(expressoes, string_composta, &QtdAbreparenteses, &QtdFechaparenteses);
-            if(expressao_valida)
+            
+            if(expressaoValida(string_composta, expressoes, &qtdParenteseAberto, &qtdParentesefechado) == true)
                 empilhar(expressoes, string_composta);
             else
-            {
-                break;
-            }
+                expressao_valida = false;
         }
     }
     empilhar(expressoes, string_composta);
 
-    if (QtdAbreparenteses != QtdFechaparenteses)
+    if (qtdParenteseAberto != qtdParentesefechado)
         expressao_valida = false;
 
     return expressao_valida;
@@ -206,6 +204,8 @@ void converterPosfixa(Pilha *expressoes, Pilha *operadores, Pilha *pilha_pos_fix
 
 }
 
+
+
 int main()
 {
     setlocale(LC_ALL, "");
@@ -230,10 +230,7 @@ int main()
         exibirpilha(&pilha_pos_fixa);
     }
     else
-    {
-        printf("\nExpressão invalida !");
-    }
+        printf("expressão invalida !");
    
-
     return 0;
 }
