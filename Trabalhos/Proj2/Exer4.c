@@ -191,6 +191,6 @@ int main(int argc, char *argv[]){
   printf("tamanho = %d\n",tamanhoPilha(&pilha));
   inverterPilha(&pilha_pos_fixa);
   printf("tamanho = %d\n",tamanhoPilha(&pilha));
-
+  
   return 0;
 }
