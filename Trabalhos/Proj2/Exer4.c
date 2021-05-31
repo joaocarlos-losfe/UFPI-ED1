@@ -1,196 +1,268 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <ctype.h>
 #include <stdbool.h>
+
+// estrutura basica dos dados
 
 typedef struct aux
 {
-  char dados[20];
-  struct PilhaExpressoes *proximo;
+    char elemento_expressao[10];
+    struct aux* proximo_abaixo;
 
-}PilhaExpressoes, *PontPilha;
+}ElementoOperandoOperador, *PontElementoOperandoOperador;
 
 typedef struct
 {
-  PontPilha topo_pilha;
+    PontElementoOperandoOperador topo;
+
 }Pilha;
 
-int tamanhoPilha(Pilha *pilha)
+//opera��es basicas de pilha
+
+void inicializarPilha(Pilha *pilha)
 {
-  int cont = 0;
-
-  PontPilha end = pilha->topo_pilha;
-
-  while(end!=NULL)
-  {
-    cont++;
-    end = end->proximo;
-  }
-  return cont;
+    pilha->topo = NULL;
 }
 
-bool pilhaVazia(Pilha* pilha)
+bool vazia(Pilha *pilha)
 {
-  if(pilha->topo_pilha == NULL)
-    return true;
-  else
-    return false;
+    if(pilha->topo == NULL)
+        return true;
+    else
+        return false;
 }
 
-void empilhar(Pilha *pilha, char *str){
-  PontPilha expressao = (PontPilha) malloc(sizeof(PilhaExpressoes));
-  strcpy(expressao->dados,str);
-  expressao->proximo = pilha->topo_pilha;
-  pilha->topo_pilha = expressao;
-}
-
-void desempilhar(Pilha *pilha, char *str){
-  if(pilhaVazia(pilha)) return;
-  else
-  {
-    PontPilha apagar = pilha->topo_pilha;
-    strcpy(str,apagar->dados);
-    pilha->topo_pilha = pilha->topo_pilha->proximo;
-    free(apagar);
-  }
-}
-
-void imprimir(Pilha* pilha)
+void exibir(Pilha *pilha)
 {
-    int count = 1;
-    PontPilha end = pilha->topo_pilha;
-    int t = tamanhoPilha(pilha);
-
-    if(pilhaVazia(pilha))
+    if (!vazia(pilha))
     {
-        printf("Pilha vazia...\n");
-        return;
+        PontElementoOperandoOperador end_topo = pilha->topo;
+        printf("\n");
+        while (end_topo!=NULL)
+        {
+            printf("%s ", end_topo->elemento_expressao);
+            end_topo = end_topo->proximo_abaixo;
+        }
+        printf("\n");
     }
-    int i;
-    for(i = t; i >= 0; i--)
+}
+
+void empilhar(Pilha *pilha, char *elemento_expressao)
+{
+    PontElementoOperandoOperador novo_elemento_expressao = (PontElementoOperandoOperador) malloc(sizeof(ElementoOperandoOperador));
+    strcpy(novo_elemento_expressao->elemento_expressao, elemento_expressao);
+    novo_elemento_expressao->proximo_abaixo = pilha->topo;
+    pilha->topo = novo_elemento_expressao;
+
+}
+
+bool desempilhar(Pilha *pilha, char *temp_elemento_expressao)
+{
+    if (!vazia(pilha))
     {
-      printf("%s\n",end->dados);
-    }
-}
-
-bool ehOperador(char *oper)
-{
-  char c = oper[0];
-  if(c == '+' || c == '-'|| c == '*'|| c == '/'|| c == '(' || c == ')') return true;
-  else return false;
-}
-
-int pesoOperadores(char *str)
-{
-  int peso;
-  char c = str[0];
-  if(c == '*'|| c == '/') peso = 3;
-  else if(c == '+'|| c == '-') peso = 2;
-  else peso = 1;
-  return peso;
-}
-
-void fragmentarStringEmPilha(Pilha *pilha, char *str_expressao)
-{
-  int i, k = 0;
-  char str_composta[5];
-  for(i = 0; i <= strlen(str_expressao); i++){
-    if(str_expressao[i] != ' '){
-      str_composta[k] = str_expressao[i];
-      k++;
-    }
-    else{
-      str_composta[k] = '\0';
-      k = 0;
-      empilhar(pilha,str_composta);
-    }
-  }
-  empilhar(pilha,str_composta);
-}
-
-void converterPosfixa(Pilha *pilha, Pilha *operadores, Pilha *pilha_pos_fixa)
-{
-  int i;
-  PontPilha end = pilha->topo_pilha;
-  int t = tamanhoPilha(pilha);
-  char *operador;
-  for(i = t; i > 0; i--)
-  {
-    if(!ehOperador(end->dados)){
-      empilhar(pilha_pos_fixa, end->dados);
-    }
-    else if(end->dados == "("){
-      empilhar(operadores,end->dados);
-    }
-    else if(end->dados == ")")
-    {
-      desempilhar(operadores,operador);
-      while(strcmp(operador, "(") != 0 && !pilhaVazia(pilha))
-      {
-        empilhar(pilha_pos_fixa,operador);
-        desempilhar(operadores,operador);
-      }
+        strcpy(temp_elemento_expressao, pilha->topo->elemento_expressao);
+        PontElementoOperandoOperador apagar_end = pilha->topo;
+        pilha->topo = pilha->topo->proximo_abaixo;
+        free(apagar_end);
+        return true;
     }
     else
-    {
-      int tamanho = tamanhoPilha(operadores);
-      while (!pilhaVazia(operadores) &&
-      pesoOperadores(operadores->topo_pilha->dados) >= pesoOperadores(end->dados))
-      {
-        desempilhar(operadores,operador);
-        empilhar(pilha_pos_fixa, operador);
-      }
-      empilhar(operadores, end->dados);
-    }
-  }
-  while (!pilhaVazia(operadores))
-  {
-    desempilhar(operadores,operador);
-    empilhar(pilha_pos_fixa,operador);
-  }
+        return false;
+
 }
 
 void inverterPilha(Pilha *pilha)
 {
-    Pilha temp;
-    temp.topo_pilha = NULL;
-
-    PontPilha end = pilha->topo_pilha;
-    int t = tamanhoPilha(pilha);
-
-    int i;
-
-    for(i = t; i <= 0; i--)
+    if(!vazia(pilha))
     {
-        empilhar(&temp,end->dados);
-    }
+        Pilha pilha_temp; inicializarPilha(&pilha_temp);
+        char temp_elemento_expressao[10];
 
-    *pilha = temp;
+        while (!vazia(pilha))
+        {
+            desempilhar(pilha, temp_elemento_expressao);
+            empilhar(&pilha_temp, temp_elemento_expressao);
+        }
+
+        pilha->topo = pilha_temp.topo;
+
+    }
 }
 
-int main(int argc, char *argv[]){
-  Pilha pilha;
-  pilha.topo_pilha = NULL;
+// fun��es para compor a posfixa
 
-  Pilha operadores;
-  operadores.topo_pilha = NULL;
+void fragmentarString(char *str, Pilha *pilha)
+{
+    char str_composta[10];
+    int i = 0;
 
-  Pilha pilha_pos_fixa;
-  pilha_pos_fixa.topo_pilha = NULL;
+    strcat(str, " ");
+
+    while (*str!= '\0')
+    {
+        if(*str != ' ')
+        {
+            str_composta[i] = *str;
+            i++;
+        }
+        else
+        {
+            str_composta[i] = '\0';
+            i = 0;
+
+            empilhar(pilha, str_composta);
+        }
+
+        str++;
+    }
+}
+
+bool ehOperador(char *str)
+{
+    bool eh_operador = false;
+    switch (*str)
+    {
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '(':
+    case ')':
+        eh_operador = true;
+        break;
+    default:
+        break;
+    }
+
+    return eh_operador;
+}
+
+int prioridade(char *str)
+{
+    int prioridade = 0;
+    switch (*str)
+    {
+    case '+':
+    case '-':
+        prioridade = 2;
+        break;
+    case '*':
+    case '/':
+        prioridade = 3;
+        break;
+    case '(':
+    case ')':
+        prioridade = 1;
+        break;
+    }
+
+    return prioridade;
+}
+
+void converterPosfixa(Pilha *pilha_operando_operador, Pilha *pilha_operadores, Pilha *pilha_pos_fixa)
+{
+    inverterPilha(pilha_operando_operador);
+    exibir(pilha_operando_operador);
+
+    while (!vazia(pilha_operando_operador))
+    {
+        if (!ehOperador(pilha_operando_operador->topo->elemento_expressao))
+        {
+            empilhar(pilha_pos_fixa, pilha_operando_operador->topo->elemento_expressao);
+        }
+        else if(pilha_operando_operador->topo->elemento_expressao[0] == '(')
+        {
+            empilhar(pilha_operadores, pilha_operando_operador->topo->elemento_expressao);
+        }
+        else if (pilha_operando_operador->topo->elemento_expressao[0] == ')')
+        {
+            char operador[10];
+
+            desempilhar(pilha_operadores, operador);
+
+            while (strcmp(operador, "(") != 0 && !vazia(pilha_operando_operador))
+            {
+                empilhar(pilha_pos_fixa, operador);
+                desempilhar(pilha_operadores, operador);
+            }
+        }
+        else
+        {
+            char temp_elemento_expressao[10];
+            while (!vazia(pilha_operadores) &&
+            prioridade(pilha_operadores->topo->elemento_expressao) >=
+            prioridade(pilha_operando_operador->topo->elemento_expressao))
+            {
+                desempilhar(pilha_operadores, temp_elemento_expressao);
+                empilhar(pilha_pos_fixa, temp_elemento_expressao);
+            }
+
+            empilhar(pilha_operadores, pilha_operando_operador->topo->elemento_expressao);
+
+        }
+
+        pilha_operando_operador->topo = pilha_operando_operador->topo->proximo_abaixo;
+    }
+
+    while (!vazia(pilha_operadores))
+    {
+        char temp_elemento[5];
+        desempilhar(pilha_operadores, temp_elemento);
+        empilhar(pilha_pos_fixa, temp_elemento);
+    }
+
+    inverterPilha(pilha_pos_fixa);
+
+}
 
 
-  char str[] = "(3 + 1 * (3 * 1))";
-  empilhar(&pilha,str);
-  printf("tamanho = %d\n",tamanhoPilha(&pilha));
-  fragmentarStringEmPilha(&pilha,str);
-  printf("tamanho = %d\n",tamanhoPilha(&pilha));
-  inverterPilha(&pilha);
-  printf("tamanho = %d\n",tamanhoPilha(&pilha));
-  converterPosfixa(&pilha,&operadores,&pilha_pos_fixa);
-  imprimir(&pilha_pos_fixa);
-  printf("tamanho = %d\n",tamanhoPilha(&pilha));
-  inverterPilha(&pilha_pos_fixa);
-  printf("tamanho = %d\n",tamanhoPilha(&pilha));
-  
-  return 0;
+bool expressaoValida(char *str, Pilha *pilha, int *qtdParenteseAberto, int *qtdParentesefechado)
+{
+    bool valida  = true;
+
+    if (str[0] == '(')
+        *qtdParenteseAberto +=1;
+    else if (str[0] == ')')
+        *qtdParentesefechado +=1;
+
+    if (ehOperador(str) && ehOperador(pilha->topo->elemento_expressao) && str[0] != '(')
+        valida = false;
+
+
+    return valida;
+}
+
+int main()
+{
+    Pilha pilha_operando_operador; inicializarPilha(&pilha_operando_operador);
+    Pilha pilha_operadores; inicializarPilha(&pilha_operadores);
+    Pilha pilha_pos_fixa; inicializarPilha(&pilha_pos_fixa);
+
+    int qtdParenteseAberto = 0;
+    int qtdParentesefechado = 0;
+    char expressao[100];
+    bool s;
+
+    do{
+      printf("\nDigite a express�o: ");
+      scanf(" %[^\n]s", expressao);
+      strcat(expressao, " ");
+
+      s = expressaoValida(expressao,&pilha_operando_operador,&qtdParenteseAberto,&qtdParentesefechado);
+
+      if(s == false)
+        printf("Expressão Invalida\nDigite uma expressão válida\n");
+
+    }while(s == false);
+
+
+    fragmentarString(expressao, &pilha_operando_operador);
+
+    converterPosfixa(&pilha_operando_operador, &pilha_operadores, &pilha_pos_fixa);
+
+    exibir(&pilha_pos_fixa);
+    return 0;
 }
