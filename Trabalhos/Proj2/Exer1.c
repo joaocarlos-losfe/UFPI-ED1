@@ -97,8 +97,9 @@ int main()
                 if (busca != -1)
                 {
                     manobrar(&fila_de_carros, carro.placa,&contador); //retira o carro da fina
-                    printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, busca+1);
-                    printf("\nPara o carro sair foi preciso manobrar %d carros\n",contador - 1);
+                    busca+=1;
+                    printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, busca);
+                    printf("\nPara o carro sair foi preciso manobrar %d carros\n",contador - busca);
                 }
                 else
                     printf("\ncarro não se encontra no estacionamento...");
