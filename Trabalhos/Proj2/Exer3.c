@@ -82,7 +82,7 @@ bool ehOperador(char *operandoOuoperador)
     }   
 }
 
-bool expressaoValida(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto, int *qtdParentesefechado)
+bool validarExpressao(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto, int *qtdParentesefechado)
 {
     bool valida  = true;
 
@@ -122,7 +122,7 @@ bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
             string_composta[k] = '\0';
             k = 0;
             
-            if(expressaoValida(string_composta, expressoes, &qtdParenteseAberto, &qtdParentesefechado) == true)
+            if(validarExpressao(string_composta, expressoes, &qtdParenteseAberto, &qtdParentesefechado) == true)
                 empilhar(expressoes, string_composta);
             else
                 expressao_valida = false;
