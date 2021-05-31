@@ -1,3 +1,38 @@
+/*
+	Quinta questão referente a primeira avaliação da discpina de Estrurura de dados I.
+
+	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
+    
+	Data de inicio da resolução deste exercicio: 29/05/2021
+
+	Questão 5. Implementação dinamica
+    
+            Escalonador é uma parte do Sistema Operacional que escolhe de uma fila de prontos o próximo 
+        processo a ocupar o processador. Suponha que nosso escalonador mantenha 3 filas dinâmicas, de 
+        acordo com a prioridade do processo. 
+        Cada processo possui as seguintes informações: o seu número, o tempo de processamento que o 
+        mesmo necessita em segundos e a prioridade do mesmo para que ele possa ser inserido na fila de 
+        acordo com a sua prioridade. 
+        O escalonador deve sempre escolher primeiro os processos da fila de maior prioridade e somente 
+        passar para outra fila quando todos os processos da fila atual tiver sido executado pelo menos 2 vezes, 
+        ou seja, ficar vazia. Quando o escalonador retira o primeiro processo da fila para usar o processador, o mesmo só pode 
+        ficar 1s utilizando o processador, terminado este tempo o escalonador diminui de 1 o tempo de 
+        processamento deste processo e verifica seu valor. Se o valor do tempo de processamento atual for 0, o 
+        processo é finalizado, ou seja, retirado da fila, caso contrário, será verificado quantas vezes o processo 
+        passou nesta fila para decidir em qual fila o mesmo será inserido. Se o processo passou somente 1 vez 
+        será colocado ao final da mesma fila, se passou 2 vezes será colocado ao final da próxima fila de 
+        prioridade abaixo da atual. Caso ele já esteja na última fila, ou seja, na fila de menor prioridade, o 
+        processo será inserido ao final desta fila até que o mesmo termine independente do número de vezes 
+        que já passou por ela.
+        Faça um programa em C que tenha um menu de opções para inserir processos em uma fila do 
+        escalonador, para o escalonador escolher o processo(caso não existia nenhum processo na fila emitir 
+        uma mensagem), para mostrar os processos das filas, para mostrar o próximo processo que irá utilizar 
+        o processador, mostrar quantos processos tem em cada fila, para mostrar quanto tempo falta para 
+        executar os processos de uma determinada fila e para mostrar quanto tempo de processamento ainda 
+        falta para chegar em um determinado processo e mostrar quanto tempo de processamento ainda restam 
+        para terminar cada fila e todas as filas
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>

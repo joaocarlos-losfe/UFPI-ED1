@@ -1,3 +1,23 @@
+/*
+	Terceira questão referente a primeira avaliação da discpina de Estrurura de dados I.
+
+	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
+
+	Data de inicio da resolução dos exercicios: 25/05/2021
+
+	Questão 3. Implementação estatica
+    
+		Faça um programa em C onde o usuário digita uma expressão matemática no modo in-fixa e então o 
+    programa verifica se a expressão é válida, depois use pilha estática para converter para o modo pós-fixa.
+    Obs. 1: A expressão deve ser lida em uma string, e a string deve ser no máximo de 100 caracteres.
+    Obs. 2: A expressão só pode conter dígitos e os operadores: (, +, -, *, /,); cada número e operador deve 
+    ser separado por um espaço em branco, podendo a sim um número possuir mais de um dígito. 
+    Exemplo: 130 + 50 - 25
+    Obs. 4: A expressão deve sempre iniciar com operando ou abre parênteses e terminar com operando ou 
+    fecha parênteses.
+    
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,6 +84,26 @@ char * dadoTopo(Pilha *pilha)
     return pilha->dados[pilha->topo-1];
 }
 
+bool ehNumero(char *str)
+{
+    bool eh_numero = true;
+    int i = 0;
+    char temp_str[10];
+
+    while (str[i] != '\0')
+    {
+        if(!isdigit(str[i]))
+        {
+            eh_numero = false;
+            break;
+        }
+
+        i++;
+    }
+    
+    return eh_numero;
+}
+
 bool ehOperador(char *operandoOuoperador)
 {
     switch (operandoOuoperador[0])
@@ -82,7 +122,7 @@ bool ehOperador(char *operandoOuoperador)
     }   
 }
 
-bool validarExpressao(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto, int *qtdParentesefechado)
+bool validarExpressao(char *str, Pilha *pilha, int *qtdParenteseAberto, int *qtdParentesefechado)
 {
     bool valida  = true;
 
@@ -91,10 +131,35 @@ bool validarExpressao(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto
     else if (str[0] == ')')
         *qtdParentesefechado +=1;
 
-    if (ehOperador(str) && ehOperador(dadoTopo(pilha_expressao)) && str[0] != '(')
+    if (!ehNumero(str) && !ehOperador(str))
+    {
         valida = false;
-    
+    }
+    else
+    {
+        if (!vazia(pilha))
+        {
+            if (ehNumero(str) && ehNumero(pilha->dados[pilha->topo-1]))
+            {
+                valida = false;
+            }
+            else if (ehOperador(str) && ehOperador(pilha->dados[pilha->topo-1]))
+            {
+                valida = false;
 
+                if (str[0] == '(' || pilha->dados[pilha->topo-1][0] == ')')
+                {
+                    valida = true;
+                }
+            }
+            else if (str[0] == '(' && ehNumero(pilha->dados[pilha->topo-1]))
+            {
+                valida = false;
+            }
+            
+        }
+    }
+    
     return valida;
 }
 
@@ -102,7 +167,7 @@ bool validarExpressao(char *str, Pilha *pilha_expressao, int *qtdParenteseAberto
 bool fragmentarStringEmPilha(char *str_expressao, Pilha *expressoes)
 {
     int i;
-
+    strcat(str_expressao, " ");
     char string_composta[5];
     int k = 0;
 
@@ -164,6 +229,8 @@ void converterPosfixa(Pilha *expressoes, Pilha *operadores, Pilha *pilha_pos_fix
 {
     int i = 0;
 
+    inverterPilha(expressoes);
+
     for(i=expressoes->topo-1; i>0; i--)
     {
         if(!ehOperador(expressoes->dados[i]))
@@ -202,9 +269,9 @@ void converterPosfixa(Pilha *expressoes, Pilha *operadores, Pilha *pilha_pos_fix
         empilhar(pilha_pos_fixa, desempilhar(operadores));
     }
 
+    inverterPilha(pilha_pos_fixa);
+
 }
-
-
 
 int main()
 {
@@ -218,19 +285,34 @@ int main()
     Pilha pilha_pos_fixa; pilha_pos_fixa.topo = 0;
 
     char expressao[100];
-    printf("\nDigite a expressão: "); scanf(" %[^\n]s", expressao);
-    strcat(expressao, " ");
 
-    if(fragmentarStringEmPilha(expressao, &pilha_expressao) == true)
+    bool valida = false;
+
+    do
     {
-        inverterPilha(&pilha_expressao);
-        converterPosfixa(&pilha_expressao, &operadores, &pilha_pos_fixa);
-        inverterPilha(&pilha_pos_fixa);
-        printf("\nExpressão posfixa: ");
-        exibirpilha(&pilha_pos_fixa);
-    }
-    else
-        printf("expressão invalida !");
+        setbuf(stdin, NULL);
+        printf("\nDigite uma expressão (digite 0 para sair): "); scanf(" %[^\n]s", expressao);
+
+        if (expressao[0] != '0')
+        {
+            valida = fragmentarStringEmPilha(expressao, &pilha_expressao);
+
+            if (valida)
+            {
+                converterPosfixa(&pilha_expressao, &operadores, &pilha_pos_fixa);
+                exibirpilha(&pilha_pos_fixa);
+            }
+            else
+                printf("\nExpressão Invalida !\n");
+            
+            pilha_expressao.topo = 0;
+            operadores.topo = 0;
+            pilha_pos_fixa.topo = 0;
+
+        }
+
+    } while (expressao[0] != '0');
+    
    
     return 0;
 }

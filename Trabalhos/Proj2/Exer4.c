@@ -1,3 +1,24 @@
+/*
+	Quarta questão referente a primeira avaliação da discpina de Estrurura de dados I.
+
+	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
+
+	Data de inicio da resolução dos exercicios: 28/05/2021
+
+	Questão 4. Implementação dinamica
+
+		Faça um programa em C onde o usuário digita uma expressão matemática no modo in-fixa e então o 
+    programa verifica se a expressão é válida, depois use pilha estática para converter para o modo pós-fixa.
+    Obs. 1: A expressão deve ser lida em uma string, e a string deve ser no máximo de 100 caracteres.
+    Obs. 2: A expressão só pode conter dígitos e os operadores: (, +, -, *, /,); cada número e operador deve 
+    ser separado por um espaço em branco, podendo a sim um número possuir mais de um dígito. 
+    Exemplo: 130 + 50 - 25
+    Obs. 4: A expressão deve sempre iniciar com operando ou abre parênteses e terminar com operando ou 
+    fecha parênteses.
+    
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -319,7 +340,7 @@ int main()
     int qtdParenteseAberto = 0;
     int qtdParentesefechado = 0;
     char expressao[100];
-    bool valida;
+    bool valida = false;
 
     do
     {

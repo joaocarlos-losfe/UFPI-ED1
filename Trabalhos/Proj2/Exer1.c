@@ -1,3 +1,30 @@
+/*
+	Primeira questão referente a primeira avaliação da discpina de Estrurura de dados I.
+
+	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
+
+	Data de inicio da resolução deste exercicio: 10/05/2021
+
+	Questão 1. Implementação estatica
+    
+        O estacionamento Picoense contém uma única alameda que guarda até 10 carros. Existe uma entrada e 
+        uma saída, de tal forma que quando um determinado carro entra ele fica no final da fila e o primeiro 
+        que chegou sempre fica próximo a saída, ou seja, todas as vezes que um carro sai todos os outros 
+        devem ser manobrados um espaço para frente. Faça um programa em C, onde o usuário entrará com o 
+        número da placa do carro e 'E' se estiver entrando no estacionamento e 'S' se estiver saindo do 
+        estacionamento. O programa deve emitir uma mensagem sempre que um carro entrar ou sair do 
+        estacionamento. Quando um carro chegar, a mensagem deve especificar se existe ou não vaga no 
+        estacionamento, esse não tiver vaga, simplesmente o carro vai embora, não existe fila de espera. 
+        Quando um carro sair, a mensagem deverá incluir o número de vezes em que o carro foi manobrado 
+        para fora do estacionamento para permitir que outros carros saíssem, além de mostrar quantos carros 
+        foram manobrados para que ele saísse.
+        Obs.: Não se esqueça que todas as vezes que um carro vai sair os que estão na frente devem ser 
+        manobrados para o final da fila, mas ao final os carros que estava na frente do carro que saiu devem 
+        continuar no mesmo lugar de antes, ou seja, todos os demais carros devem ir para o fim da fila, mas 
+        não deve ser contabilizado como manobra.
+    
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
