@@ -179,7 +179,7 @@ bool validarExpressao(char *str, Pilha *pilha, int *qtdParenteseAberto, int *qtd
         *qtdParenteseAberto +=1;
     else if (str[0] == ')')
         *qtdParentesefechado +=1;
-    
+
     if (!ehNumero(str) && !ehOperador(str))
     {
         valida = false;
@@ -188,11 +188,23 @@ bool validarExpressao(char *str, Pilha *pilha, int *qtdParenteseAberto, int *qtd
     {
         if (!vazia(pilha))
         {
-            if ( ehOperador(pilha->topo->elemento_expressao) && ehOperador(str) &&  str[0] != '(') 
+            if (ehOperador(str) && ehOperador(pilha->topo->elemento_expressao))
+            {
+               
+                if (str[0] == '(' || pilha->topo->elemento_expressao[0] == ')')
+                {
+                    valida = true;
+                }
+                else
+                {
+                    valida = false;
+                }   
+            }
+            else if (str[0] == '(' && ehNumero(pilha->topo->elemento_expressao) )
             {
                 valida = false;
             }
-    
+            
         }
     }
     
