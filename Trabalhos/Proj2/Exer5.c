@@ -126,8 +126,6 @@ int main()
             tempoRestanteFilasMenu(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         case 7:
-            break;
-        case 8:
             processamentoRestanteTodasAsfilas(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         default:
@@ -354,8 +352,7 @@ void menu()
     printf("\n 4 - Mostrar proximo processo que irá utilizar o processador");
     printf("\n 5 - Mostrar quantos processos tem em cada fila");
     printf("\n 6 - Mostrar quanto tempo falta para executar os processos de uma determinada fila ");
-    printf("\n 7 - Mostrar quanto tempo de processamento ainda falta para chegar em um determinado processo");
-    printf("\n 8 - Mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
+    printf("\n 7 - Mostrar quanto tempo de processamento ainda restam para terminar cada fila e todas as filas");
     printf("\n\n > ");
    
 }

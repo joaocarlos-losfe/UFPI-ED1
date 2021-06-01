@@ -35,7 +35,7 @@ typedef struct aux
 	Aluno aluno;
 	struct aux* proximo;
 
-} Elemento,  *DadosPont;
+} expressao,  *DadosPont;
 
 typedef struct
 {
@@ -66,7 +66,7 @@ int contarElementosFila(FilaPrincipal *fila)
 
 void inserirAluno(FilaPrincipal *fila, Aluno aluno)
 {
-	DadosPont novo_aluno = (DadosPont) malloc(sizeof(Elemento));
+	DadosPont novo_aluno = (DadosPont) malloc(sizeof(expressao));
 
 	novo_aluno->aluno = aluno;
 	novo_aluno->proximo = NULL;
@@ -143,7 +143,7 @@ void sairDaFila(FilaPrincipal *fila, int matricula)
 
 	bool achou_aluno = false;
 
-	while (end != NULL) // inserir dados (execeto oque se quer remover)
+	while (end != NULL) // inserir valor_operador (execeto oque se quer remover)
 	{
 
 		if(end->aluno.matricula != matricula)

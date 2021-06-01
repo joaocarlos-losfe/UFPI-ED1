@@ -100,6 +100,7 @@ int main()
                     busca+=1;
                     printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, contador-busca);
                     printf("\nPara o carro sair foi preciso manobrar %d carros\n",busca-1);
+                    contador = 0;
                 }
                 else
                     printf("\ncarro não se encontra no estacionamento...");
