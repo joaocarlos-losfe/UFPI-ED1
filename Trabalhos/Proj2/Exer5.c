@@ -85,7 +85,7 @@ int randomizar();
 void menu();
 void cadastroProcesso(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void exibirListadeprocessosDefinida(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
-void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
+void filaProcessoParaExecutar(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void tempoRestanteFilasMenu(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 void processamentoRestanteTodasAsfilas(FilaProcessos *fila_de_processos_maior_prioridade, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3);
 
@@ -111,7 +111,7 @@ int main()
             cadastroProcesso(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         case 2:
-            filaProcessoParaExecutarMenu(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
+            filaProcessoParaExecutar(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
             break;
         case 3:
             exibirListadeprocessosDefinida(&fila_de_processos_maior_prioridade, &processos_prioridade_2, &processos_prioridade_3);
@@ -235,7 +235,7 @@ void proximosProcessos(FilaProcessos *processos_prioridade_1, FilaProcessos *pro
     printf("\n");
 }
 
-void filaProcessoParaExecutarMenu(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
+void filaProcessoParaExecutar(FilaProcessos *processos_prioridade_1, FilaProcessos *processos_prioridade_2, FilaProcessos *processos_prioridade_3)
 {
     if (processos_prioridade_1->inicio != NULL)
     {
