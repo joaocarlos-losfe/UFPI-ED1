@@ -1,28 +1,28 @@
 /*
-	Primeira questão referente a primeira avaliação da discpina de Estrurura de dados I.
+	Primeira questï¿½o referente a primeira avaliaï¿½ï¿½o da discpina de Estrurura de dados I.
 
-	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
+	Autores: Joï¿½o Carlos de Sousa Fï¿½ && Vitor Josï¿½ Ferreira dos Santos de Santana.
 
-	Data de inicio da resolução deste exercicio: 10/05/2021
+	Data de inicio da resoluï¿½ï¿½o deste exercicio: 10/05/2021
 
-	Questão 1. Implementação estatica
-    
-        O estacionamento Picoense contém uma única alameda que guarda até 10 carros. Existe uma entrada e 
-        uma saída, de tal forma que quando um determinado carro entra ele fica no final da fila e o primeiro 
-        que chegou sempre fica próximo a saída, ou seja, todas as vezes que um carro sai todos os outros 
-        devem ser manobrados um espaço para frente. Faça um programa em C, onde o usuário entrará com o 
-        número da placa do carro e 'E' se estiver entrando no estacionamento e 'S' se estiver saindo do 
-        estacionamento. O programa deve emitir uma mensagem sempre que um carro entrar ou sair do 
-        estacionamento. Quando um carro chegar, a mensagem deve especificar se existe ou não vaga no 
-        estacionamento, esse não tiver vaga, simplesmente o carro vai embora, não existe fila de espera. 
-        Quando um carro sair, a mensagem deverá incluir o número de vezes em que o carro foi manobrado 
-        para fora do estacionamento para permitir que outros carros saíssem, além de mostrar quantos carros 
-        foram manobrados para que ele saísse.
-        Obs.: Não se esqueça que todas as vezes que um carro vai sair os que estão na frente devem ser 
-        manobrados para o final da fila, mas ao final os carros que estava na frente do carro que saiu devem 
-        continuar no mesmo lugar de antes, ou seja, todos os demais carros devem ir para o fim da fila, mas 
-        não deve ser contabilizado como manobra.
-    
+	Questï¿½o 1. Implementaï¿½ï¿½o estatica
+
+        O estacionamento Picoense contï¿½m uma ï¿½nica alameda que guarda atï¿½ 10 carros. Existe uma entrada e
+        uma saï¿½da, de tal forma que quando um determinado carro entra ele fica no final da fila e o primeiro
+        que chegou sempre fica prï¿½ximo a saï¿½da, ou seja, todas as vezes que um carro sai todos os outros
+        devem ser manobrados um espaï¿½o para frente. Faï¿½a um programa em C, onde o usuï¿½rio entrarï¿½ com o
+        nï¿½mero da placa do carro e 'E' se estiver entrando no estacionamento e 'S' se estiver saindo do
+        estacionamento. O programa deve emitir uma mensagem sempre que um carro entrar ou sair do
+        estacionamento. Quando um carro chegar, a mensagem deve especificar se existe ou nï¿½o vaga no
+        estacionamento, esse nï¿½o tiver vaga, simplesmente o carro vai embora, nï¿½o existe fila de espera.
+        Quando um carro sair, a mensagem deverï¿½ incluir o nï¿½mero de vezes em que o carro foi manobrado
+        para fora do estacionamento para permitir que outros carros saï¿½ssem, alï¿½m de mostrar quantos carros
+        foram manobrados para que ele saï¿½sse.
+        Obs.: Nï¿½o se esqueï¿½a que todas as vezes que um carro vai sair os que estï¿½o na frente devem ser
+        manobrados para o final da fila, mas ao final os carros que estava na frente do carro que saiu devem
+        continuar no mesmo lugar de antes, ou seja, todos os demais carros devem ir para o fim da fila, mas
+        nï¿½o deve ser contabilizado como manobra.
+
 */
 
 #include <stdio.h>
@@ -80,7 +80,7 @@ int main()
 
             if(E_S == 'E' || E_S == 'e')
             {
-                if(buscar(&fila_de_carros, carro.placa) == -1) // se retorna -1, significa que não encontrou
+                if(buscar(&fila_de_carros, carro.placa) == -1) // se retorna -1, significa que nï¿½o encontrou
                 {
                     if(cadastro(&fila_de_carros, carro) == true) // retorna true se a fila ainda tem vaga
                         printf("\nCarro inserido na fila...");
@@ -98,8 +98,8 @@ int main()
                 {
                     manobrar(&fila_de_carros, carro.placa,&contador); //retira o carro da fina
                     busca+=1;
-                    printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, busca);
-                    printf("\nPara o carro sair foi preciso manobrar %d carros\n",contador - busca);
+                    printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, contador-busca);
+                    printf("\nPara o carro sair foi preciso manobrar %d carros\n",busca-1);
                 }
                 else
                     printf("\ncarro nÃ£o se encontra no estacionamento...");
@@ -130,7 +130,7 @@ bool cadastro(FilaCarro *fila_de_carros, Carro carro)
 
     if(fila_de_carros->fim == NCARRO) // verifica se a quantidade "fim" da fila Ã© igual ao numero de carros permitido
     {
-        return false; //naão é possivel inserir mais carros
+        return false; //naï¿½o ï¿½ possivel inserir mais carros
     }
     else
     {
@@ -146,7 +146,7 @@ void imprimir(FilaCarro *fila_de_carros)
 
     for(i=0; i<fila_de_carros->fim; i++)
     {
-        printf("\n%d", fila_de_carros->carros[i].placa); // imprime os carros na posicão da fila
+        printf("\n%d", fila_de_carros->carros[i].placa); // imprime os carros na posicï¿½o da fila
     }
 }
 
@@ -159,12 +159,12 @@ int buscar(FilaCarro *fila_de_carros, int placa)
     {
         if(placa == fila_de_carros->carros[i].placa)
         {
-            busca = i; // guarda a posição do carro na fila
+            busca = i; // guarda a posiï¿½ï¿½o do carro na fila
             break;
         }
     }
 
-    return busca; // se retorna -1, nenhum carro foi encontrado. se não for encontrado, retorna a posiÃ§Ã£o do carro na fila
+    return busca; // se retorna -1, nenhum carro foi encontrado. se nï¿½o for encontrado, retorna a posiÃ§Ã£o do carro na fila
 }
 
 void manobrar(FilaCarro *fila_de_carros, int placa, int *contador)
