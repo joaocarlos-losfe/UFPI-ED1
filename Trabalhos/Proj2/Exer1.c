@@ -103,7 +103,6 @@ void remover(Fila *fila, Carro *carro)
 {
 	if(!filaVazia(fila))
 	{
-		int removidos = 0;
 		int i;
 		
 		*carro = fila->carros[0];
@@ -111,10 +110,10 @@ void remover(Fila *fila, Carro *carro)
 		for(i = 0; i < fila->fim; i++)
 		{
 			fila->carros[i] = fila->carros[i + 1];
-			removidos += 1;
+			
 		}
 
-		fila->fim = removidos - 1;
+		fila->fim-=1;
 	}
 	else
 	{
