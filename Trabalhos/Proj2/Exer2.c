@@ -112,14 +112,14 @@ int menu(int *op, FilaCarros *fila_de_carros)
         }
         else if (E_S == 'S' || E_S == 's')
         {
-          printf("ttese\n");
             int busca = buscar(fila_de_carros,carro.placa);
             removerCarroFila(fila_de_carros, &carro, &carros_movidos);
+
             printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, carros_movidos - busca);
-            printf("\nCarros manobrados %d carros\n",busca);
+            printf("\nPara o carro sair foi preciso manobrar %d carros\n",busca);
         }
         else
-            printf("\nOperaï¿½ï¿½o cancelada...");
+            printf("\nOperação cancelada...");
 
         printf("\n");
         break;
