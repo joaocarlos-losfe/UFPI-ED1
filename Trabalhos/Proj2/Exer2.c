@@ -1,274 +1,271 @@
 /*
-	Segunda questï¿½o referente a primeira avaliaï¿½ï¿½o da discpina de Estrurura de dados I.
+	Segunda questão referente a segunda avaliação da discpina de Estrurura de dados I.
 
-	Autores: Joï¿½o Carlos de Sousa Fï¿½ && Vitor Josï¿½ Ferreira dos Santos de Santana.
+	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
 
-	Data de inicio da resoluï¿½ï¿½o deste exercicio: 10/05/2021
+	Data de inicio da resolução deste exercicio: 10/05/2021
 
-	Questï¿½o 2. Implementaï¿½ï¿½o dinamica
+	Questão 2. Implementação dinamica
 
-        O estacionamento Picoense contï¿½m uma ï¿½nica alameda que guarda atï¿½ 10 carros. Existe uma entrada e
-        uma saï¿½da, de tal forma que quando um determinado carro entra ele fica no final da fila e o primeiro
-        que chegou sempre fica prï¿½ximo a saï¿½da, ou seja, todas as vezes que um carro sai todos os outros
-        devem ser manobrados um espaï¿½o para frente. Faï¿½a um programa em C, onde o usuï¿½rio entrarï¿½ com o
-        nï¿½mero da placa do carro e 'E' se estiver entrando no estacionamento e 'S' se estiver saindo do
-        estacionamento. O programa deve emitir uma mensagem sempre que um carro entrar ou sair do
-        estacionamento. Quando um carro chegar, a mensagem deve especificar se existe ou nï¿½o vaga no
-        estacionamento, esse nï¿½o tiver vaga, simplesmente o carro vai embora, nï¿½o existe fila de espera.
-        Quando um carro sair, a mensagem deverï¿½ incluir o nï¿½mero de vezes em que o carro foi manobrado
-        para fora do estacionamento para permitir que outros carros saï¿½ssem, alï¿½m de mostrar quantos carros
-        foram manobrados para que ele saï¿½sse.
-        Obs.: Nï¿½o se esqueï¿½a que todas as vezes que um carro vai sair os que estï¿½o na frente devem ser
-        manobrados para o final da fila, mas ao final os carros que estava na frente do carro que saiu devem
-        continuar no mesmo lugar de antes, ou seja, todos os demais carros devem ir para o fim da fila, mas
-        nï¿½o deve ser contabilizado como manobra.
+        O estacionamento Picoense contém uma única alameda que guarda até 10 carros. Existe uma entrada e 
+    uma saída, de tal forma que quando um determinado carro entra ele fica no final da fila e o primeiro 
+    que chegou sempre fica próximo a saída, ou seja, todas as vezes que um carro sai todos os outros 
+    devem ser manobrados um espaço para frente. Faça um programa em C, onde o usuário entrará com o 
+    número da placa do carro e 'E' se estiver entrando no estacionamento e 'S' se estiver saindo do 
+    estacionamento. O programa deve emitir uma mensagem sempre que um carro entrar ou sair do 
+    estacionamento. Quando um carro chegar, a mensagem deve especificar se existe ou não vaga no 
+    estacionamento, esse não tiver vaga, simplesmente o carro vai embora, não existe fila de espera. 
+    Quando um carro sair, a mensagem deverá incluir o número de vezes em que o carro foi manobrado 
+    para fora do estacionamento para permitir que outros carros saíssem, além de mostrar quantos carros 
+    foram manobrados para que ele saísse.
+    Obs.: Não se esqueça que todas as vezes que um carro vai sair os que estão na frente devem ser 
+    manobrados para o final da fila, mas ao final os carros que estava na frente do carro que saiu devem 
+    continuar no mesmo lugar de antes, ou seja, todos os demais carros devem ir para o fim da fila, mas 
+    não deve ser contabilizado como manobra.
 
 */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 #include <locale.h>
 #include <stdbool.h>
-// estruturas
 
 typedef struct
 {
-    int placa;
+	int placa;
 
-}CarroInfo;
+} Carro;
 
+#define M 10
 
 typedef struct aux
 {
-	CarroInfo carro;
-	struct aux* proximo_carro;
+	Carro carro;
+	struct aux* proximo;
 
-}Carro,  *PontCarro; // mesma coisa que Carro * (ponteiro para um carro)
+} CarroDado, *PontCarro;
 
 typedef struct
 {
 	PontCarro inicio;
 	PontCarro fim;
-    int maximo_de_carros;
-    int total_de_carros_estacionados;
+	int qtd_carros;
 
-}FilaCarros;
+} Fila;
 
-// opercï¿½ï¿½es basicas de fila
-
-int numeroDeCarrosFila(FilaCarros *fila_carros);
-bool inserirCarroFila(FilaCarros *fila_carros, CarroInfo carro);
-bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro, int *movido);
-void exibirCarrosFila(FilaCarros *fila_carros);
-int buscar(FilaCarros *fila_carros, int placa);
-void debug(FilaCarros *fila_carros);
-int menu(int *op, FilaCarros *fila_de_carros);
-
-int main()
+void inicializar(Fila *fila)
 {
-    setlocale(LC_ALL, "");
-    FilaCarros fila_de_carros;
-    fila_de_carros.inicio = fila_de_carros.fim = NULL;
-    fila_de_carros.maximo_de_carros = 10;
-    fila_de_carros.total_de_carros_estacionados = 0;
-    int op;
-    //debug(&fila_de_carros);
-    while(menu(&op, &fila_de_carros) != 0);
-
-    return 0;
+	fila->inicio = NULL;
+	fila->fim = NULL;
+	fila->qtd_carros = 0;
 }
 
-int menu(int *op, FilaCarros *fila_de_carros)
+bool filaVazia(Fila *fila)
 {
-    char E_S;
-    CarroInfo carro;
+	bool vazia = false;
 
-    int carros_movidos = 0;
+	if(fila->inicio == NULL)
+		vazia = true;
 
-    printf("\n0 - Sair do programa");
-	printf("\n1 - Estacionamento");
-    printf("\n2 - Mostrar fila de carros \n");
-	printf(": "); scanf("%d", op);
-
-    switch (*op)
-    {
-    case 1:
-        printf("\nPlaca do Carro: "); scanf("%d", &carro.placa);
-        printf("\nEntrar ou Sair do estacionamento: E - Entrar S - Sair: "); scanf(" %c", &E_S);
-
-        if(E_S == 'E' || E_S == 'e')
-        {
-            if (fila_de_carros->total_de_carros_estacionados == fila_de_carros->maximo_de_carros)
-                printf("\nFila de carros cheia...");
-            else
-            {
-                inserirCarroFila(fila_de_carros, carro);
-
-                fila_de_carros->total_de_carros_estacionados +=1;
-
-                printf("\nCarro %d entrou na fila...", fila_de_carros->total_de_carros_estacionados);
-            }
-
-        }
-        else if (E_S == 'S' || E_S == 's')
-        {
-            int busca = buscar(fila_de_carros,carro.placa);
-            removerCarroFila(fila_de_carros, &carro, &carros_movidos);
-
-            printf("\nCarro com placa %d saiu do estacionamento...Total de vezes que foi manobrado: %d vezes", carro.placa, carros_movidos - busca);
-            printf("\nPara o carro sair foi preciso manobrar %d carros\n",busca);
-        }
-        else
-            printf("\nOperação cancelada...");
-
-        printf("\n");
-        break;
-    case 2:
-        if(fila_de_carros->inicio == NULL)
-            printf("\nFila vazia...");
-        else
-            exibirCarrosFila(fila_de_carros);
-
-        printf("\n");
-        break;
-    default:
-        break;
-    }
-
-    return *op;
+	return vazia;
 }
 
-int numeroDeCarrosFila(FilaCarros *fila_carros)
+bool filaCheia(Fila *fila)
 {
-    PontCarro end = fila_carros->inicio;
-    int contador = 0;
+	bool cheia = false;
 
-    while (end != NULL)
-    {
-        contador++;
-        end = end->proximo_carro;
-    }
+	if(fila->qtd_carros == M)
+		cheia = true;
 
-    return contador;
-
+	return cheia;
 }
 
-bool inserirCarroFila(FilaCarros *fila_carros, CarroInfo carro)
+void exibir(Fila *fila)
 {
-    PontCarro novo_carro = (PontCarro) malloc(sizeof(Carro));
+	if(!filaVazia(fila))
+	{
+		PontCarro end = fila->inicio;
+		int p = 1;
 
-    if (novo_carro == NULL)
-        return false;
-    else
-    {
-        novo_carro->carro = carro;
-        novo_carro->proximo_carro = NULL;
+		while(end != NULL)
+		{
+			printf("\ncarro %d placa: %d", p, end->carro.placa);
 
-        if (fila_carros->inicio == NULL)
-            fila_carros->inicio = novo_carro;
-        else
-            fila_carros->fim->proximo_carro = novo_carro;
+			end = end->proximo;
 
-        fila_carros->fim = novo_carro;
-
-        return true;
-    }
-
+			p++;
+		}
+	}
+	else
+		printf("\nFila vazia...\n");
 }
 
-int buscar(FilaCarros *fila_carros, int placa)
+void inserir(Fila *fila, Carro carro)
 {
-  PontCarro end = fila_carros->inicio;
-  int busca = 0;
+	if(filaCheia(fila))
+		printf("\nFila cheia !!!\n");
+	else
+	{
+		PontCarro novo_carro = (PontCarro) malloc(sizeof(CarroDado));
+		novo_carro->carro = carro;
+		novo_carro->proximo = NULL;
 
-  do
-  {
-    if(end->carro.placa == placa){
-      break;
-    }
-    end = end->proximo_carro;
-    busca++;
-  }while(end != NULL);
+		if(fila->inicio == NULL)
+			fila->inicio = novo_carro;
+		else
+			fila->fim->proximo = novo_carro;
 
-  return busca;
+		fila->fim = novo_carro;
+
+		fila->qtd_carros += 1;
+	}
 }
 
-bool removerCarroFila(FilaCarros *fila_carros, CarroInfo *carro,int *movido)
+void remover(Fila *fila, Carro *carro)
 {
-    if (fila_carros->inicio == NULL)
-    {
-        return false; // fila vazia
-    }
-    else
-    {
-        FilaCarros fila_carros_aux;
-        fila_carros_aux.inicio = fila_carros_aux.fim = NULL;
+	if(!filaVazia(fila))
+	{
+		*carro = fila->inicio->carro;
 
-        while (fila_carros->inicio != NULL)
-        {
-            if (fila_carros->inicio->carro.placa != carro->placa)
-            {
-                inserirCarroFila(&fila_carros_aux, fila_carros->inicio->carro);
-                (*movido)++;
-            }
+		PontCarro apagar = fila->inicio;
+		fila->inicio = fila->inicio->proximo;
+		free(apagar);
 
-            PontCarro apagar = fila_carros->inicio;
+		fila->qtd_carros -= 1;
 
-            fila_carros->inicio = fila_carros->inicio->proximo_carro;
-
-            free(apagar);
-        }
-
-        fila_carros->fim = NULL; // fim passa tambem a apontar para null
-
-        while (fila_carros_aux.inicio != NULL)
-        {
-            inserirCarroFila(fila_carros, fila_carros_aux.inicio->carro);
-
-            PontCarro apagar = fila_carros_aux.inicio;
-
-            fila_carros_aux.inicio = fila_carros_aux.inicio->proximo_carro;
-
-            free (apagar);
-        }
-
-        return true;
-    }
+		if(fila->inicio == NULL)
+			fila->fim = NULL;
+	}
+	else
+		printf("\nfila vazia..");
 }
 
-void exibirCarrosFila(FilaCarros *fila_carros)
+bool taNaFila(Fila *fila, int placa)
 {
-    PontCarro end = fila_carros->inicio;
-    int i = 1;
+	Fila fila_temp;
+	inicializar(&fila_temp);
 
-    while (end != NULL)
-    {
-        printf("\nCarro %d: %d", i, end->carro.placa);
-        end = end->proximo_carro;
-        i++;
-    }
+	bool ta_na_fila = false;
+	Carro carro;
+
+	while(!filaVazia(fila))
+	{
+		remover(fila, &carro);
+
+		inserir(&fila_temp, carro);
+
+		if(placa == carro.placa)
+			ta_na_fila = true;
+	}
+
+	*fila = fila_temp;
+
+	return ta_na_fila;
 }
 
-void debug(FilaCarros *fila_carros)
+bool manobrarCarroPraFora(Fila *fila, int *total_sairam, int *total_manobrados, int placa)
 {
-    CarroInfo carro;
-    int mv = 0;
+	bool carro_saiu = false;
+	*total_sairam = 0;
+	*total_manobrados = 0;
 
-    carro.placa = 111;
-    inserirCarroFila(fila_carros, carro);
+	Fila fila_temp;
+	inicializar(&fila_temp);
 
-    carro.placa = 222;
-    inserirCarroFila(fila_carros, carro);
+	Carro carro;
 
-    carro.placa = 333;
-    inserirCarroFila(fila_carros, carro);
+	while(!filaVazia(fila))
+	{
+		if(placa != fila->inicio->carro.placa && carro_saiu != true)
+		{
+			*total_sairam += 1;
+		}
+		else
+		{
+			carro_saiu = true;
+		}
 
-    carro.placa = 444;
-    inserirCarroFila(fila_carros, carro);
+		remover(fila, &carro);
 
-    exibirCarrosFila(fila_carros);
+		if(carro.placa != placa)
+			inserir(&fila_temp, carro);
+	}
 
-    printf("\n\nremovendo carro do inicio da fila...\n");
-    removerCarroFila(fila_carros, &carro, & mv);
-    exibirCarrosFila(fila_carros);
+	*total_manobrados = fila_temp.qtd_carros - *total_sairam;
+
+	*fila = fila_temp;
+
+	return carro_saiu;
+}
+
+void menu()
+{
+	printf("\n1 - estacionamento");
+	printf("\n2 - exibir fila");
+	printf("\n0 - encerrar programa\n> ");
+}
+
+int main(int argc, char** argv)
+{
+	Fila fila_carros;
+	inicializar(&fila_carros);
+
+	Carro carro;
+
+	int total_sairam = 0;
+	int total_manobrados = 0;
+	int op = 1;
+	char E_S;
+	bool saiu = false;
+
+	do
+	{
+		menu();
+		scanf("%d", &op);
+
+		switch(op)
+		{
+		case 1:
+			printf("\nPlaca do carro: ");
+			scanf("%d", &carro.placa);
+
+			printf("\nE - Entrar no estacionamento");
+			printf("\nS - Sair do estacionamento\n> ");
+			scanf(" %c", &E_S);
+
+			if(E_S == 'E' || E_S == 'e')
+			{
+				if(!taNaFila(&fila_carros, carro.placa))
+					inserir(&fila_carros, carro);
+				else
+					printf("\nCarro ja se encontra na fila. O carro é CLONADO !!\n");
+			}
+			else if (E_S == 'S' || E_S == 's')
+			{
+				saiu = manobrarCarroPraFora(&fila_carros, &total_sairam, &total_manobrados, carro.placa);
+
+				if(saiu)
+					printf("\nTotal sairam da frente: %d. total manobrados: %d\n", total_sairam, total_manobrados);
+				else
+					printf("\nCarro não encontrado...\n");
+
+			}
+			else
+				printf("Operação cancelada");
+
+			total_sairam = 0;
+			total_manobrados = 0;
+
+			break;
+		case 2:
+			exibir(&fila_carros);
+			printf("\n");
+		default:
+			break;
+		}
+	}
+	while(op != 0);
+
+	return 0;
 }

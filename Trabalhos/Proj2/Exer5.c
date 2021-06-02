@@ -1,5 +1,5 @@
 /*
-	Quinta questão referente a primeira avaliação da discpina de Estrurura de dados I.
+	Quinta questão referente a segunda avaliação da discpina de Estrurura de dados I.
 
 	Autores: João Carlos de Sousa Fé && Vitor José Ferreira dos Santos de Santana.
     
