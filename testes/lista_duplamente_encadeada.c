@@ -3,271 +3,319 @@
 #include <stdbool.h>
 
 typedef struct Dado* Dado;
-typedef struct ListDE* ListaDE;
+typedef struct Lista* Lista;
 
 struct Dado
 {
-    int valor; // ou outra struct separadas de dados. cabe gerenciar nas funções basicas da lista DE
+    int value;
     Dado proximo;
     Dado anterior;
 };
 
-struct ListDE 
-{
-    unsigned total_elementos;
+Dado data_create();
+Dado data_delete(Dado dado);
+void data_print(Dado dado);
 
-    Dado topo; // cabeça
-    Dado inicio; // pés
+struct Lista 
+{
+    unsigned size;
+    Dado inicio;
+    Dado fim;
 };
 
-Dado novoDado();
-Dado deletarDado(Dado data);
-void mostrarDado(Dado data);
 
-ListaDE novaLista();
-ListaDE formatarLista(ListaDE list);
+Lista criarLista();
+Lista formatarLista(Lista lista);
 
-void acresentarDadoLista(ListaDE list, Dado data);
-bool listaVazia(ListaDE list);
-void inserirOrdenadoLista(ListaDE list, Dado data);
-void inserirPosicaoLista(ListaDE list, unsigned index, Dado data);
-Dado removerTopoLista(ListaDE list);
-Dado removerInicioLista(ListaDE list);
-void mostrarLista(ListaDE list);
-void mostrarAoContrarioLista(ListaDE list);
-void inserirDadoLista(ListaDE list, Dado data);
-Dado removerPosicaoLista(ListaDE list, unsigned index);
-Dado buscarERemoverLista(ListaDE list, int value);
+void inserirnofinal(Lista lista, Dado dado);
+bool listaVazia(Lista lista);
+void inserirOrdenado(Lista lista, Dado dado);
+void inseriPosicaoLista(Lista lista, unsigned index, Dado dado);
+Dado removerFinal(Lista lista);
+Dado removerInicio(Lista lista);
+void mostrarLista(Lista lista);
+void mostrarListaAoContrario(Lista lista);
+void inserirNoInicio(Lista lista, Dado dado);
+Dado removerPosicao(Lista lista, unsigned index);
+Dado buscarERemover(Lista lista, int value);
 
 int main()
 {
     return 0;
 }
 
-Dado novoDado() 
+Dado data_create() 
 {
-    Dado data = malloc(sizeof(struct Dado));
-    data->valor = 0;
-    data->proximo = NULL;
-    data->anterior = NULL;
-    return data;
+    Dado dado = malloc(sizeof(struct Dado));
+    dado->value = 0;
+    dado->proximo = NULL;
+    dado->anterior = NULL;
+    return dado;
 }
 
-Dado deletarDado(Dado data)
+Dado data_delete(Dado dado) 
 {
-    free(data);
-    data = NULL;
-    return data;
-}
-void mostrarDado(Dado data) 
-{
-    printf("[ %d ]\n", data->valor);
+    free(dado);
+    dado = NULL;
+    return dado;
 }
 
-ListaDE novaLista() 
+void data_print(Dado dado) 
 {
-    ListaDE list = malloc(sizeof(struct ListDE));
-    list->total_elementos = 0;
-    list->topo = NULL;
-    list->inicio = NULL;
-    return list;
+    printf("[ %d ]\n", dado->value);
 }
 
-ListaDE formatarLista(ListaDE list) 
+Lista criarLista() 
 {
-    Dado tmp = list->topo;
+    Lista lista = malloc(sizeof(struct Lista));
+    lista->size = 0;
+    lista->inicio = NULL;
+    lista->fim = NULL;
+    return lista;
+}
+
+Lista formatarLista(Lista lista) 
+{
+
+    Dado tmp = lista->inicio;
 
     while (tmp != NULL) 
     {
-        list->topo = tmp->proximo;
-        tmp = deletarDado(tmp);
-        tmp = list->topo;
+        lista->inicio = tmp->proximo;
+        tmp = data_delete(tmp);
+        tmp = lista->inicio;
     }
 
-    free(list);
-    list = NULL;
-    return list;
+    free(lista);
+    lista = NULL;
+    return lista;
 }
-void acresentarDadoLista(ListaDE list, Dado data) 
-{
-    Dado last = list->inicio;
 
-    if(last == NULL) 
+void inserirnofinal(Lista lista, Dado dado) 
+{
+    Dado ultimo = lista->fim;
+
+    if(ultimo == NULL) 
     {
-        list->topo = list->inicio = data;
+        lista->inicio = lista->fim = dado;
     } 
     else 
     {
-        data->anterior = last;
-        last->proximo = list->inicio = data;
+        dado->anterior = ultimo;
+        ultimo->proximo = lista->fim = dado;
     }
 
-    list->total_elementos++;
+    lista->size++;
+}
+static void inserirDentroDe(Lista lista, Dado anterior, Dado atual, Dado dado) 
+{
+    dado->proximo = atual;
+    dado->anterior = anterior;
+
+    if (atual != NULL) 
+    {
+        atual->anterior = dado;
+    } 
+    else 
+    {
+        lista->fim = dado;
+    }
+    if(anterior == NULL) 
+    {
+        lista->inicio = dado;
+    } 
+    else 
+    {
+        anterior->proximo = dado;
+    }
+    lista->size++;
 }
 
-
-void inserirOrdenadoLista(ListaDE list, Dado data) 
+void inserirOrdenado(Lista lista, Dado dado) 
 {
 
-    Dado previous = NULL;
-    Dado current = list->topo;
+    Dado anterior = NULL;
+    Dado atual = lista->inicio;
 
-    while ((current != NULL)&& (current->valor < data->valor)) 
+    while ((atual != NULL)&& (atual->value < dado->value)) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
     }
 
-    list_insert_into(list, previous, current, data);
+    inserirDentroDe(lista, anterior, atual, dado);
 }
 
-void inserirPosicaoLista(ListaDE list, unsigned index, Dado data) 
+void inseriPosicaoLista(Lista lista, unsigned index, Dado dado) 
 {
 
-    Dado previous = NULL;
-    Dado current = list->topo;
+    Dado anterior = NULL;
+    Dado atual = lista->inicio;
 
-    while ((current != NULL) && ( index > 0)) 
+    while ((atual != NULL) && ( index > 0)) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
         index--;
     }
 
-    list_insert_into(list, previous, current, data);
+    inserirDentroDe(lista, anterior, atual, dado);
 }
 
-bool listaVazia(ListaDE list) 
+bool listaVazia(Lista lista) 
 {
-    return list->topo == NULL;
+    return lista->inicio == NULL;
 }
 
-Dado removerTopoLista(ListaDE list) {
-
-    Dado current = list->inicio;
-
-    if (current != NULL) 
-    {
-
-        Dado previous = current->anterior;
-
-        if (previous == NULL) 
-        {
-            list->topo = list->inicio = NULL;
-        } else 
-        {
-            previous->proximo = NULL;
-            list->inicio = previous;
-        }
-
-        current->anterior = current->proximo = NULL;
-        list->total_elementos--;
-    }
-    return current;
-}
-Dado removerInicioLista(ListaDE list) 
+Dado removerFinal(Lista lista) 
 {
+    Dado atual = lista->fim;
 
-    Dado current = list->topo;
-
-    if (current != NULL) 
+    if (atual != NULL) 
     {
-        if(current->proximo != NULL) 
+        Dado anterior = atual->anterior;
+
+        if (anterior == NULL) 
         {
-            current->proximo->anterior = NULL;
+            lista->inicio = lista->fim = NULL;
         } 
         else 
         {
-            list->inicio = NULL;
+            anterior->proximo = NULL;
+            lista->fim = anterior;
         }
 
-        list->topo = current->proximo;
-        current->anterior = current->proximo = NULL;
-        list->total_elementos--;
+        atual->anterior = atual->proximo = NULL;
+        lista->size--;
     }
-
-    return current;
+    return atual;
 }
-void mostrarLista(ListaDE list) 
+
+Dado removerInicio(Lista lista) 
 {
-    if (listaVazia(list)) 
+
+    Dado atual = lista->inicio;
+
+    if (atual != NULL) 
     {
-        printf("empty list\n");
-    } 
-    else 
-    {
-        Dado data = list->topo;
-        while(data != NULL) 
+        if(atual->proximo != NULL) 
         {
-            mostrarDado(data);
-            data = data->proximo;
-        }
-    }
-}
-void mostrarAoContrarioLista(ListaDE list) 
-{
-    if (listaVazia(list)) 
-    {
-        printf("empty list\n");
-    } 
-    else 
-    {
-        Dado data = list->inicio;
-
-        while(data != NULL) 
+            atual->proximo->anterior = NULL;
+        } 
+        else 
         {
-            mostrarDado(data);
-            data = data->anterior;
+            lista->fim = NULL;
         }
+
+        lista->inicio = atual->proximo;
+        atual->anterior = atual->proximo = NULL;
+        lista->size--;
     }
+    return atual;
 }
-
-void inserirDadoLista(ListaDE list, Dado data) 
+void mostrarLista(Lista lista) 
 {
-
-    data->proximo = list->topo;
-    if(list->topo != NULL) 
+    if (listaVazia(lista)) 
     {
-        list->topo->anterior = data;
+        printf("empty lista\n");
     } 
     else 
     {
-        list->inicio = data;
+        Dado dado = lista->inicio;
+
+        while(dado != NULL) 
+        {
+            data_print(dado);
+            dado = dado->proximo;
+        }
     }
-
-    list->topo = data;
-    list->total_elementos++;
 }
+void mostrarListaAoContrario(Lista lista) 
+{
+    if (listaVazia(lista)) 
+    {
+        printf("empty lista\n");
+    } 
+    else 
+    {
+        Dado dado = lista->fim;
 
-
-Dado removerPosicaoLista(ListaDE list, unsigned index) 
+        while(dado != NULL) 
+        {
+            data_print(dado);
+            dado = dado->anterior;
+        }
+    }
+}
+void inserirNoInicio(Lista lista, Dado dado) 
 {
 
-    Dado current = list->topo;
-
-    Dado previous = NULL;
-
-    while ((current->proximo != NULL) && ( index > 0)) 
+    dado->proximo = lista->inicio;
+    if(lista->inicio != NULL) 
     {
-        previous = current;
-        current = current->proximo;
+        lista->inicio->anterior = dado;
+    } 
+    else 
+    {
+        lista->fim = dado;
+    }
+
+    lista->inicio = dado;
+    lista->size++;
+}
+
+static Dado removerDe(Lista lista, Dado anterior, Dado atual) 
+{
+    if (anterior == NULL) 
+    {
+        lista->inicio = atual->proximo;
+    } 
+    else 
+    {
+        anterior->proximo = atual->proximo;
+    }
+    if (atual->proximo != NULL) 
+    {
+        atual->proximo->anterior = anterior;
+    }
+    else 
+    {
+        lista->fim = anterior;
+    }
+
+    atual->anterior = atual->proximo = NULL;
+    lista->size--;
+    return atual;
+}
+
+Dado removerPosicao(Lista lista, unsigned index) 
+{
+
+    Dado atual = lista->inicio;
+
+    Dado anterior = NULL;
+
+    while ((atual->proximo != NULL) && ( index > 0)) 
+    {
+        anterior = atual;
+        atual = atual->proximo;
         index--;
     }
 
-    return (current != NULL) ? list_remove_from(list, previous, current) : NULL;
+    return (atual != NULL) ? removerDe(lista, anterior, atual) : NULL;
 }
 
-Dado buscarERemoverLista(ListaDE list, int value) 
+Dado buscarERemover(Lista lista, int value) 
 {
 
-    Dado current = list->topo;
-    Dado previous = NULL;
+    Dado atual = lista->inicio;
+    Dado anterior = NULL;
 
-    while ((current != NULL) && (current->valor != value))
+    while ((atual != NULL) && (atual->value != value)) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
     }
-    
-    return (current != NULL) ? list_remove_from(list, previous, current) : NULL;
+
+    return (atual != NULL) ? removerDe(lista, anterior, atual) : NULL;
 }

@@ -14,32 +14,32 @@ struct Dado
 struct ListaE 
 {
     unsigned int n_elementos;
-    Dado topo;
+    Dado inicio;
 };
 
 Dado novoDado();
-Dado deletarDado(Dado data);
-void mostrarDado(Dado data);
+Dado deletarDado(Dado dado);
+void mostrarDado(Dado dado);
 
-ListaE novaLista();
-ListaE formatarLista(ListaE list);
+ListaE novLista();
+ListaE formatarLista(ListaE lista);
 
-void acresentarDadoLista(ListaE list, Dado data);
-bool listaVazia(ListaE list);
-void inserirOrdenadoLista(ListaE list, Dado data);
-void inserirPosicaoLista(ListaE list, unsigned index, Dado data);
-Dado removerFinalLista(ListaE list);
-Dado removerInicioFila(ListaE list);
-void imprimirTodaLista(ListaE list);
-void inseriFinalLista(ListaE list, Dado data); //
-Dado removerPosicaoLista(ListaE list, unsigned index);
-Dado buscarRemoverLista(ListaE list, int value);
+void inserirNofinal(ListaE lista, Dado dado);
+bool listaVazia(ListaE lista);
+void inserirOrdenadoLista(ListaE lista, Dado dado);
+void inserirPosicaoLista(ListaE lista, unsigned index, Dado dado);
+Dado removerFinalLista(ListaE lista);
+Dado removerInicioFila(ListaE lista);
+void imprimirTodaLista(ListaE lista);
+void inserirNoInicio(ListaE lista, Dado dado); //
+Dado removerPosicaoLista(ListaE lista, unsigned index);
+Dado buscarERemover(ListaE lista, int value);
 
 int main()
 {
     int i = 0;
 
-    ListaE lista = novaLista();
+    ListaE lista = novLista();
 
     for(i=0; i<10; i++)
     {
@@ -82,9 +82,39 @@ int main()
     printf("\n");
     imprimirTodaLista(lista);
 
-    inseriFinalLista(lista, dado3);
+    inserirNoInicio(lista, dado3);
 
     printf("\n");
+    imprimirTodaLista(lista);
+
+    printf("\n\n----\n");
+
+    Dado d = novoDado();
+
+    d->valor = 5555;
+
+    inserirNofinal(lista, d);
+
+    imprimirTodaLista(lista);
+
+    d = novoDado();
+    d->valor = 333;
+
+    printf("\n--\n");
+
+    inserirNoInicio(lista, d);
+
+    imprimirTodaLista(lista);
+
+    removerFinalLista(lista);
+
+    printf("----\n");
+
+    imprimirTodaLista(lista);
+
+    printf("\n----\n");
+
+    removerInicioFila(lista);
     imprimirTodaLista(lista);
 
     return 0;
@@ -92,240 +122,245 @@ int main()
 
 Dado novoDado() 
 {
-    Dado data = malloc(sizeof(struct Dado));
-    data->valor = 0;
-    data->proximo = NULL;
-    return data;
+    Dado dado = malloc(sizeof(struct Dado));
+    dado->valor = 0;
+    dado->proximo = NULL;
+    return dado;
 }
 
-Dado deletarDado(Dado data) 
+Dado deletarDado(Dado dado) 
 {
-    free(data);
-    data = NULL;
-    return data;
+    free(dado);
+    dado = NULL;
+    return dado;
 }
 
-void mostrarDado(Dado data) 
+void mostrarDado(Dado dado) 
 {
-    printf("[ %d ]\n", data->valor);
+    printf("[ %d ]\n", dado->valor);
 }
 
-ListaE novaLista() 
+ListaE novLista() 
 {
-    ListaE list = malloc(sizeof(struct ListaE));
-    list->n_elementos = 0;
-    list->topo = NULL;
-    return list;
+    ListaE lista = malloc(sizeof(struct ListaE));
+    lista->n_elementos = 0;
+    lista->inicio = NULL;
+    return lista;
 }
-ListaE formatarLista(ListaE list) 
+
+ListaE formatarLista(ListaE lista) 
 {
 
-    Dado tmp = list->topo;
+    Dado tmp = lista->inicio;
 
     while (tmp != NULL)
     {
-        list->topo = tmp->proximo;
+        lista->inicio = tmp->proximo;
         tmp = deletarDado(tmp);
-        tmp = list->topo;
+        tmp = lista->inicio;
     }
 
-    free(list);
-    list = NULL;
-    return list;
+    free(lista);
+    lista = NULL;
+    return lista;
 }
-void acresentarDadoLista(ListaE list, Dado data) 
+void inserirNofinal(ListaE lista, Dado dado) 
 {
 
-    Dado current = list->topo;
-    Dado previous = NULL;
+    Dado atual = lista->inicio;
+    Dado anterior = NULL;
 
-    while (current != NULL) 
+    while (atual != NULL) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
     }
-    if(list->topo == NULL) 
+    if(lista->inicio == NULL) 
     {
-        list->topo = data;
+        lista->inicio = dado;
     } 
-    else if(previous == NULL) 
+    else if(anterior == NULL) 
     {
-        current->proximo = data;
+        atual->proximo = dado;
     } 
     else 
     {
-        previous->proximo = data;
+        anterior->proximo = dado;
     }
-    list->n_elementos++;
+    lista->n_elementos++;
 }
-void inserirOrdenadoLista(ListaE list, Dado data) {
 
-    Dado current = list->topo;
-    Dado previous = NULL;
+void inserirOrdenadoLista(ListaE lista, Dado dado) 
+{
 
-    while ((current!=NULL) && (current->valor < data->valor)) 
+    Dado atual = lista->inicio;
+    Dado anterior = NULL;
+
+    while ((atual!=NULL) && (atual->valor < dado->valor)) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
     }
 
-    data->proximo = current;
+    dado->proximo = atual;
 
-    if (previous == NULL) 
+    if (anterior == NULL) 
     {
-        list->topo = data;
+        lista->inicio = dado;
     } 
     else 
     {
-        previous->proximo = data;
+        anterior->proximo = dado;
     }
 
-    list->n_elementos++;
+    lista->n_elementos++;
 }
-void inserirPosicaoLista(ListaE list, unsigned index, Dado data) 
+
+void inserirPosicaoLista(ListaE lista, unsigned index, Dado dado) 
 {
 
-    Dado current = list->topo;
-    Dado previous = NULL;
+    Dado atual = lista->inicio;
+    Dado anterior = NULL;
 
-    while ((current!=NULL) && index > 0) 
+    while ((atual!=NULL) && index > 0) 
     {
-        previous = current;
-        current = current->proximo;
+        anterior = atual;
+        atual = atual->proximo;
         index--;
     }
 
-    data->proximo = current;
+    dado->proximo = atual;
 
-    if (previous == NULL) 
+    if (anterior == NULL) 
     {
-        list->topo = data;
+        lista->inicio = dado;
     } 
     else 
     {
-        previous->proximo = data;
+        anterior->proximo = dado;
     }
 
-    list->n_elementos++;
+    lista->n_elementos++;
 }
 
-bool listaVazia(ListaE list) 
+bool listaVazia(ListaE lista) 
 {
-    return list->topo == NULL;
+    return lista->inicio == NULL;
 }
-Dado removerFinalLista(ListaE list) {
 
-    Dado current = list->topo;
+Dado removerFinalLista(ListaE lista) {
 
-    if (current != NULL) 
+    Dado atual = lista->inicio;
+
+    if (atual != NULL) 
     {
 
-        Dado previous = NULL;
+        Dado anterior = NULL;
 
-        while ((current->proximo != NULL)) 
+        while ((atual->proximo != NULL)) 
         {
-            previous = current;
-            current = current->proximo;
+            anterior = atual;
+            atual = atual->proximo;
         }
-        if(previous == NULL) 
+        if(anterior == NULL) 
         {
-            list->topo = NULL;
+            lista->inicio = NULL;
         } 
         else 
         {
-            previous->proximo = NULL;
+            anterior->proximo = NULL;
         }
 
-        list->n_elementos--;
+        lista->n_elementos--;
     }
-    return current;
+    return atual;
 }
-Dado removerInicioFila(ListaE list) 
+Dado removerInicioFila(ListaE lista) 
 {
 
-    Dado current = list->topo;
+    Dado atual = lista->inicio;
 
-    if (current != NULL) {
-        list->topo = current->proximo;
-        list->n_elementos--;
+    if (atual != NULL) {
+        lista->inicio = atual->proximo;
+        lista->n_elementos--;
     }
-    return current;
+    return atual;
 }
-void imprimirTodaLista(ListaE list) 
+void imprimirTodaLista(ListaE lista) 
 {
-    if (listaVazia(list)) 
+    if (listaVazia(lista)) 
     {
-        printf("empty list\n");
+        printf("lista vazia\n");
     } 
     else 
     {
-        Dado data = list->topo;
+        Dado dado = lista->inicio;
 
-        while(data != NULL) 
+        while(dado != NULL) 
         {
-            mostrarDado(data);
-            data = data->proximo;
+            mostrarDado(dado);
+            dado = dado->proximo;
         }
     }
 }
-void inseriFinalLista(ListaE list, Dado data) {
+void inserirNoInicio(ListaE lista, Dado dado) {
 
-    data->proximo = list->topo;
-    list->topo = data;
-    list->n_elementos++;
+    dado->proximo = lista->inicio;
+    lista->inicio = dado;
+    lista->n_elementos++;
 }
-Dado removerPosicaoLista(ListaE list, unsigned index) {
+Dado removerPosicaoLista(ListaE lista, unsigned index) {
 
-    Dado current = list->topo;
+    Dado atual = lista->inicio;
 
-    if (current != NULL) 
+    if (atual != NULL) 
     {
-        Dado previous = NULL;
+        Dado anterior = NULL;
 
-        while ((current->proximo != NULL) && (index > 0)) 
+        while ((atual->proximo != NULL) && (index > 0)) 
         {
-            previous = current;
-            current = current->proximo;
+            anterior = atual;
+            atual = atual->proximo;
             index--;
         }
-        if (previous == NULL) 
+        if (anterior == NULL) 
         {
-            list->topo = current->proximo;
-        } else if(current != NULL) 
+            lista->inicio = atual->proximo;
+        } else if(atual != NULL) 
         {
-            previous->proximo = current->proximo;
+            anterior->proximo = atual->proximo;
         }
 
-        list->n_elementos--;
+        lista->n_elementos--;
     }
 
-    return current;
+    return atual;
 }
 
-Dado list_remove_value(ListaE list, int value) 
+Dado buscarERemover(ListaE lista, int value) 
 {
 
-    Dado current = list->topo;
+    Dado atual = lista->inicio;
 
-    if (current != NULL) {
-        Dado previous = NULL;
+    if (atual != NULL) {
+        Dado anterior = NULL;
 
-        while ((current != NULL) && (current->valor != value)) 
+        while ((atual != NULL) && (atual->valor != value)) 
         {
-            previous = current;
-            current = current->proximo;
+            anterior = atual;
+            atual = atual->proximo;
         }
 
-        if (previous == NULL) 
+        if (anterior == NULL) 
         {
-            list->topo = current->proximo;
-            list->n_elementos--;
+            lista->inicio = atual->proximo;
+            lista->n_elementos--;
         } 
-        else if (current != NULL) 
+        else if (atual != NULL) 
         {
-            previous->proximo = current->proximo;
-            list->n_elementos--;
+            anterior->proximo = atual->proximo;
+            lista->n_elementos--;
         }
     }
-    return current;
+    return atual;
 }
