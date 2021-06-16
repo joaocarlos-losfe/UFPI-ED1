@@ -1,4 +1,3 @@
-//não consigo calcular o tamanho da lista
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -8,7 +7,9 @@ void menu(){
   printf("2 - imprimir contrária\n");
   printf("3 - remover\n");
   printf("4 - tamanho da lista\n");
-  printf("5 - Vizinhos")
+  printf("5 - Vizinhos\n");
+  printf("6 - imprimir \n");
+  printf("7 - Produto dos vizinhos\n");
 }
 
 
@@ -25,13 +26,17 @@ No *ultimoNoLista(No **lista);
 void imprimirContratio(No *no);
 No *buscar(No **lista, int num, int *posicao);
 No *remover(No **lista, int num);
+void imprimir(No *no);
+int produtoDosVizinhos(No *no, int num);
 
 int main(int argc, char *argv[]){
   int op,valor,anterior,posicao = 0,tamanho = 0;
   No *removido,*lista = NULL;;
   do{
     menu();
+    printf(": ");
     scanf("%d",&op);
+    printf("\n");
     switch (op) {
       case 1:
         printf("Valor: ");
@@ -42,10 +47,13 @@ int main(int argc, char *argv[]){
         imprimirContratio(ultimoNoLista(&lista));
         break;
       case 3:
+        printf("Valor: ");
         scanf("%d",&valor);
         removido = buscar(&lista,valor,&posicao);
         if(removido){
-          printf("Elemento encontrado: %d",removido->valor);
+          printf("Elemento encontrado: %d\n",removido->valor);
+          free(removido);
+          tamanho--;
         }
         else{
           printf("%s",MSG);
@@ -55,17 +63,26 @@ int main(int argc, char *argv[]){
         printf("tamanho = %d\n",tamanho);
         break;
       case 5:
+        printf("Valor: ");
         scanf("%d",&valor);
-        removido = remover(&lista,valor);
+        removido = buscar(&lista,valor,&posicao);
         if(removido){
-          printf("Elemento removido: %d\n",removido->valor);
+          printf("Elemento procurado: %d\n",removido->valor);
           printf("Vizinhos antes: %d\n",posicao);
-          printf("Vizinhos depois: %d\n",tamanho - posicao + 1);
-          free(removido);
+          printf("Vizinhos depois: %d\n",tamanho - (posicao + 1));
         }
         else{
           printf("%s",MSG);
         }
+        break;
+      case 6:
+        imprimir(lista);
+        break;
+      case 7:
+        printf("Valor: ");
+        scanf("%d",&valor);
+        int p = produtoDosVizinhos(lista,valor);
+        printf("Produto = %d\n",p);
         break;
       default:
         if(op != 0) printf("Opação inválida\n");
@@ -105,6 +122,27 @@ void inserirOrdenado(No **lista, int num,int *tamanho){
   }
 }
 
+int produtoDosVizinhos(No *no, int num){
+  int produto = 1;
+  while(no){
+    if(no->valor != num){
+      produto *= no->valor;
+    }
+    no = no->proximo;
+  }
+  printf("\n");
+  return produto;
+}
+
+void imprimir(No *no){
+  printf("lista: ");
+  while(no){
+    printf("%d ",no->valor);
+    no = no->proximo;
+  }
+  printf("\n");
+}
+
 No *ultimoNoLista(No **lista){
   No *aux = *lista;
   while(aux->proximo != NULL){
@@ -120,6 +158,48 @@ void imprimirContratio(No *no){
     no = no->anterior;
   }
   printf("\n");
+}
+
+int remover(Lista **I, Lista **F, int numero)
+{
+    Lista *Aux, *No;
+    int removeu = 1;
+
+    if (busca(*I, numero))
+    {
+        inicializarLista(&Aux);
+        No = *I;
+
+        while (No != NULL && (*No).numero != numero)
+        {
+            No = (*No).Prox;
+            Aux = No;
+        }
+
+        if (No == NULL)
+        {
+            I = (*I).Prox;
+        }
+        else
+        {
+            if ((**F).numero == (*No).numero)
+            {
+                *F = (*F)->Ant;
+                (*F)->Prox = NULL;
+            }
+            else
+            {
+                No->Ant->Prox = (*No).Prox;
+                (*No).Prox->Ant = (*No).Ant;
+            }
+        }
+
+        free(Aux);
+    }
+    else
+        removeu = 0;
+
+    return removeu;
 }
 
 No *remover(No **lista, int num){
