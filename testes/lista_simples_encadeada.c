@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 typedef struct Dado* Dado;
-typedef struct ListaSE* ListaSE;
+typedef struct ListaE* ListaE;
 
 struct Dado
 {
@@ -11,7 +11,7 @@ struct Dado
     Dado proximo;
 };
 
-struct ListaSE 
+struct ListaE 
 {
     unsigned int n_elementos;
     Dado topo;
@@ -21,25 +21,25 @@ Dado novoDado();
 Dado deletarDado(Dado data);
 void mostrarDado(Dado data);
 
-ListaSE novLista();
-ListaSE formatarLista(ListaSE list);
+ListaE novaLista();
+ListaE formatarLista(ListaE list);
 
-void acresentarDadoLista(ListaSE list, Dado data);
-bool listaVazia(ListaSE list);
-void inserirOrdenadoLista(ListaSE list, Dado data);
-void inserirPosicaoLista(ListaSE list, unsigned index, Dado data);
-Dado removerFinalLista(ListaSE list);
-Dado removerInicioFila(ListaSE list);
-void imprimirTodaLista(ListaSE list);
-void inseriFinalLista(ListaSE list, Dado data); //
-Dado removerPosicaoLista(ListaSE list, unsigned index);
-Dado buscarRemoverLista(ListaSE list, int value);
+void acresentarDadoLista(ListaE list, Dado data);
+bool listaVazia(ListaE list);
+void inserirOrdenadoLista(ListaE list, Dado data);
+void inserirPosicaoLista(ListaE list, unsigned index, Dado data);
+Dado removerFinalLista(ListaE list);
+Dado removerInicioFila(ListaE list);
+void imprimirTodaLista(ListaE list);
+void inseriFinalLista(ListaE list, Dado data); //
+Dado removerPosicaoLista(ListaE list, unsigned index);
+Dado buscarRemoverLista(ListaE list, int value);
 
 int main()
 {
     int i = 0;
 
-    ListaSE lista = novLista();
+    ListaE lista = novaLista();
 
     for(i=0; i<10; i++)
     {
@@ -110,14 +110,14 @@ void mostrarDado(Dado data)
     printf("[ %d ]\n", data->valor);
 }
 
-ListaSE novLista() 
+ListaE novaLista() 
 {
-    ListaSE list = malloc(sizeof(struct ListaSE));
+    ListaE list = malloc(sizeof(struct ListaE));
     list->n_elementos = 0;
     list->topo = NULL;
     return list;
 }
-ListaSE formatarLista(ListaSE list) 
+ListaE formatarLista(ListaE list) 
 {
 
     Dado tmp = list->topo;
@@ -133,7 +133,7 @@ ListaSE formatarLista(ListaSE list)
     list = NULL;
     return list;
 }
-void acresentarDadoLista(ListaSE list, Dado data) 
+void acresentarDadoLista(ListaE list, Dado data) 
 {
 
     Dado current = list->topo;
@@ -158,7 +158,7 @@ void acresentarDadoLista(ListaSE list, Dado data)
     }
     list->n_elementos++;
 }
-void inserirOrdenadoLista(ListaSE list, Dado data) {
+void inserirOrdenadoLista(ListaE list, Dado data) {
 
     Dado current = list->topo;
     Dado previous = NULL;
@@ -182,7 +182,7 @@ void inserirOrdenadoLista(ListaSE list, Dado data) {
 
     list->n_elementos++;
 }
-void inserirPosicaoLista(ListaSE list, unsigned index, Dado data) 
+void inserirPosicaoLista(ListaE list, unsigned index, Dado data) 
 {
 
     Dado current = list->topo;
@@ -209,11 +209,11 @@ void inserirPosicaoLista(ListaSE list, unsigned index, Dado data)
     list->n_elementos++;
 }
 
-bool listaVazia(ListaSE list) 
+bool listaVazia(ListaE list) 
 {
     return list->topo == NULL;
 }
-Dado removerFinalLista(ListaSE list) {
+Dado removerFinalLista(ListaE list) {
 
     Dado current = list->topo;
 
@@ -240,7 +240,7 @@ Dado removerFinalLista(ListaSE list) {
     }
     return current;
 }
-Dado removerInicioFila(ListaSE list) 
+Dado removerInicioFila(ListaE list) 
 {
 
     Dado current = list->topo;
@@ -251,7 +251,7 @@ Dado removerInicioFila(ListaSE list)
     }
     return current;
 }
-void imprimirTodaLista(ListaSE list) 
+void imprimirTodaLista(ListaE list) 
 {
     if (listaVazia(list)) 
     {
@@ -268,13 +268,13 @@ void imprimirTodaLista(ListaSE list)
         }
     }
 }
-void inseriFinalLista(ListaSE list, Dado data) {
+void inseriFinalLista(ListaE list, Dado data) {
 
     data->proximo = list->topo;
     list->topo = data;
     list->n_elementos++;
 }
-Dado removerPosicaoLista(ListaSE list, unsigned index) {
+Dado removerPosicaoLista(ListaE list, unsigned index) {
 
     Dado current = list->topo;
 
@@ -302,7 +302,7 @@ Dado removerPosicaoLista(ListaSE list, unsigned index) {
     return current;
 }
 
-Dado list_remove_value(ListaSE list, int value) 
+Dado list_remove_value(ListaE list, int value) 
 {
 
     Dado current = list->topo;
