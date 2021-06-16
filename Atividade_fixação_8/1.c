@@ -2,16 +2,14 @@
 #include<stdlib.h>
 
 void menu(){
-  printf("0 - Sair\n");
-  printf("1 - inserir\n");
-  printf("2 - imprimir contrária\n");
-  printf("3 - remover\n");
-  printf("4 - tamanho da lista\n");
-  printf("5 - Vizinhos\n");
-  printf("6 - imprimir \n");
-  printf("7 - Produto dos vizinhos\n");
+  printf(" [ 0 ] - Sair\n");
+  printf(" [ 1 ] - Inserir\n");
+  printf(" [ 2 ] - Imprimir \n");
+  printf(" [ 3 ] - Imprimir contrária\n");
+  printf(" [ 4 ] - Ver vizinhos\n");
+  printf(" [ 5 ] - Produto dos vizinhos\n");
+  printf(" [ 6 ] - Remover\n");
 }
-
 
 #define MSG "Erro na alocação"
 
@@ -24,23 +22,16 @@ typedef struct no{
 void inserirOrdenado(No **lista, int num, int *tamanho);
 No *ultimoNoLista(No **lista);
 void imprimirContratio(No *no);
-//No *buscar(No **lista, int num, int *posicao);
-No *buscar(No **lista, int num,int *posicao, int *antes, int *depois);
+No *buscar(No **lista, int num,int *posicao, int *antes, int *depois, int *r);
 No *remover(No **lista, int num);
 void imprimir(No *no);
-int produtoDosVizinhos(No *no, int num);
-
-void zeraTudo(int *n1,int *n2,int *n3 ){
-  // função gambiarra para zerar todos os ponteiros.
-  *n1 = 0;
-  *n2 = 0;
-  *n2 = 0;
-}
+int produtoDosVizinhos(No *no, int num,int antes,int depois,int r);
+void zeraTudo(int *n1,int *n2,int *n3 );
 
 int main(int argc, char *argv[]){
   int op,valor,anterior,posicao = 0,tamanho = 0;
-  int antes = 0,depois = 0;
-  No *removido,*lista = NULL;;
+  int antes = 0,depois = 0,r = 0;
+  No *buscado,*lista = NULL;;
   do{
     menu();
     printf(": ");
@@ -53,36 +44,23 @@ int main(int argc, char *argv[]){
         inserirOrdenado(&lista,valor,&tamanho);
         break;
       case 2:
-        imprimirContratio(ultimoNoLista(&lista));
+        imprimir(lista);
         break;
       case 3:
-        printf("Valor: ");
-        scanf("%d",&valor);
-        removido = remover(&lista,valor);
-        if(removido){
-          printf("Elemento encontrado: %d\n",removido->valor);
-          free(removido);
-          tamanho--;
-        }
-        else{
-          printf("%s",MSG);
-        }
+        imprimirContratio(ultimoNoLista(&lista));
         break;
       case 4:
-        printf("tamanho = %d\n",tamanho);
-        break;
-      case 5:
         printf("Valor: ");
         scanf("%d",&valor);
         zeraTudo(&posicao,&antes,&depois);
-        removido = buscar(&lista,valor,&posicao,&antes,&depois);
-        if(removido){
-          printf("Elemento procurado: %d\n",removido->valor);
+        buscado = buscar(&lista,valor,&posicao,&antes,&depois,&r);
+        if(buscado){
+          printf("Elemento procurado: %d\n",buscado->valor);
           printf("Posição = %d\n",posicao);
-          if(posicao + 1 == tamanho){
+          if(r == 1){
             printf("Vizinhos antes: %d\n",antes);
           }
-          else if(posicao == 0){
+          else if(r == 2){
             printf("Vizinhos depois: %d\n",depois);
           }
           else{
@@ -94,18 +72,31 @@ int main(int argc, char *argv[]){
           printf("%s\n",MSG);
         }
         break;
-      case 6:
-        imprimir(lista);
-        break;
-      case 7:
+      case 5:
         printf("Valor: ");
         scanf("%d",&valor);
-        int p = produtoDosVizinhos(lista,valor);
+        zeraTudo(&posicao,&antes,&depois);
+        buscado = buscar(&lista,valor,&posicao,&antes,&depois,&r);
+        int p = produtoDosVizinhos(lista,buscado->valor,antes,depois,r);
         printf("Produto = %d\n",p);
+        break;
+      case 6:
+        printf("Valor: ");
+        scanf("%d",&valor);
+        buscado = remover(&lista,valor);
+        if(buscado){
+          printf("Elemento encontrado: %d\n",buscado->valor);
+          free(buscado);
+          tamanho--;
+        }
+        else{
+          printf("%s",MSG);
+        }
         break;
       default:
         if(op != 0) printf("Opação inválida\n");
     }
+    printf("\n");
   }while(op != 0);
 }
 
@@ -141,21 +132,23 @@ void inserirOrdenado(No **lista, int num,int *tamanho){
   }
 }
 
-int produtoDosVizinhos(No *no, int num){
+int produtoDosVizinhos(No *no, int num, int antes, int depois, int r){
   int produto = 1;
-  while(no){
-    if(no->valor != num){
-      produto *= no->valor;
-    }
-    no = no->proximo;
+  if(r == 1){
+    produto = antes;
   }
-  printf("\n");
+  else if(r == 2){
+    produto = depois;
+  }
+  else{
+    produto = antes * depois;
+  }
   return produto;
 }
 
 void imprimir(No *no){
   printf("lista: ");
-  while(no){
+  while(no != NULL){
     printf("%d ",no->valor);
     no = no->proximo;
   }
@@ -206,7 +199,7 @@ No *remover(No **lista, int num){
   return remover;
 }
 
-No *buscar(No **lista, int num,int *posicao, int *antes, int *depois){
+No *buscar(No **lista, int num,int *posicao, int *antes, int *depois, int *r){
   No *aux,*no = NULL;
   aux = *lista;
   aux->anterior = NULL;
@@ -216,21 +209,28 @@ No *buscar(No **lista, int num,int *posicao, int *antes, int *depois){
       if(aux->proximo == NULL){
         no = aux;
         (*antes) = aux->anterior->valor;
+        (*r) = 1;
       }
       else if(aux->anterior == NULL){
         no = aux;
         (*depois) = aux->proximo->valor;
+        (*r) = 2;
       }
       else{
         no = aux;
         (*antes) = aux->anterior->valor;
         (*depois) = aux->proximo->valor;
+        (*r) = 3;
       }
       status = 1;
     }
     if(status == 0) (*posicao)++;
-    aux->anterior = aux;
     aux = aux->proximo;
   }
   return no;
+}
+void zeraTudo(int *n1,int *n2,int *n3 ){
+  *n1 = 0;
+  *n2 = 0;
+  *n2 = 0;
 }
