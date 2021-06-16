@@ -6,5 +6,6 @@
         "cstdlib": "c",
         "stdio.h": "c",
         "functional": "c"
-    }
+    },
+    "python.pythonPath": "C:\\Program Files\\python.exe"
 }
