@@ -24,13 +24,22 @@ typedef struct no{
 void inserirOrdenado(No **lista, int num, int *tamanho);
 No *ultimoNoLista(No **lista);
 void imprimirContratio(No *no);
-No *buscar(No **lista, int num, int *posicao);
+//No *buscar(No **lista, int num, int *posicao);
+No *buscar(No **lista, int num,int *posicao, int *antes, int *depois);
 No *remover(No **lista, int num);
 void imprimir(No *no);
 int produtoDosVizinhos(No *no, int num);
 
+void zeraTudo(int *n1,int *n2,int *n3 ){
+  // função gambiarra para zerar todos os ponteiros.
+  *n1 = 0;
+  *n2 = 0;
+  *n2 = 0;
+}
+
 int main(int argc, char *argv[]){
   int op,valor,anterior,posicao = 0,tamanho = 0;
+  int antes = 0,depois = 0;
   No *removido,*lista = NULL;;
   do{
     menu();
@@ -49,7 +58,7 @@ int main(int argc, char *argv[]){
       case 3:
         printf("Valor: ");
         scanf("%d",&valor);
-        removido = buscar(&lista,valor,&posicao);
+        removido = remover(&lista,valor);
         if(removido){
           printf("Elemento encontrado: %d\n",removido->valor);
           free(removido);
@@ -65,14 +74,24 @@ int main(int argc, char *argv[]){
       case 5:
         printf("Valor: ");
         scanf("%d",&valor);
-        removido = buscar(&lista,valor,&posicao);
+        zeraTudo(&posicao,&antes,&depois);
+        removido = buscar(&lista,valor,&posicao,&antes,&depois);
         if(removido){
           printf("Elemento procurado: %d\n",removido->valor);
-          printf("Vizinhos antes: %d\n",posicao);
-          printf("Vizinhos depois: %d\n",tamanho - (posicao + 1));
+          printf("Posição = %d\n",posicao);
+          if(posicao + 1 == tamanho){
+            printf("Vizinhos antes: %d\n",antes);
+          }
+          else if(posicao == 0){
+            printf("Vizinhos depois: %d\n",depois);
+          }
+          else{
+            printf("Vizinhos antes: %d\n",antes);
+            printf("Vizinhos depois: %d\n",depois);
+          }
         }
         else{
-          printf("%s",MSG);
+          printf("%s\n",MSG);
         }
         break;
       case 6:
@@ -160,48 +179,6 @@ void imprimirContratio(No *no){
   printf("\n");
 }
 
-int remover(Lista **I, Lista **F, int numero)
-{
-    Lista *Aux, *No;
-    int removeu = 1;
-
-    if (busca(*I, numero))
-    {
-        inicializarLista(&Aux);
-        No = *I;
-
-        while (No != NULL && (*No).numero != numero)
-        {
-            No = (*No).Prox;
-            Aux = No;
-        }
-
-        if (No == NULL)
-        {
-            I = (*I).Prox;
-        }
-        else
-        {
-            if ((**F).numero == (*No).numero)
-            {
-                *F = (*F)->Ant;
-                (*F)->Prox = NULL;
-            }
-            else
-            {
-                No->Ant->Prox = (*No).Prox;
-                (*No).Prox->Ant = (*No).Ant;
-            }
-        }
-
-        free(Aux);
-    }
-    else
-        removeu = 0;
-
-    return removeu;
-}
-
 No *remover(No **lista, int num){
   No *aux, *remover = NULL;
   if(*lista){
@@ -229,15 +206,31 @@ No *remover(No **lista, int num){
   return remover;
 }
 
-No *buscar(No **lista, int num, int *posicao){
+No *buscar(No **lista, int num,int *posicao, int *antes, int *depois){
   No *aux,*no = NULL;
   aux = *lista;
-  while(aux && aux->valor != num){
+  aux->anterior = NULL;
+  int status = 0;
+  while(aux != NULL){
+    if(aux->valor == num){
+      if(aux->proximo == NULL){
+        no = aux;
+        (*antes) = aux->anterior->valor;
+      }
+      else if(aux->anterior == NULL){
+        no = aux;
+        (*depois) = aux->proximo->valor;
+      }
+      else{
+        no = aux;
+        (*antes) = aux->anterior->valor;
+        (*depois) = aux->proximo->valor;
+      }
+      status = 1;
+    }
+    if(status == 0) (*posicao)++;
+    aux->anterior = aux;
     aux = aux->proximo;
-  }
-  if(aux){
-    no = aux;
-    (*posicao)++;
   }
   return no;
 }
