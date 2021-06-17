@@ -1,16 +1,11 @@
-#include<stdio.h>
-#include<stdlib.h>
-
-void menu(){
-  printf("0 - Sair\n");
-  printf("1 - inserir\n");
-}
-
-#define MSG "Erro na alocação"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include<string.h>
 
 typedef struct{
   int cpf;
-  char nome[30];
+  char nome[10];
   int idade;
 }Pessoa;
 
@@ -20,33 +15,30 @@ typedef struct no{
   struct no *anterior;
 }No;
 
-
-void imprimir(No *no){
-  printf("lista: ");
-  while(no){
-    printf("%d ",no->cpf);
-    no = no->proximo;
-  }
-  printf("\n");
+void cadastroPessoa(Pessoa *pessoa,int cpf,char *nome, int id){
+  pessoa = malloc(sizeof(Pessoa));
+  (pessoa)->cpf = cpf;
+  strcpy((pessoa)->nome,nome);
+  (pessoa)->idade = id;
 }
 
-void inserirOrdenado(No **lista, int num,int *tamanho){
+void inserirOrdenado(No **lista, Pessoa *p,int *tamanho){
   No *aux,*novo = malloc(sizeof(No));
   if(novo){
-    novo->->cpf = num;
+    novo->pessoa->cpf = p->cpf;
     if(*lista == NULL){
       novo->proximo = NULL;
       novo->anterior = NULL;
       *lista = novo;
     }
-    else if(novo->cpf < (*lista)->cpf){
+    else if(novo->pessoa->cpf < (*lista)->pessoa->cpf){
       novo->proximo = *lista;
       (*lista)->anterior = novo;
       *lista = novo;
     }
     else{
       aux = *lista;
-      while(aux->proximo && novo->cpf > aux->proximo->cpf){
+      while(aux->proximo && novo->pessoa->cpf > aux->proximo->pessoa->cpf){
         aux = aux->proximo;
       }
       novo->proximo = aux->proximo;
@@ -58,38 +50,14 @@ void inserirOrdenado(No **lista, int num,int *tamanho){
     (*tamanho)++;
   }
   else{
-    printf("%s\n",MSG);
+    printf("deu erro\n");
   }
 }
 
-void cadastroPessoa(Pessoa *p){
-  printf("CPF: ");
-  scanf("%d",&p->cpf);
-  printf("Nome: ");
-  scanf("%s",p->nome);
-  printf("Idade: ");
-  scanf("%d",&p->idade);
-}
-
-int main(int argc, char *argv[]){
-  int op,valor,anterior,posicao = 0,tamanho = 0;
-  No *removido,*lista = NULL;
-  Pessoa p = NULL;
-  do{
-    menu();
-    printf(": ");
-    scanf("%d",&op);
-    printf("\n");
-    switch (op) {
-      case 1:
-        cadastroPessoa(&p);
-        //inserirOrdenado(&lista,p,&tamanho);
-        break;
-      case 2:
-        imprimir(lista);
-        break;
-      default:
-        if(op != 0) printf("Opação inválida\n");
-    }
-  }while(op != 0);
+int main(){
+  No *lista = NULL;
+  Pessoa p;
+  int t = 0;
+  cadastroPessoa(&p,1,"vitor",21);
+  return 0;
 }
