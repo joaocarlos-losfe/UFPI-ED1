@@ -107,6 +107,7 @@ void inserirnofinal(Lista lista, Dado dado)
 
     lista->size++;
 }
+
 static void inserirDentroDe(Lista lista, Dado anterior, Dado atual, Dado dado) 
 {
     dado->proximo = atual;
@@ -213,6 +214,7 @@ Dado removerInicio(Lista lista)
     }
     return atual;
 }
+
 void mostrarLista(Lista lista) 
 {
     if (listaVazia(lista)) 
