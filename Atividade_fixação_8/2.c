@@ -58,24 +58,6 @@ int main()
 	Lista lista = criarLista();
 	setlocale(LC_ALL, "");
 
-	Dado dado = data_create(777, "jose", 23);
-	inserirOrdenado(lista, dado);
-
-	dado = data_create(888, "antocio", 16);
-	inserirOrdenado(lista, dado);
-
-	dado = data_create(999, "joao", 15);
-	inserirOrdenado(lista, dado);
-
-	dado = data_create(1010, "felipe", 16);
-	inserirOrdenado(lista, dado);
-
-	dado = data_create(1111, "marcos", 18);
-	inserirOrdenado(lista, dado);
-
-	dado = data_create(1212, "deadmau5", 14);
-	inserirOrdenado(lista, dado);
-
 	int op = 1;
 	int cpf;
 	char nome[20];
