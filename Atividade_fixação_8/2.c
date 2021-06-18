@@ -49,7 +49,7 @@ static Dado removerDe(Lista lista, Dado anterior, Dado atual);
 
 void menu();
 void criarOutraLista(Lista principal, Lista nova, int cpf);
-int buscarIndex(Lista lista, int cpf);
+int buscarIndexCPF(Lista lista, int cpf);
 int devolverVizinhoMaisVelho(Lista lista, int cpf);
 void devolverListaMenores(Lista lista, Lista nova, int idade);
 
@@ -85,7 +85,7 @@ int main()
 			printf("\nIdade: ");
 			scanf("%d", &idade);
 
-			dado = data_create(cpf, nome, idade);
+			Dado dado = data_create(cpf, nome, idade);
 
 			inserirOrdenado(lista, dado);
 
@@ -137,7 +137,7 @@ int main()
 			}
 			else
 			{
-				printf("\nNenhum dos vizinhos é mais velho\n");
+				printf("\nNenhum dos vizinhos ï¿½ mais velho\n");
 			}
 
 		default:
@@ -294,9 +294,9 @@ void menu()
 	printf("\n 0 - encerrar programa");
 	printf("\n 1 - cadastrar pessoa");
 	printf("\n 2 - mostrar lista de pessoas\n");
-	printf("\n 3 - crie uma outra lista contendo somente as pessoas que estão depois dela na fila");
+	printf("\n 3 - crie uma outra lista contendo somente as pessoas que estï¿½o depois dela na fila");
 	printf("\n 4 - Devolver uma lista ordenada contendo somente as pessoas menores do que uma idade informada");
-	printf("\n 5 - devolva a idade do vizinho mais velho desta pessoa e devolva também se ele é mais velho do que a pessoa informada\n > ");
+	printf("\n 5 - devolva a idade do vizinho mais velho desta pessoa e devolva tambï¿½m se ele ï¿½ mais velho do que a pessoa informada\n > ");
 }
 
 Dado data_create(int cpf, char *nome, int idade)
