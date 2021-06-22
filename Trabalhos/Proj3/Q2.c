@@ -71,7 +71,49 @@ void inserir_final(ListaCDE lista, Premio premio)
 		lista->fim = novo_dado;
 		lista->qtd_dados = lista->qtd_dados + 1;
 	}
+}
+
+void buscar_remove(ListaCDE lista, int codigo)
+{
+	Dado dado_end = lista->inicio;
 	
+	while(dado_end->prox != lista->inicio)
+	{
+		if(dado_end->premio.codigo == codigo)
+		{
+			
+			if(dado_end == lista->inicio)
+			{
+				lista->inicio = dado_end->prox;
+				lista->fim->prox = lista->inicio;
+				lista->inicio->anterior = lista->fim;
+				lista->qtd_dados -= 1;
+				free(dado_end);
+				return;
+			}
+			else
+			{
+				dado_end->anterior->prox = dado_end->prox;
+				dado_end->prox->anterior = dado_end->anterior;
+				lista->qtd_dados -=1;
+				free(dado_end);
+				return;
+			}
+			
+		}
+		
+		dado_end = dado_end->prox;
+	}
+	
+	if(dado_end->premio.codigo == codigo && dado_end == lista->fim)
+	{
+		lista->inicio->anterior = lista->fim->anterior;
+		lista->fim = lista->inicio->prox;
+		lista->fim->prox = lista->inicio;
+		lista->qtd_dados -= 1;
+		free(dado_end);
+		return;
+	}
 }
 
 void imprimeLista(ListaCDE lista)
@@ -132,6 +174,22 @@ int main()
     Dado dd = lista->fim;
     
     printf("\ndado do fim %d apontando para o primeiro %d\n", dd->premio.codigo, dd->prox->premio.codigo);
+    
+    dd = lista->inicio;
+    printf("\ndado do inicio %d apontando para o ultimo %d\n", dd->premio.codigo, dd->anterior->premio.codigo);
+    
+    buscar_remove(lista, 222);
+    buscar_remove(lista, 111);
+    buscar_remove(lista, 555);
+    
+    printf("\n");
+    
+    imprimeLista(lista);
+    
+    dd = lista->inicio;
+    
+    printf("\n%d", dd->premio.codigo);
+    printf("\n%d", dd->prox->prox->premio.codigo);
        
     return 0;
 }
