@@ -155,12 +155,6 @@ int main()
 
     inserir_final(lista, premio);
     
-    premio.codigo = 444;
-    strcpy(premio.descricao, "carne de cutia macho");
-    premio.qtd = 6;
-
-    inserir_final(lista, premio);
-    
     premio.codigo = 555;
     strcpy(premio.descricao, "um carro do leite cheio de leite");
     premio.qtd = 6;
