@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <time.h>
 
 typedef struct Dado* Dado;
 typedef struct ListaCDE* ListaCDE;
@@ -34,7 +35,7 @@ ListaCDE iniciarLista()
 	ListaCDE nova_lista = malloc(sizeof(struct ListaCDE));
 
 	nova_lista->inicio = NULL;
-	nova_lista->inicio = NULL;
+	nova_lista->fim = NULL;
 	nova_lista->qtd_dados = 0;
 
 	return nova_lista;
@@ -118,28 +119,86 @@ void buscar_remove(ListaCDE lista, int codigo)
 
 void imprimeLista(ListaCDE lista)
 {
-	Dado dado_end = lista->inicio;
-	printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-	dado_end = dado_end->prox;
 
-	while(dado_end != lista->inicio)
+	if(lista->qtd_dados > 0)
 	{
-		printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
+		Dado dado_end = lista->inicio;
+
+		printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
 		dado_end = dado_end->prox;
+
+		if(lista->qtd_dados > 1)
+		{
+			while(dado_end != lista->inicio)
+			{
+				printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
+				dado_end = dado_end->prox;
+			}
+		}
+
 	}
+
 }
 
 void imprimeListaAoContrario(ListaCDE lista)
 {
-	Dado dado_end = lista->fim;
-	printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-	dado_end = dado_end->anterior;
-
-	while(dado_end != lista->fim)
+	if(lista->qtd_dados > 0)
 	{
-		printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
+		Dado dado_end = lista->fim;
+
+		printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
 		dado_end = dado_end->anterior;
+
+		if(lista->qtd_dados > 1)
+		{
+			while(dado_end != lista->fim)
+			{
+				printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
+				dado_end = dado_end->anterior;
+			}
+		}
+
 	}
+}
+
+Dado girar_roleta(ListaCDE lista, int *flag, Dado aux)
+{
+
+	int i = 0;
+	srand(time(NULL));
+	printf("\nrodando apartir de %s", aux->premio.descricao);
+
+	if(lista->qtd_dados > 0)
+	{
+		if(*flag == 0)
+		{
+			printf("\ngirando em sentido horario");
+			for (i = 0; i < rand() % 10; i++)
+			{
+				aux = aux->prox;
+			}
+
+			*flag = 1;
+		}
+		else if (*flag == 1)
+		{
+			printf("\ngirando em sentido anti horario");
+			for (i = 0; i < rand() % 10; i++)
+			{
+
+				aux = aux->anterior;
+			}
+
+			*flag = 0;
+		}
+		
+		printf("\npremio: codigo: %d, descrição: %s, quantidade restante: %d\n", aux->premio.codigo, aux->premio.descricao, aux->premio.qtd);
+		aux->premio.qtd--;
+	}
+
+
+	return aux;
+
 }
 
 int main()
@@ -151,54 +210,87 @@ int main()
 	Premio premio;
 
 	premio.codigo = 111;
-	strcpy(premio.descricao, "20 reais desconto");
-	premio.qtd = 5;
-
+	strcpy(premio.descricao, "camisa");
+	premio.qtd = 3;
 	inserir_final(lista, premio);
 
 	premio.codigo = 222;
-	strcpy(premio.descricao, "camiseta");
-	premio.qtd = 3;
-
+	strcpy(premio.descricao, "bone do pernalonga");
+	premio.qtd = 5;
 	inserir_final(lista, premio);
 
 	premio.codigo = 333;
-	strcpy(premio.descricao, "caminhão de cajarana");
+	strcpy(premio.descricao, "10% de desconto em salsicha");
 	premio.qtd = 2;
+	inserir_final(lista, premio);
 
+
+	premio.codigo = 444;
+	strcpy(premio.descricao, "3 coxinhas de frango");
+	premio.qtd = 2;
 	inserir_final(lista, premio);
 
 	premio.codigo = 555;
-	strcpy(premio.descricao, "um carro do leite cheio de leite");
-	premio.qtd = 6;
-
+	strcpy(premio.descricao, "tesla 0km");
+	premio.qtd = 4;
 	inserir_final(lista, premio);
 
-	imprimeLista(lista);
 
-	printf("\n\n");
-	
-	imprimeListaAoContrario(lista);
+	premio.codigo = 666;
+	strcpy(premio.descricao, "carteira de motorista");
+	premio.qtd = 8;
+	inserir_final(lista, premio);
 
-	Dado dd = lista->fim;
 
-	printf("\ndado do fim %d apontando para o primeiro %d\n", dd->premio.codigo, dd->prox->premio.codigo);
+	premio.codigo = 777;
+	strcpy(premio.descricao, "notebook dell");
+	premio.qtd = 10;
+	inserir_final(lista, premio);
 
-	dd = lista->inicio;
-	printf("\ndado do inicio %d apontando para o ultimo %d\n", dd->premio.codigo, dd->anterior->premio.codigo);
 
-	buscar_remove(lista, 222);
-	buscar_remove(lista, 111);
-	buscar_remove(lista, 555);
+	premio.codigo = 888;
+	strcpy(premio.descricao, "smarphone galaxy s20 ultra");
+	premio.qtd = 3;
+	inserir_final(lista, premio);
 
-	printf("\n");
 
-	imprimeLista(lista);
+	premio.codigo = 999;
+	strcpy(premio.descricao, "nokia lanterinha a prova de balas");
+	premio.qtd = 2;
+	inserir_final(lista, premio);
 
-	dd = lista->inicio;
+	int flag = 0;
+	Dado aux = lista->inicio;
 
-	printf("\n%d", dd->premio.codigo);
-	printf("\n%d", dd->prox->prox->premio.codigo);
+	int op;
+
+	while(1)
+	{
+		printf("\nflag: %d", flag);
+		printf("\n1 - girar roleta\n");
+		scanf("%d", &op);
+
+		if(lista->qtd_dados > 0)
+		{
+			aux = girar_roleta(lista, &flag, aux);
+
+			if (aux->premio.qtd == 0 && aux != NULL )
+			{
+				int id = aux->premio.codigo;
+				
+				printf("\n>>>> premio %s retirado da roleta <<<<", aux->premio.descricao);
+				aux = aux->prox;
+				buscar_remove(lista, id);
+				
+			}
+		}
+		else
+		{
+			printf("\a roleta não possui mais premios");
+		}
+
+	}
+
 
 	return 0;
 }
