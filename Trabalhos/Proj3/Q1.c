@@ -25,19 +25,26 @@ void criar_lista(Lista *lista);
 void imprimir(Lista lista);
 void cadastroMonomio(Termo *t);
 
-void somaPolinomios(Lista *polinomio1, Lista *polinomio2){
-  printf("oi\n");
-  No *t1 = polinomio1->inicio;
-  No *t2 = polinomio2->inicio;
+void somaPolinomios(Lista polinomio1, Lista polinomio2){
+  No *t1 = polinomio1.inicio;
+  No *t2 = polinomio2.inicio;
   int i = 0;
-  printf("%d\n",t1->polinomio.coeficiente + t2->polinomio.coeficiente);
+  int soma;
+  if(t1->polinomio.variavel == t2->polinomio.variavel){
+    if(t1->polinomio.expoente == t2->polinomio.expoente){
+      soma = t1->polinomio.coeficiente + t2->polinomio.coeficiente;
+      printf("soma = %d\n",soma);
+    }
+  }
 }
 
 int main(int argc, char **argv[]){
-  Lista lista, *vetorPoli[100];
+
+  Lista lista, vetorPoli[100];
   Termo t;
   criar_lista(&lista);
 	int termos,op,contador = 0,p1,p2;
+
 	do{
 		menu();
 		scanf("%d",&op);
@@ -52,7 +59,7 @@ int main(int argc, char **argv[]){
 				cadastroMonomio(&t);
 				inserirFinal(&lista,t);
 			}
-      vetorPoli[contador] = lista ;
+      vetorPoli[contador] = lista;
       contador++;
 		}
     else if(op == 2){
