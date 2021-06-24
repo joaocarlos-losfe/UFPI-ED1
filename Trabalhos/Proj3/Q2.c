@@ -1,308 +1,357 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <locale.h>
-#include <time.h>
 
-typedef struct Dado* Dado;
 typedef struct ListaCDE* ListaCDE;
-
+typedef struct Dado* Dado;
 
 typedef struct
 {
 	int codigo;
 	char descricao[40];
-	int qtd;
+	int quantidade;
 
 } Premio;
 
 struct Dado
 {
 	Premio premio;
-	Dado prox;
+	Dado proximo;
 	Dado anterior;
 };
 
 struct ListaCDE
 {
+	int qtd_dados;
 	Dado inicio;
 	Dado fim;
-	int qtd_dados;
 };
 
-ListaCDE iniciarLista()
+Dado novoDado(int codigo, char *descricao, int quantidade)
 {
-	ListaCDE nova_lista = malloc(sizeof(struct ListaCDE));
+	Dado dado = malloc(sizeof(struct Dado));
 
-	nova_lista->inicio = NULL;
-	nova_lista->fim = NULL;
-	nova_lista->qtd_dados = 0;
+	dado->premio.codigo = codigo;
+	strcpy(dado->premio.descricao, descricao);
+	dado->premio.quantidade = quantidade;
 
-	return nova_lista;
+	dado->proximo = NULL;
+	dado->anterior = NULL;
+
+	return dado;
 }
 
-void inserir_final(ListaCDE lista, Premio premio)
+Dado apagarDado(Dado dado)
+{
+	free(dado);
+	dado = NULL;
+	return dado;
+}
+
+void mostrarDado(Dado dado)
+{
+	printf("\n\n >>> %s <<< codigo: %d, quantidade restante: %d", dado->premio.descricao, dado->premio.codigo, dado->premio.quantidade);
+}
+
+ListaCDE criarLista()
+{
+	ListaCDE lista = malloc(sizeof(struct ListaCDE));
+
+	lista->qtd_dados = 0;
+	lista->inicio = NULL;
+	lista->fim = NULL;
+
+	return lista;
+}
+
+bool lista_eh_vazia(ListaCDE lista)
+{
+	return lista->inicio == NULL;
+}
+
+void inserirEntre(ListaCDE lista, Dado atual, Dado dado, bool eh_primeiro)
 {
 
-	Dado novo_dado = malloc(sizeof(struct Dado));
-	novo_dado->premio = premio;
+	dado->proximo = atual;
+	atual->anterior->proximo = dado;
+	dado->anterior = atual->anterior;
+	atual->anterior = dado;
 
-	if (lista->qtd_dados == 0)
+	if(eh_primeiro)
 	{
-		lista->inicio = novo_dado;
-		lista->fim = novo_dado;
-		lista->qtd_dados = lista->qtd_dados + 1;
-
+		lista->inicio = dado;
 	}
-	else if (lista->qtd_dados == 1)
+	else if (atual == lista->fim)
 	{
-		lista->inicio->prox = novo_dado;
-		lista->inicio->anterior = novo_dado;
-		lista->fim = novo_dado;
-		novo_dado->anterior = lista->inicio;
-		novo_dado->prox = lista->inicio;
-		lista->qtd_dados = lista->qtd_dados + 1;
+		lista->fim = dado;
+	}
+
+}
+
+void inserirOrdenado(ListaCDE lista, Dado dado)
+{
+
+	Dado atual = lista->inicio;
+
+	if(atual == NULL)
+	{
+		dado->anterior = dado->proximo = dado;
+		lista->inicio = lista->fim = dado;
 	}
 	else
 	{
-		lista->inicio->anterior = novo_dado;
-		novo_dado->prox = lista->inicio;
-		novo_dado->anterior = lista->fim;
-		lista->fim->prox = novo_dado;
-		lista->fim = novo_dado;
-		lista->qtd_dados = lista->qtd_dados + 1;
-	}
-}
+		bool eh_primeiro = atual->premio.codigo >= dado->premio.codigo;
 
-void buscar_remove(ListaCDE lista, int codigo)
-{
-	Dado dado_end = lista->inicio;
-
-	while(dado_end->prox != lista->inicio)
-	{
-		if(dado_end->premio.codigo == codigo)
+		do
 		{
+			if(atual->premio.codigo >= dado->premio.codigo)
+			{
+				break;
+			}
 
-			if(dado_end == lista->inicio)
-			{
-				lista->inicio = dado_end->prox;
-				lista->fim->prox = lista->inicio;
-				lista->inicio->anterior = lista->fim;
-				lista->qtd_dados --;
-				free(dado_end);
-				return;
-			}
-			else
-			{
-				dado_end->anterior->prox = dado_end->prox;
-				dado_end->prox->anterior = dado_end->anterior;
-				lista->qtd_dados --;
-				free(dado_end);
-				return;
-			}
+			atual = atual->proximo;
 
 		}
+		while(atual != lista->inicio);
 
-		dado_end = dado_end->prox;
-	}
-
-	if( (dado_end->premio.codigo == codigo) && (dado_end == lista->fim))
-	{
-		lista->inicio->anterior = lista->fim->anterior;
-		lista->fim = lista->inicio->anterior;
-		lista->fim->prox = lista->inicio;
-
-		lista->qtd_dados --;
-		free(dado_end);
-		return;
-	}
-	
-	if (lista->qtd_dados == 0)
-	{
-		lista->inicio = NULL;	
-		lista->fim = NULL;
-	}
-		
-		
-}
-
-void imprimeLista(ListaCDE lista)
-{
-
-	if(lista->qtd_dados > 0)
-	{
-		Dado dado_end = lista->inicio;
-
-		printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-
-		dado_end = dado_end->prox;
-
-		if(lista->qtd_dados > 1)
-		{
-			while(dado_end != lista->inicio)
-			{
-				printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-				dado_end = dado_end->prox;
-			}
-		}
-
+		inserirEntre(lista, atual, dado, eh_primeiro);
 	}
 
 }
 
-void imprimeListaAoContrario(ListaCDE lista)
+void mostrarLista(ListaCDE lista)
 {
-	if(lista->qtd_dados > 0)
+	if (lista_eh_vazia(lista))
 	{
-		Dado dado_end = lista->fim;
-
-		printf("\ncodigo: %d, descrição: %s, quantidade: %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-		dado_end = dado_end->anterior;
-
-		if(lista->qtd_dados > 1)
+		printf("\nlista vazia...");
+	}
+	else
+	{
+		Dado dado = lista->inicio;
+		do
 		{
-			while(dado_end != lista->fim)
-			{
-				printf("\ncodigo: %d, descrição %s, quantidade %d", dado_end->premio.codigo, dado_end->premio.descricao, dado_end->premio.qtd);
-				dado_end = dado_end->anterior;
-			}
+			mostrarDado(dado);
+			dado = dado->proximo;
 		}
-
+		while(dado != lista->inicio);
 	}
 }
 
-Dado girar_roleta(ListaCDE lista, int *flag, Dado aux)
+Dado removerDoInicio(ListaCDE lista)
 {
-	int i = 0;
-	srand(time(NULL));
+	Dado atual = lista->inicio;
 
-	if(lista->qtd_dados > 0)
+	if(atual != NULL)
 	{
-		printf("\n Rodando apartir de >>> %s <<<", aux->premio.descricao);
-
-		if(*flag == 0)
+		if(atual == lista->fim)
 		{
-			printf("\n Girando em sentido horario");
-			for (i = 0; i < rand() % 10; i++)
-			{
-				aux = aux->prox;	
-			}
-
-			*flag = 1;
-		}
-		else if (*flag == 1)
-		{
-			printf("\n Girando em sentido anti horario");
-			for (i = 0; i < rand() % 10; i++)
-			{
-				aux = aux->anterior;
-			}
-
-			*flag = 0;
-		}
-
-		printf("\n Ganhador !!! Premio: %s, codigo: %d, quantidade restante: %d\n", aux->premio.descricao, aux->premio.codigo, aux->premio.qtd);
-		aux->premio.qtd--;
-	}
-
-
-	return aux;
-
-}
-
-int main()
-{
-	setlocale(LC_ALL, "");
-
-	ListaCDE lista = iniciarLista();
-
-	Premio premio;
-
-	premio.codigo = 111;
-	strcpy(premio.descricao, "camisa");
-	premio.qtd = 3;
-	inserir_final(lista, premio);
-
-	premio.codigo = 222;
-	strcpy(premio.descricao, "bone do pernalonga");
-	premio.qtd = 5;
-	inserir_final(lista, premio);
-
-	premio.codigo = 333;
-	strcpy(premio.descricao, "10% de desconto em salsicha");
-	premio.qtd = 2;
-	inserir_final(lista, premio);
-
-
-	premio.codigo = 444;
-	strcpy(premio.descricao, "3 coxinhas de frango");
-	premio.qtd = 2;
-	inserir_final(lista, premio);
-
-	premio.codigo = 555;
-	strcpy(premio.descricao, "tesla 0km");
-	premio.qtd = 4;
-	inserir_final(lista, premio);
-
-
-	premio.codigo = 666;
-	strcpy(premio.descricao, "carteira de motorista");
-	premio.qtd = 3;
-	inserir_final(lista, premio);
-
-
-	premio.codigo = 777;
-	strcpy(premio.descricao, "notebook dell");
-	premio.qtd = 2;
-	inserir_final(lista, premio);
-
-
-	premio.codigo = 888;
-	strcpy(premio.descricao, "smarphone galaxy s20 ultra");
-	premio.qtd = 3;
-	inserir_final(lista, premio);
-
-
-	premio.codigo = 999;
-	strcpy(premio.descricao, "nokia lanterinha a prova de balas");
-	premio.qtd = 2;
-	inserir_final(lista, premio);
-
-	int flag = 0;
-	Dado aux = lista->inicio;
-
-	int op;
-
-	while(1)
-	{
-		printf("\n 1 - girar roleta, 2 - mostrar lista: ");
-		scanf("%d", &op);
-		
-		if(op == 2)
-		{
-			printf("\n");
-			imprimeLista(lista);
-		}
-
-		if (lista->qtd_dados > 0)
-		{
-			aux = girar_roleta(lista, &flag, aux);
-
-			if (aux->premio.qtd == 0)
-			{
-				int id = aux->premio.codigo;
-				printf("\n premio >>>> %s <<<< RETIRADO DA ROLETA ", aux->premio.descricao);
-				aux = aux->prox;
-				buscar_remove(lista, id);
-			}
+			lista->inicio = lista->fim = NULL;
 		}
 		else
 		{
-			printf("\n Roleta vazia");
+			lista->fim->proximo = lista->inicio = atual->proximo;
+			lista->inicio->anterior = lista->fim;
+
 		}
 
+		atual->anterior = atual->proximo = NULL;
+
+		lista->qtd_dados--;
+	}
+
+	return atual;
+}
+
+Dado removerApartirDe(ListaCDE lista, Dado atual, bool eh_primeiro)
+{
+	if (eh_primeiro)
+	{
+		return removerDoInicio(lista);
+	}
+
+	atual->anterior->proximo = atual->proximo;
+	atual->proximo->anterior = atual->anterior;
+
+	if(atual == lista->fim)
+		lista->fim = atual->anterior;
+
+	lista->qtd_dados--;
+
+	atual->proximo = atual->anterior = NULL;
+
+	return atual;
+}
+
+
+Dado removerPorCodigo(ListaCDE lista, int codigo)
+{
+
+	Dado atual = lista->inicio;
+
+	if (atual != NULL)
+	{
+		bool eh_primeiro = atual->premio.codigo == codigo;
+
+		do
+		{
+			if (atual->premio.codigo == codigo) break;
+
+			atual = atual->proximo;
+
+		}
+		while (atual != lista->inicio);
+
+		atual = (atual->premio.codigo == codigo) ? removerApartirDe(lista, atual, eh_primeiro) : NULL;
+	}
+
+	return atual;
+}
+
+Dado girarRoleta(int *flag, Dado premio)
+{
+
+	int roleta_voltas = rand() % 100;
+	int i;
+
+	printf("\n girando apartir de >>> %s <<<", premio->premio.descricao);
+
+	if(premio != NULL)
+	{
+		if((*flag) == 1)
+		{
+			printf("\n girando em sentido Horario");
+
+			(*flag) = 0;
+
+			for(i = 0; i < roleta_voltas; i++)
+			{
+				premio = premio->proximo;
+			}
+		}
+		else if ((*flag == 0))
+		{
+			printf("\n girando em sentido ANTI Horario");
+
+			(*flag) = 1;
+
+			for(i = 0; i < roleta_voltas; i++)
+			{
+				premio = premio->anterior;
+			}
+		}
+	}
+
+	return premio;
+}
+
+void menu()
+{
+	printf("\n\n0 - Sair");
+	printf("\n1 - Cadastrar premio");
+	printf("\n2 - Girar roleta");
+	printf("\n3 - Mostrar lista de premios\n> ");
+}
+
+int main(int argc, char** argv)
+{
+	setlocale(LC_ALL, "Portuguese");
+
+	Dado dado;
+	ListaCDE lista;
+
+	lista = criarLista();
+	
+	/*
+
+	dado = novoDado(333, "camisa", 2);
+	inserirOrdenado(lista, dado);
+
+	dado = novoDado(111, "bone", 3);
+	inserirOrdenado(lista, dado);
+
+	dado = novoDado(222, "frango", 1);
+	inserirOrdenado(lista, dado);
+
+	removerPorCodigo(lista, 222);
+
+	dado = novoDado(666, "10% de desconto", 5);
+	inserirOrdenado(lista, dado);
+
+	dado = novoDado(444, "nokia lanterninha", 6);
+	inserirOrdenado(lista, dado);
+
+	dado = novoDado(555, "botijao de gas", 4);
+	inserirOrdenado(lista, dado);
+	*/
+
+	int op = 1;
+
+	Dado premio = lista->inicio;
+	int flag = 1;
+
+	int codigo = 0;
+	char descricao[40];
+	int qtd = 0;
+
+	do
+	{
+		menu();
+		scanf("%d", &op);
+
+		switch(op)
+		{
+
+		case 1:
+			printf("\n codigo: ");
+			scanf("%d", &codigo);
+			printf("\n descrição do premio: ");
+			setbuf(stdin, NULL);
+			scanf(" %[^\n]s", descricao);
+			printf("\n quantidade: ");
+			scanf("%d", &qtd);
+
+			dado = novoDado(codigo, descricao, qtd);
+			inserirOrdenado(lista, dado);
+
+			printf("\n Premio cadastrado com sucesso...");
+			break;
+
+		case 2:
+
+			if(!lista_eh_vazia(lista))
+			{
+				premio = girarRoleta(&flag, premio);
+				printf("\n\n Premio ganho: ");
+				mostrarDado(premio);
+				premio->premio.quantidade--;
+
+				if(premio->premio.quantidade == 0)
+				{
+					int codigo_remover = premio->premio.codigo;
+					premio = premio->proximo;
+					removerPorCodigo(lista, codigo_remover);
+					printf("\n Quantidade desse premio chegou a 0 !!. Retirado da roleta");
+				}
+
+			}
+			else
+			{
+				printf("\n roleta vazia !!");
+				lista = criarLista();	
+			}
+			
+
+			break;
+
+		case 3:
+			mostrarLista(lista);
+			break;
+		}
 
 	}
+	while(op != 0);
 
 
 	return 0;
