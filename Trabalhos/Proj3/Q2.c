@@ -118,7 +118,8 @@ void inserirOrdenado(ListaCDE lista, Dado dado)
 
 		inserirEntre(lista, atual, dado, eh_primeiro);
 	}
-
+	
+	lista->qtd_dados++;
 }
 
 void mostrarLista(ListaCDE lista)
@@ -318,8 +319,6 @@ int main(int argc, char** argv)
 			dado = novoDado(codigo, descricao, qtd);
 			
 			inserirOrdenado(lista, dado);
-			
-			lista->qtd_dados+=1;
 			
 			if (lista->qtd_dados == 1)
 			{
