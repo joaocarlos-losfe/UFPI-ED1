@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <locale.h>
 
 typedef struct Dado* Dado;
 typedef struct ListaC* ListaC;
@@ -30,9 +31,9 @@ Dado criarDado(char* monomio)
 {
 	Dado dado = malloc(sizeof(struct Dado));
 	dado->termo.monomio[0] = ' ';
-	
+
 	strcpy(dado->termo.monomio, monomio);
-	
+
 	dado->proximo = NULL;
 	return dado;
 }
@@ -143,7 +144,19 @@ void framentarPolinomio(char *polinomio, ListaC lista)
 		Dado dado = criarDado(monomio_composto);
 		anexarNaLista(lista, dado);
 	}
+}
 
+void menu()
+{
+	printf("\n 0 - encerrar programa");
+	printf("\n 1 - Cadastrar polinômio");
+	printf("\n 2 - Somar 2 polinomios cadastrados");
+	printf("\n 3 - Multiplicar 2 polinomios cadastrados");
+	printf("\n 4 - Avaliar um dos polinômios cadastrados em função de valores dados para x, y e z,");
+	printf("\n 5 - Imprimir a representação de um dos polinômios cadastrados");
+	printf("\n 6 - Imprimir a representação de todos os polinômios cadastrados ");
+	printf("\n 7 - Calcular a derivada parcial de um dos polinômios cadastrados em relação a qualquer uma das variáveis");
+	printf("\n> ");
 }
 
 
@@ -151,35 +164,56 @@ int main(int argc, char** argv)
 {
 	ListaC lista_polinomios[100];
 	int index = 0;
-	
-	ListaC lista = criarLista(111);
-	
-	char polinomio[] = "3x2 + 5x - 3x3 + 5";
-	
-	framentarPolinomio(polinomio, lista);
-	
-	lista_polinomios[index] = lista;
-	index++;
-	
-	lista = criarLista(222);
-	
-	char polinomio2[] = "4x2 + 7x4 - 6x2 + 6";
-	
-	framentarPolinomio(polinomio2, lista);
-	
-	lista_polinomios[index] = lista;
-	
-	index++;
-	
-	//mostrarLista(lista_polinomios[0]);
-	
-	int i;
-	
-	for(i=0; i<index; i++)
+	int op = 1;
+	int i = 0;
+
+
+	int id;
+	char polinomio[50];
+
+	do
 	{
-		mostrarLista(lista_polinomios[i]);
-		printf("\n");
+		menu();
+		scanf("%d", &op);
+
+		switch(op)
+		{
+		case 1:
+
+			printf("\nID da lista: ");
+			scanf("%d", &id);
+			ListaC lista = criarLista(id);
+
+			printf("\ndigite o polinomio(ex: 2x2 + y4 + 3z2): ");
+			setbuf(stdin, NULL);
+			scanf(" %[^\n]s", polinomio);
+			framentarPolinomio(polinomio, lista);
+
+			lista_polinomios[index] = lista;
+			index++;
+			break;
+
+		case 6:
+
+			if(index > 0)
+			{
+				printf("\n");
+				for(i = 0; i < index; i++)
+				{
+					printf("%d ", lista_polinomios[i]->ID);
+					mostrarLista(lista_polinomios[i]);
+					printf("\n");
+				}
+			}
+			else
+				printf("\n nenhum polinomio cadastrado");
+
+		default:
+			break;
+		}
+
 	}
-	
+	while(op != 0);
+
 	return 0;
 }
