@@ -27,30 +27,69 @@ void inserirFinal(Lista *lista, Termo t);
 void criar_lista(Lista *lista);
 void imprimir(Lista lista);
 void cadastroMonomio(Termo *t);
+void imprimirNo(No *no);
 
-void somaPolinomios(Lista polinomio1, Lista polinomio2)
+void somaPolinomios(No *no1, No *no2)
 {
-	No *t1 = polinomio1.inicio;
-	No *t2 = polinomio2.inicio;
 	int i = 0;
 	int soma;
-	if(t1->polinomio.variavel == t2->polinomio.variavel)
+  imprimirNo(no1);
+  printf("+\n");
+  imprimirNo(no2);
+  printf("-------------------------------------------");
+  if(no1 != NULL || no2 != NULL)
+  {
+    while(i < 4)
+    {
+      if(no1->polinomio.variavel == no2->polinomio.variavel){
+        soma = no1->polinomio.coeficiente + no2->polinomio.coeficiente;
+
+        if(no1->polinomio.expoente == no2->polinomio.expoente)
+        {
+          if(soma >= 0){
+            printf("+");
+            printf("%d%c^%d\n", soma,no1->polinomio.variavel,no1->polinomio.expoente);
+          }
+        }
+        else{
+          if(i > 0){
+            if(no1->polinomio.expoente >= 0 || no2->polinomio.expoente >= 0) printf("+");
+            printf("%d%c^%d\n", soma,no1->polinomio.variavel,no1->polinomio.expoente);
+          }
+        }
+      }
+      i++;
+    }
+    no1 = no1->proximo;
+    no2 = no2->proximo;
+  }
+}
+
+
+
+void imprimirNo(No *no)
+{
+	if(no != NULL)
 	{
-		if(t1->polinomio.expoente == t2->polinomio.expoente)
-		{
-			soma = t1->polinomio.coeficiente + t2->polinomio.coeficiente;
-			printf("soma = %d\n", soma);
+			printf("%d", no->polinomio.coeficiente);
+			printf("%c", no->polinomio.variavel);
+			if(no->polinomio.expoente != 0)
+			{
+				printf("%d", no->polinomio.expoente);
+			}
+			no = no->proximo;
 		}
-	}
+	printf("\n");
 }
 
 int main(int argc, char **argv[])
 {
 
-	Lista lista, vetorPoli[100];
+	Lista lista;
+  No *vetorPoli[100];
 	Termo t;
 	criar_lista(&lista);
-	int termos, op, contador = 0, p1, p2;
+	int termos, op, contador = 1, p1, p2;
 
 	do
 	{
@@ -69,7 +108,8 @@ int main(int argc, char **argv[])
 				cadastroMonomio(&t);
 				inserirFinal(&lista, t);
 			}
-			vetorPoli[contador] = lista;
+			vetorPoli[contador] = lista.inicio;
+      imprimirNo(vetorPoli[contador]);
 			contador++;
 		}
 		else if(op == 2)
@@ -150,6 +190,7 @@ void imprimir(Lista lista)
 			{
 				printf("%d", no->polinomio.expoente);
 			}
+      printf("\n");
 			no = no->proximo;
 		}
 		while(no != lista.inicio);
