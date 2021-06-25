@@ -209,15 +209,15 @@ Dado removerPorCodigo(ListaCDE lista, int codigo)
 	return atual;
 }
 
-Dado girarRoleta(int *flag, Dado premio)
+Dado girarRoleta(int *flag, Dado dado)
 {
 
 	int roleta_voltas = rand() % 100;
 	int i;
 
-	printf("\n girando apartir de >>> %s <<<", premio->premio.descricao);
+	printf("\n girando apartir de >>> %s <<<", dado->premio.descricao);
 
-	if(premio != NULL)
+	if(dado != NULL)
 	{
 		if((*flag) == 1)
 		{
@@ -227,7 +227,7 @@ Dado girarRoleta(int *flag, Dado premio)
 
 			for(i = 0; i < roleta_voltas; i++)
 			{
-				premio = premio->proximo;
+				dado = dado->proximo;
 			}
 		}
 		else if ((*flag == 0))
@@ -238,12 +238,12 @@ Dado girarRoleta(int *flag, Dado premio)
 
 			for(i = 0; i < roleta_voltas; i++)
 			{
-				premio = premio->anterior;
+				dado = dado->anterior;
 			}
 		}
 	}
 
-	return premio;
+	return dado;
 }
 
 void menu()
@@ -284,11 +284,14 @@ int main(int argc, char** argv)
 
 	dado = novoDado(555, "botijao de gas", 4);
 	inserirOrdenado(lista, dado);
+	
 	*/
 
 	int op = 1;
+	
 
-	Dado premio = lista->inicio;
+	Dado premio;
+	
 	int flag = 1;
 
 	int codigo = 0;
@@ -311,9 +314,17 @@ int main(int argc, char** argv)
 			scanf(" %[^\n]s", descricao);
 			printf("\n quantidade: ");
 			scanf("%d", &qtd);
-
+			
 			dado = novoDado(codigo, descricao, qtd);
+			
 			inserirOrdenado(lista, dado);
+			
+			lista->qtd_dados+=1;
+			
+			if (lista->qtd_dados == 1)
+			{
+				premio = lista->inicio;
+			}
 
 			printf("\n Premio cadastrado com sucesso...");
 			break;
@@ -338,11 +349,9 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				printf("\n roleta vazia !!");
-				lista = criarLista();	
+				printf("\n roleta vazia !!");	
 			}
 			
-
 			break;
 
 		case 3:
