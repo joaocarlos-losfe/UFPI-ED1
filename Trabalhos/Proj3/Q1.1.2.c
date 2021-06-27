@@ -41,14 +41,15 @@ Monomio apagarMonomio(Monomio monomio);
 Monomio criarMonomio(char* termo);
 void exibirMonomio(Monomio monomio);
 
-int buscarIndexPolinomio(Polinomio *polinomios, int qtd, int id)
+int buscarIndexPolinomio(int qtd, Polinomio polinomios[qtd], int id)
 {
 	int index = -1;
 	int i;
 	
 	for(i=0; i<qtd; i++)
 	{
-		if(id == polinomios[i]->ID)
+		
+		if(polinomios[i]->ID == id)
 		{
 			index = i;
 			break;
@@ -100,15 +101,17 @@ int main(int argc, char** argv)
 			break;
 		
 		case 2:
+			printf("\n");
 			
-			
-			printf("digite o id para selecionar o primeiro polinomio: ");
+			printf("\ndigite o id para selecionar o primeiro polinomio: ");
 			scanf("%d", &id_1);
-			printf("digite o id para selecionar o segundo polinomio: ");
+			printf("\ndigite o id para selecionar o segundo polinomio: ");
 			scanf("%d", &id_2);
 			
-			index1 = buscarIndexPolinomio(polinomios, qtd, id_1);
-			index2 = buscarIndexPolinomio(polinomios, qtd, id_2);
+			index1 = buscarIndexPolinomio(qtd, polinomios, id_1);
+			index2 = buscarIndexPolinomio(qtd, polinomios, id_2);
+			
+			printf("%d %d <<", index1, index2);
 			
 			if(index1 == -1 || index2 == -1)
 				printf("\nUm ou mais ids não encontrados");
@@ -118,16 +121,18 @@ int main(int argc, char** argv)
 				
 				printf("\nResultado:");
 				exibirPolinomio(resultado);
+				
 				resultado = apagarPolinomio(resultado);
 			}
 			
 			break;
 		
 		case 5:
+			printf("\n");
 			printf("\nDigite o id do polinomio: ");
 			scanf("%d", &id);
 			
-			int index = buscarIndexPolinomio(polinomios, qtd, id);
+			int index = buscarIndexPolinomio(qtd, polinomios, id);
 			
 			if(index == -1)
 				printf("\npolinomio solicitado não encontrado");
@@ -137,8 +142,11 @@ int main(int argc, char** argv)
 			break;
 		
 		case 6:
+			printf("\n");
+			
 			for (i=0; i<qtd; i++)
 			{
+				printf("%d\n", polinomios[i]->ID);
 				exibirPolinomio(polinomios[i]);	
 			}
 		
@@ -439,7 +447,6 @@ Polinomio somarPolinomios(Polinomio polinomio1, Polinomio polinomio2)
 		extrairCoeficiente(monomio1->termo, coeficientes[0], restos[0]);
 
 		coeficiente_numerico[0] = coeficienteToInt(coeficientes[0]);
-
 
 		do
 		{
