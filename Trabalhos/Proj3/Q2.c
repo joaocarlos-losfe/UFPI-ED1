@@ -118,7 +118,7 @@ void inserirOrdenado(ListaCDE lista, Dado dado)
 
 		inserirEntre(lista, atual, dado, eh_primeiro);
 	}
-	
+
 	lista->qtd_dados++;
 }
 
@@ -263,7 +263,7 @@ int main(int argc, char** argv)
 	ListaCDE lista;
 
 	lista = criarLista();
-	
+
 	/*
 
 	dado = novoDado(333, "camisa", 2);
@@ -285,14 +285,14 @@ int main(int argc, char** argv)
 
 	dado = novoDado(555, "botijao de gas", 4);
 	inserirOrdenado(lista, dado);
-	
+
 	*/
 
 	int op = 1;
-	
+
 
 	Dado premio;
-	
+
 	int flag = 1;
 
 	int codigo = 0;
@@ -310,16 +310,16 @@ int main(int argc, char** argv)
 		case 1:
 			printf("\n codigo: ");
 			scanf("%d", &codigo);
-			printf("\n descrição do premio: ");
+			printf("\n descriï¿½ï¿½o do premio: ");
 			setbuf(stdin, NULL);
 			scanf(" %[^\n]s", descricao);
 			printf("\n quantidade: ");
 			scanf("%d", &qtd);
-			
+
 			dado = novoDado(codigo, descricao, qtd);
-			
+
 			inserirOrdenado(lista, dado);
-			
+
 			if (lista->qtd_dados == 1)
 			{
 				premio = lista->inicio;
@@ -334,8 +334,8 @@ int main(int argc, char** argv)
 			{
 				premio = girarRoleta(&flag, premio);
 				printf("\n\n Premio ganho: ");
-				mostrarDado(premio);
 				premio->premio.quantidade--;
+				mostrarDado(premio);
 
 				if(premio->premio.quantidade == 0)
 				{
@@ -348,9 +348,9 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				printf("\n roleta vazia !!");	
+				printf("\n roleta vazia !!");
 			}
-			
+
 			break;
 
 		case 3:
