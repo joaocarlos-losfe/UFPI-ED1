@@ -164,7 +164,7 @@ int main(int argc, char** argv)
 			scanf("%d",&poli);
 			if(buscaId(novo_polinomio,id,strPolinomio) == 0){
         printf("\nVariável: ");
-        scanf("%c",&var);
+        scanf(" %c",&var);
 				calderivada(novo_polinomio,poli,var,strPolinomio);
 				free(strPolinomio);
 			}
